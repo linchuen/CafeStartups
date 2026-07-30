@@ -51,6 +51,20 @@ type gameStore struct {
 	games map[string]*gameRoom
 }
 
+// roomLocked resolves either the stable game id or the six-character room code.
+// Callers must hold the store lock.
+func (s *gameStore) roomLocked(key string) (*gameRoom, bool) {
+	if room, ok := s.games[key]; ok {
+		return room, true
+	}
+	for _, room := range s.games {
+		if strings.EqualFold(room.RoomCode, key) {
+			return room, true
+		}
+	}
+	return nil, false
+}
+
 type joinRequest struct {
 	DisplayName string `json:"displayName"`
 }
@@ -138,7 +152,7 @@ func (s *gameStore) gamesHandler(w http.ResponseWriter, r *http.Request) {
 func (s *gameStore) joinHandler(w http.ResponseWriter, r *http.Request) {
 	s.Lock()
 	defer s.Unlock()
-	room, ok := s.games[r.PathValue("id")]
+	room, ok := s.roomLocked(r.PathValue("id"))
 	if !ok {
 		writeCode(w, http.StatusNotFound, "GAME_NOT_FOUND")
 		return
@@ -174,7 +188,7 @@ func (s *gameStore) joinHandler(w http.ResponseWriter, r *http.Request) {
 func (s *gameStore) readyHandler(w http.ResponseWriter, r *http.Request) {
 	s.Lock()
 	defer s.Unlock()
-	room, ok := s.games[r.PathValue("id")]
+	room, ok := s.roomLocked(r.PathValue("id"))
 	if !ok {
 		writeCode(w, http.StatusNotFound, "GAME_NOT_FOUND")
 		return
@@ -206,7 +220,7 @@ func (s *gameStore) readyHandler(w http.ResponseWriter, r *http.Request) {
 func (s *gameStore) startHandler(w http.ResponseWriter, r *http.Request) {
 	s.Lock()
 	defer s.Unlock()
-	room, ok := s.games[r.PathValue("id")]
+	room, ok := s.roomLocked(r.PathValue("id"))
 	if !ok {
 		writeCode(w, http.StatusNotFound, "GAME_NOT_FOUND")
 		return
@@ -249,7 +263,7 @@ func (s *gameStore) startHandler(w http.ResponseWriter, r *http.Request) {
 func (s *gameStore) stateHandler(w http.ResponseWriter, r *http.Request) {
 	s.RLock()
 	defer s.RUnlock()
-	room, ok := s.games[r.PathValue("id")]
+	room, ok := s.roomLocked(r.PathValue("id"))
 	if !ok {
 		writeCode(w, http.StatusNotFound, "GAME_NOT_FOUND")
 		return
@@ -260,7 +274,7 @@ func (s *gameStore) stateHandler(w http.ResponseWriter, r *http.Request) {
 func (s *gameStore) commandHandler(w http.ResponseWriter, r *http.Request) {
 	s.Lock()
 	defer s.Unlock()
-	room, ok := s.games[r.PathValue("id")]
+	room, ok := s.roomLocked(r.PathValue("id"))
 	if !ok {
 		writeCode(w, http.StatusNotFound, "GAME_NOT_FOUND")
 		return
@@ -336,7 +350,7 @@ func (s *gameStore) eventsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	s.RLock()
-	room, ok := s.games[r.PathValue("id")]
+	room, ok := s.roomLocked(r.PathValue("id"))
 	if !ok {
 		s.RUnlock()
 		writeCode(w, http.StatusNotFound, "GAME_NOT_FOUND")
@@ -366,7 +380,7 @@ func (s *gameStore) eventsHandler(w http.ResponseWriter, r *http.Request) {
 
 func (s *gameStore) websocketEvents(w http.ResponseWriter, r *http.Request) {
 	s.RLock()
-	_, exists := s.games[r.PathValue("id")]
+	_, exists := s.roomLocked(r.PathValue("id"))
 	s.RUnlock()
 	if !exists {
 		writeCode(w, http.StatusNotFound, "GAME_NOT_FOUND")
@@ -411,7 +425,7 @@ func (s *gameStore) websocketEvents(w http.ResponseWriter, r *http.Request) {
 func (s *gameStore) eventsSince(id string, since int64) []event {
 	s.RLock()
 	defer s.RUnlock()
-	room, ok := s.games[id]
+	room, ok := s.roomLocked(id)
 	if !ok {
 		return nil
 	}
