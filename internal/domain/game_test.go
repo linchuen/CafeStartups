@@ -1,6 +1,43 @@
 package domain
 
-import "testing"
+import (
+	"testing"
+
+	fixturedata "cafestartups/data"
+)
+
+func TestLoadCatalogRejectsDuplicateCards(t *testing.T) {
+	if _, err := LoadCatalog([]byte(`{"cards":[{"id":"x","period":1,"cost":{"cash":0,"icons":[]}}, {"id":"x","period":1,"cost":{"cash":0,"icons":[]}}]}`)); err == nil {
+		t.Fatal("expected duplicate card error")
+	}
+}
+
+func TestCatalogDealsPeriodCards(t *testing.T) {
+	catalog, err := LoadCatalog(fixturedata.MVPFixture)
+	if err != nil {
+		t.Fatal(err)
+	}
+	g, err := NewGame("catalog-seed", []string{"a", "b", "c", "d"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	g.SetCatalog(catalog)
+	for _, p := range g.Players {
+		if err := g.SetKPIs(p.ID, "brand_awareness", "products"); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := g.BeginExperiment(); err != nil {
+		t.Fatal(err)
+	}
+	for _, p := range g.Players {
+		for _, card := range p.Hand {
+			if card.Period != PeriodOne || card.Name == "Management Card" {
+				t.Fatalf("unexpected dealt card: %+v", card)
+			}
+		}
+	}
+}
 
 func gameForTest(t *testing.T) *Game {
 	t.Helper()

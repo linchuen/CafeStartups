@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 )
 
@@ -23,8 +24,69 @@ func TestHealth(t *testing.T) {
 	}
 }
 
+func TestRoomLifecycleAndVersionConflict(t *testing.T) {
+	store := &gameStore{games: make(map[string]*gameRoom)}
+	handler := newHandler(store)
+	create := httptest.NewRecorder()
+	handler.ServeHTTP(create, httptest.NewRequest(http.MethodPost, "/api/games", strings.NewReader(`{"seed":"test-seed"}`)))
+	var room game
+	if err := json.NewDecoder(create.Body).Decode(&room); err != nil {
+		t.Fatal(err)
+	}
+
+	join := func(name string) (string, map[string]any) {
+		rec := httptest.NewRecorder()
+		req := httptest.NewRequest(http.MethodPost, "/api/games/"+room.ID+"/join", strings.NewReader(`{"displayName":"`+name+`"}`))
+		handler.ServeHTTP(rec, req)
+		if rec.Code != http.StatusCreated {
+			t.Fatalf("join status=%d body=%s", rec.Code, rec.Body.String())
+		}
+		var body map[string]any
+		if err := json.NewDecoder(rec.Body).Decode(&body); err != nil {
+			t.Fatal(err)
+		}
+		return body["token"].(string), body["state"].(map[string]any)
+	}
+	aToken, _ := join("Alice")
+	bToken, _ := join("Bob")
+	ready := func(token string) {
+		rec := httptest.NewRecorder()
+		req := httptest.NewRequest(http.MethodPost, "/api/games/"+room.ID+"/ready", strings.NewReader(`{"token":"`+token+`"}`))
+		handler.ServeHTTP(rec, req)
+		if rec.Code != http.StatusOK {
+			t.Fatalf("ready status=%d", rec.Code)
+		}
+	}
+	ready(aToken)
+	ready(bToken)
+	start := httptest.NewRecorder()
+	req := httptest.NewRequest(http.MethodPost, "/api/games/"+room.ID+"/start", nil)
+	req.Header.Set("X-Session-Token", aToken)
+	handler.ServeHTTP(start, req)
+	if start.Code != http.StatusOK {
+		t.Fatalf("start status=%d body=%s", start.Code, start.Body.String())
+	}
+	var started map[string]any
+	_ = json.NewDecoder(start.Body).Decode(&started)
+	version := int64(started["gameVersion"].(float64))
+	state := httptest.NewRecorder()
+	req = httptest.NewRequest(http.MethodGet, "/api/games/"+room.ID+"?token="+bToken, nil)
+	handler.ServeHTTP(state, req)
+	var visible map[string]any
+	_ = json.NewDecoder(state.Body).Decode(&visible)
+	if _, ok := visible["me"]; !ok {
+		t.Fatal("player should receive private view")
+	}
+	conflict := httptest.NewRecorder()
+	body := `{"token":"` + aToken + `","gameVersion":` + itoa(version-1) + `,"type":"TAKE_LOAN"}`
+	handler.ServeHTTP(conflict, httptest.NewRequest(http.MethodPost, "/api/games/"+room.ID+"/commands", strings.NewReader(body)))
+	if conflict.Code != http.StatusConflict {
+		t.Fatalf("conflict status=%d", conflict.Code)
+	}
+}
+
 func TestCreateGame(t *testing.T) {
-	store := &gameStore{games: make(map[string]game)}
+	store := &gameStore{games: make(map[string]*gameRoom)}
 	recorder := httptest.NewRecorder()
 	store.gamesHandler(recorder, httptest.NewRequest(http.MethodPost, "/api/games", nil))
 

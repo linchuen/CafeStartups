@@ -1,26 +1,1602 @@
 {
   "source": "mvp-fixture",
-  "version": 1,
-  "seed": "phase-0-demo",
+  "version": 2,
+  "seed": "phase-1-mvp-84",
   "cards": [
     {
-      "id": "fixture-resource-001",
-      "name": "流程標準化",
+      "id": "mvp-p1-001",
+      "name": "流程標準化（第1期）",
       "kind": "resource",
       "period": 1,
-      "cost": { "cash": 10, "icons": [] },
-      "icons": ["operations"],
-      "marketChange": { "gourmet": 0, "regular": 2, "difficult": 0 },
+      "cost": {
+        "cash": 15,
+        "icons": []
+      },
+      "icons": [
+        "operations"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
       "source": "mvp-fixture"
     },
     {
-      "id": "fixture-product-001",
-      "name": "小農鮮乳拿鐵",
+      "id": "mvp-p1-002",
+      "name": "供應商管理（第1期）",
+      "kind": "resource",
+      "period": 1,
+      "cost": {
+        "cash": 15,
+        "icons": []
+      },
+      "icons": [
+        "operations"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 0,
+        "difficult": 1
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-003",
+      "name": "烘豆設備（第1期）",
+      "kind": "resource",
+      "period": 1,
+      "cost": {
+        "cash": 15,
+        "icons": []
+      },
+      "icons": [
+        "operations"
+      ],
+      "marketChange": {
+        "gourmet": 1,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-004",
+      "name": "冷藏設備（第1期）",
+      "kind": "resource",
+      "period": 1,
+      "cost": {
+        "cash": 15,
+        "icons": []
+      },
+      "icons": [
+        "operations"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-005",
+      "name": "原料採購（第1期）",
+      "kind": "resource",
+      "period": 1,
+      "cost": {
+        "cash": 15,
+        "icons": []
+      },
+      "icons": [
+        "operations"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 0,
+        "difficult": 1
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-006",
+      "name": "品質控管（第1期）",
+      "kind": "resource",
+      "period": 1,
+      "cost": {
+        "cash": 15,
+        "icons": []
+      },
+      "icons": [
+        "operations"
+      ],
+      "marketChange": {
+        "gourmet": 1,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-007",
+      "name": "經典拿鐵（第1期）",
       "kind": "product",
       "period": 1,
-      "cost": { "cash": 20, "icons": [] },
-      "icons": ["coffee"],
-      "marketChange": { "gourmet": 2, "regular": 0, "difficult": 0 },
+      "cost": {
+        "cash": 25,
+        "icons": []
+      },
+      "icons": [
+        "coffee"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-008",
+      "name": "手沖咖啡（第1期）",
+      "kind": "product",
+      "period": 1,
+      "cost": {
+        "cash": 25,
+        "icons": []
+      },
+      "icons": [
+        "coffee"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 0,
+        "difficult": 1
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-009",
+      "name": "季節特調（第1期）",
+      "kind": "product",
+      "period": 1,
+      "cost": {
+        "cash": 25,
+        "icons": []
+      },
+      "icons": [
+        "coffee"
+      ],
+      "marketChange": {
+        "gourmet": 1,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-010",
+      "name": "燕麥奶咖啡（第1期）",
+      "kind": "product",
+      "period": 1,
+      "cost": {
+        "cash": 25,
+        "icons": []
+      },
+      "icons": [
+        "coffee"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-011",
+      "name": "濃縮咖啡（第1期）",
+      "kind": "product",
+      "period": 1,
+      "cost": {
+        "cash": 25,
+        "icons": []
+      },
+      "icons": [
+        "coffee"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 0,
+        "difficult": 1
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-012",
+      "name": "精品單品（第1期）",
+      "kind": "product",
+      "period": 1,
+      "cost": {
+        "cash": 25,
+        "icons": []
+      },
+      "icons": [
+        "coffee"
+      ],
+      "marketChange": {
+        "gourmet": 1,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-013",
+      "name": "快速取餐（第1期）",
+      "kind": "value",
+      "period": 1,
+      "cost": {
+        "cash": 20,
+        "icons": []
+      },
+      "icons": [
+        "value"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-014",
+      "name": "職人風味（第1期）",
+      "kind": "value",
+      "period": 1,
+      "cost": {
+        "cash": 20,
+        "icons": []
+      },
+      "icons": [
+        "value"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 0,
+        "difficult": 1
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-015",
+      "name": "健康選擇（第1期）",
+      "kind": "value",
+      "period": 1,
+      "cost": {
+        "cash": 20,
+        "icons": []
+      },
+      "icons": [
+        "value"
+      ],
+      "marketChange": {
+        "gourmet": 1,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-016",
+      "name": "友善環境（第1期）",
+      "kind": "value",
+      "period": 1,
+      "cost": {
+        "cash": 20,
+        "icons": []
+      },
+      "icons": [
+        "value"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-017",
+      "name": "社區連結（第1期）",
+      "kind": "value",
+      "period": 1,
+      "cost": {
+        "cash": 20,
+        "icons": []
+      },
+      "icons": [
+        "value"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 0,
+        "difficult": 1
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-018",
+      "name": "客製體驗（第1期）",
+      "kind": "value",
+      "period": 1,
+      "cost": {
+        "cash": 20,
+        "icons": []
+      },
+      "icons": [
+        "value"
+      ],
+      "marketChange": {
+        "gourmet": 1,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-019",
+      "name": "店內座位（第1期）",
+      "kind": "channel",
+      "period": 1,
+      "cost": {
+        "cash": 30,
+        "icons": []
+      },
+      "icons": [
+        "channel"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-020",
+      "name": "外帶窗口（第1期）",
+      "kind": "channel",
+      "period": 1,
+      "cost": {
+        "cash": 30,
+        "icons": []
+      },
+      "icons": [
+        "channel"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 0,
+        "difficult": 1
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-021",
+      "name": "外送平台（第1期）",
+      "kind": "channel",
+      "period": 1,
+      "cost": {
+        "cash": 30,
+        "icons": []
+      },
+      "icons": [
+        "channel"
+      ],
+      "marketChange": {
+        "gourmet": 1,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-022",
+      "name": "企業訂單（第1期）",
+      "kind": "channel",
+      "period": 1,
+      "cost": {
+        "cash": 30,
+        "icons": []
+      },
+      "icons": [
+        "channel"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-023",
+      "name": "市集攤位（第1期）",
+      "kind": "channel",
+      "period": 1,
+      "cost": {
+        "cash": 30,
+        "icons": []
+      },
+      "icons": [
+        "channel"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 0,
+        "difficult": 1
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-024",
+      "name": "社群經營（第1期）",
+      "kind": "marketing",
+      "period": 1,
+      "cost": {
+        "cash": 15,
+        "icons": []
+      },
+      "icons": [
+        "marketing"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 2,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-025",
+      "name": "會員制度（第1期）",
+      "kind": "marketing",
+      "period": 1,
+      "cost": {
+        "cash": 15,
+        "icons": []
+      },
+      "icons": [
+        "marketing"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 0,
+        "difficult": 2
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-026",
+      "name": "開幕活動（第1期）",
+      "kind": "marketing",
+      "period": 1,
+      "cost": {
+        "cash": 15,
+        "icons": []
+      },
+      "icons": [
+        "marketing"
+      ],
+      "marketChange": {
+        "gourmet": 2,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-027",
+      "name": "口碑推薦（第1期）",
+      "kind": "marketing",
+      "period": 1,
+      "cost": {
+        "cash": 15,
+        "icons": []
+      },
+      "icons": [
+        "marketing"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 2,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-028",
+      "name": "品牌故事（第1期）",
+      "kind": "marketing",
+      "period": 1,
+      "cost": {
+        "cash": 15,
+        "icons": []
+      },
+      "icons": [
+        "marketing"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 0,
+        "difficult": 2
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p2-001",
+      "name": "流程標準化（第2期）",
+      "kind": "resource",
+      "period": 2,
+      "cost": {
+        "cash": 20,
+        "icons": []
+      },
+      "icons": [
+        "operations"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 0,
+        "difficult": 1
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p2-002",
+      "name": "供應商管理（第2期）",
+      "kind": "resource",
+      "period": 2,
+      "cost": {
+        "cash": 20,
+        "icons": []
+      },
+      "icons": [
+        "operations"
+      ],
+      "marketChange": {
+        "gourmet": 1,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p2-003",
+      "name": "烘豆設備（第2期）",
+      "kind": "resource",
+      "period": 2,
+      "cost": {
+        "cash": 20,
+        "icons": []
+      },
+      "icons": [
+        "operations"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p2-004",
+      "name": "冷藏設備（第2期）",
+      "kind": "resource",
+      "period": 2,
+      "cost": {
+        "cash": 20,
+        "icons": []
+      },
+      "icons": [
+        "operations"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 0,
+        "difficult": 1
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p2-005",
+      "name": "原料採購（第2期）",
+      "kind": "resource",
+      "period": 2,
+      "cost": {
+        "cash": 20,
+        "icons": []
+      },
+      "icons": [
+        "operations"
+      ],
+      "marketChange": {
+        "gourmet": 1,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p2-006",
+      "name": "品質控管（第2期）",
+      "kind": "resource",
+      "period": 2,
+      "cost": {
+        "cash": 20,
+        "icons": []
+      },
+      "icons": [
+        "operations"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p2-007",
+      "name": "經典拿鐵（第2期）",
+      "kind": "product",
+      "period": 2,
+      "cost": {
+        "cash": 30,
+        "icons": []
+      },
+      "icons": [
+        "coffee"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 0,
+        "difficult": 1
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p2-008",
+      "name": "手沖咖啡（第2期）",
+      "kind": "product",
+      "period": 2,
+      "cost": {
+        "cash": 30,
+        "icons": []
+      },
+      "icons": [
+        "coffee"
+      ],
+      "marketChange": {
+        "gourmet": 1,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p2-009",
+      "name": "季節特調（第2期）",
+      "kind": "product",
+      "period": 2,
+      "cost": {
+        "cash": 30,
+        "icons": []
+      },
+      "icons": [
+        "coffee"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p2-010",
+      "name": "燕麥奶咖啡（第2期）",
+      "kind": "product",
+      "period": 2,
+      "cost": {
+        "cash": 30,
+        "icons": []
+      },
+      "icons": [
+        "coffee"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 0,
+        "difficult": 1
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p2-011",
+      "name": "濃縮咖啡（第2期）",
+      "kind": "product",
+      "period": 2,
+      "cost": {
+        "cash": 30,
+        "icons": []
+      },
+      "icons": [
+        "coffee"
+      ],
+      "marketChange": {
+        "gourmet": 1,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p2-012",
+      "name": "精品單品（第2期）",
+      "kind": "product",
+      "period": 2,
+      "cost": {
+        "cash": 30,
+        "icons": []
+      },
+      "icons": [
+        "coffee"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p2-013",
+      "name": "快速取餐（第2期）",
+      "kind": "value",
+      "period": 2,
+      "cost": {
+        "cash": 25,
+        "icons": []
+      },
+      "icons": [
+        "value"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 0,
+        "difficult": 1
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p2-014",
+      "name": "職人風味（第2期）",
+      "kind": "value",
+      "period": 2,
+      "cost": {
+        "cash": 25,
+        "icons": []
+      },
+      "icons": [
+        "value"
+      ],
+      "marketChange": {
+        "gourmet": 1,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p2-015",
+      "name": "健康選擇（第2期）",
+      "kind": "value",
+      "period": 2,
+      "cost": {
+        "cash": 25,
+        "icons": []
+      },
+      "icons": [
+        "value"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p2-016",
+      "name": "友善環境（第2期）",
+      "kind": "value",
+      "period": 2,
+      "cost": {
+        "cash": 25,
+        "icons": []
+      },
+      "icons": [
+        "value"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 0,
+        "difficult": 1
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p2-017",
+      "name": "社區連結（第2期）",
+      "kind": "value",
+      "period": 2,
+      "cost": {
+        "cash": 25,
+        "icons": []
+      },
+      "icons": [
+        "value"
+      ],
+      "marketChange": {
+        "gourmet": 1,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p2-018",
+      "name": "客製體驗（第2期）",
+      "kind": "value",
+      "period": 2,
+      "cost": {
+        "cash": 25,
+        "icons": []
+      },
+      "icons": [
+        "value"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p2-019",
+      "name": "店內座位（第2期）",
+      "kind": "channel",
+      "period": 2,
+      "cost": {
+        "cash": 40,
+        "icons": []
+      },
+      "icons": [
+        "channel"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 0,
+        "difficult": 1
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p2-020",
+      "name": "外帶窗口（第2期）",
+      "kind": "channel",
+      "period": 2,
+      "cost": {
+        "cash": 40,
+        "icons": []
+      },
+      "icons": [
+        "channel"
+      ],
+      "marketChange": {
+        "gourmet": 1,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p2-021",
+      "name": "外送平台（第2期）",
+      "kind": "channel",
+      "period": 2,
+      "cost": {
+        "cash": 40,
+        "icons": []
+      },
+      "icons": [
+        "channel"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p2-022",
+      "name": "企業訂單（第2期）",
+      "kind": "channel",
+      "period": 2,
+      "cost": {
+        "cash": 40,
+        "icons": []
+      },
+      "icons": [
+        "channel"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 0,
+        "difficult": 1
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p2-023",
+      "name": "市集攤位（第2期）",
+      "kind": "channel",
+      "period": 2,
+      "cost": {
+        "cash": 40,
+        "icons": []
+      },
+      "icons": [
+        "channel"
+      ],
+      "marketChange": {
+        "gourmet": 1,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p2-024",
+      "name": "社群經營（第2期）",
+      "kind": "marketing",
+      "period": 2,
+      "cost": {
+        "cash": 20,
+        "icons": []
+      },
+      "icons": [
+        "marketing"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 0,
+        "difficult": 2
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p2-025",
+      "name": "會員制度（第2期）",
+      "kind": "marketing",
+      "period": 2,
+      "cost": {
+        "cash": 20,
+        "icons": []
+      },
+      "icons": [
+        "marketing"
+      ],
+      "marketChange": {
+        "gourmet": 2,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p2-026",
+      "name": "開幕活動（第2期）",
+      "kind": "marketing",
+      "period": 2,
+      "cost": {
+        "cash": 20,
+        "icons": []
+      },
+      "icons": [
+        "marketing"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 2,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p2-027",
+      "name": "口碑推薦（第2期）",
+      "kind": "marketing",
+      "period": 2,
+      "cost": {
+        "cash": 20,
+        "icons": []
+      },
+      "icons": [
+        "marketing"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 0,
+        "difficult": 2
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p2-028",
+      "name": "品牌故事（第2期）",
+      "kind": "marketing",
+      "period": 2,
+      "cost": {
+        "cash": 20,
+        "icons": []
+      },
+      "icons": [
+        "marketing"
+      ],
+      "marketChange": {
+        "gourmet": 2,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-001",
+      "name": "流程標準化（第3期）",
+      "kind": "resource",
+      "period": 3,
+      "cost": {
+        "cash": 25,
+        "icons": []
+      },
+      "icons": [
+        "operations"
+      ],
+      "marketChange": {
+        "gourmet": 1,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-002",
+      "name": "供應商管理（第3期）",
+      "kind": "resource",
+      "period": 3,
+      "cost": {
+        "cash": 25,
+        "icons": []
+      },
+      "icons": [
+        "operations"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-003",
+      "name": "烘豆設備（第3期）",
+      "kind": "resource",
+      "period": 3,
+      "cost": {
+        "cash": 25,
+        "icons": []
+      },
+      "icons": [
+        "operations"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 0,
+        "difficult": 1
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-004",
+      "name": "冷藏設備（第3期）",
+      "kind": "resource",
+      "period": 3,
+      "cost": {
+        "cash": 25,
+        "icons": []
+      },
+      "icons": [
+        "operations"
+      ],
+      "marketChange": {
+        "gourmet": 1,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-005",
+      "name": "原料採購（第3期）",
+      "kind": "resource",
+      "period": 3,
+      "cost": {
+        "cash": 25,
+        "icons": []
+      },
+      "icons": [
+        "operations"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-006",
+      "name": "品質控管（第3期）",
+      "kind": "resource",
+      "period": 3,
+      "cost": {
+        "cash": 25,
+        "icons": []
+      },
+      "icons": [
+        "operations"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 0,
+        "difficult": 1
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-007",
+      "name": "經典拿鐵（第3期）",
+      "kind": "product",
+      "period": 3,
+      "cost": {
+        "cash": 35,
+        "icons": []
+      },
+      "icons": [
+        "coffee"
+      ],
+      "marketChange": {
+        "gourmet": 1,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-008",
+      "name": "手沖咖啡（第3期）",
+      "kind": "product",
+      "period": 3,
+      "cost": {
+        "cash": 35,
+        "icons": []
+      },
+      "icons": [
+        "coffee"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-009",
+      "name": "季節特調（第3期）",
+      "kind": "product",
+      "period": 3,
+      "cost": {
+        "cash": 35,
+        "icons": []
+      },
+      "icons": [
+        "coffee"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 0,
+        "difficult": 1
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-010",
+      "name": "燕麥奶咖啡（第3期）",
+      "kind": "product",
+      "period": 3,
+      "cost": {
+        "cash": 35,
+        "icons": []
+      },
+      "icons": [
+        "coffee"
+      ],
+      "marketChange": {
+        "gourmet": 1,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-011",
+      "name": "濃縮咖啡（第3期）",
+      "kind": "product",
+      "period": 3,
+      "cost": {
+        "cash": 35,
+        "icons": []
+      },
+      "icons": [
+        "coffee"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-012",
+      "name": "精品單品（第3期）",
+      "kind": "product",
+      "period": 3,
+      "cost": {
+        "cash": 35,
+        "icons": []
+      },
+      "icons": [
+        "coffee"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 0,
+        "difficult": 1
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-013",
+      "name": "快速取餐（第3期）",
+      "kind": "value",
+      "period": 3,
+      "cost": {
+        "cash": 30,
+        "icons": []
+      },
+      "icons": [
+        "value"
+      ],
+      "marketChange": {
+        "gourmet": 1,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-014",
+      "name": "職人風味（第3期）",
+      "kind": "value",
+      "period": 3,
+      "cost": {
+        "cash": 30,
+        "icons": []
+      },
+      "icons": [
+        "value"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-015",
+      "name": "健康選擇（第3期）",
+      "kind": "value",
+      "period": 3,
+      "cost": {
+        "cash": 30,
+        "icons": []
+      },
+      "icons": [
+        "value"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 0,
+        "difficult": 1
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-016",
+      "name": "友善環境（第3期）",
+      "kind": "value",
+      "period": 3,
+      "cost": {
+        "cash": 30,
+        "icons": []
+      },
+      "icons": [
+        "value"
+      ],
+      "marketChange": {
+        "gourmet": 1,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-017",
+      "name": "社區連結（第3期）",
+      "kind": "value",
+      "period": 3,
+      "cost": {
+        "cash": 30,
+        "icons": []
+      },
+      "icons": [
+        "value"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-018",
+      "name": "客製體驗（第3期）",
+      "kind": "value",
+      "period": 3,
+      "cost": {
+        "cash": 30,
+        "icons": []
+      },
+      "icons": [
+        "value"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 0,
+        "difficult": 1
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-019",
+      "name": "店內座位（第3期）",
+      "kind": "channel",
+      "period": 3,
+      "cost": {
+        "cash": 50,
+        "icons": []
+      },
+      "icons": [
+        "channel"
+      ],
+      "marketChange": {
+        "gourmet": 1,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-020",
+      "name": "外帶窗口（第3期）",
+      "kind": "channel",
+      "period": 3,
+      "cost": {
+        "cash": 50,
+        "icons": []
+      },
+      "icons": [
+        "channel"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-021",
+      "name": "外送平台（第3期）",
+      "kind": "channel",
+      "period": 3,
+      "cost": {
+        "cash": 50,
+        "icons": []
+      },
+      "icons": [
+        "channel"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 0,
+        "difficult": 1
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-022",
+      "name": "企業訂單（第3期）",
+      "kind": "channel",
+      "period": 3,
+      "cost": {
+        "cash": 50,
+        "icons": []
+      },
+      "icons": [
+        "channel"
+      ],
+      "marketChange": {
+        "gourmet": 1,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-023",
+      "name": "市集攤位（第3期）",
+      "kind": "channel",
+      "period": 3,
+      "cost": {
+        "cash": 50,
+        "icons": []
+      },
+      "icons": [
+        "channel"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-024",
+      "name": "社群經營（第3期）",
+      "kind": "marketing",
+      "period": 3,
+      "cost": {
+        "cash": 25,
+        "icons": []
+      },
+      "icons": [
+        "marketing"
+      ],
+      "marketChange": {
+        "gourmet": 2,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-025",
+      "name": "會員制度（第3期）",
+      "kind": "marketing",
+      "period": 3,
+      "cost": {
+        "cash": 25,
+        "icons": []
+      },
+      "icons": [
+        "marketing"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 2,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-026",
+      "name": "開幕活動（第3期）",
+      "kind": "marketing",
+      "period": 3,
+      "cost": {
+        "cash": 25,
+        "icons": []
+      },
+      "icons": [
+        "marketing"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 0,
+        "difficult": 2
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-027",
+      "name": "口碑推薦（第3期）",
+      "kind": "marketing",
+      "period": 3,
+      "cost": {
+        "cash": 25,
+        "icons": []
+      },
+      "icons": [
+        "marketing"
+      ],
+      "marketChange": {
+        "gourmet": 2,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-028",
+      "name": "品牌故事（第3期）",
+      "kind": "marketing",
+      "period": 3,
+      "cost": {
+        "cash": 25,
+        "icons": []
+      },
+      "icons": [
+        "marketing"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 2,
+        "difficult": 0
+      },
       "source": "mvp-fixture"
     }
   ]

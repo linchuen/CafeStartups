@@ -44,14 +44,18 @@ var (
 )
 
 type Cost struct {
-	Cash  int
-	Icons []string
+	Cash  int      `json:"cash"`
+	Icons []string `json:"icons"`
 }
 type Card struct {
-	ID, Name, Kind                              string
-	Period                                      Period
-	Cost                                        Cost
-	Icons                                       []string
+	ID                                          string         `json:"id"`
+	Name                                        string         `json:"name"`
+	Kind                                        string         `json:"kind"`
+	Period                                      Period         `json:"period"`
+	Cost                                        Cost           `json:"cost"`
+	Icons                                       []string       `json:"icons"`
+	MarketChange                                map[string]int `json:"marketChange"`
+	Source                                      string         `json:"source"`
 	BrandAwareness, Products, Values, Resources int
 	Demand                                      map[string]int
 }
@@ -81,11 +85,14 @@ type Game struct {
 	Players     []*Player
 	Center      Card
 	Market      []Card
+	Catalog     []Card
 	DemandBoard map[string]int
 	selected    map[string]Card
 	acted       map[string]bool
 	rng         *rand.Rand
 }
+
+func (g *Game) SetCatalog(cards []Card) { g.Catalog = append([]Card(nil), cards...) }
 
 // NewGame creates a deterministic, offline game. Two to four players are required to start.
 func NewGame(seed string, playerIDs []string) (*Game, error) {
@@ -381,6 +388,22 @@ func (g *Game) Finish() error {
 
 func (g *Game) Deal() { g.deal() }
 func (g *Game) deal() {
+	if len(g.Catalog) > 0 {
+		cards := make([]Card, 0, len(g.Catalog))
+		for _, card := range g.Catalog {
+			if card.Period == g.Period {
+				cards = append(cards, card)
+			}
+		}
+		g.rng.Shuffle(len(cards), func(i, j int) { cards[i], cards[j] = cards[j], cards[i] })
+		if len(cards) < len(g.Players)*7 {
+			return
+		}
+		for i, p := range g.Players {
+			p.Hand = append([]Card(nil), cards[i*7:(i+1)*7]...)
+		}
+		return
+	}
 	cards := make([]Card, 0, len(g.Players)*7)
 	for i := 0; i < len(g.Players)*7; i++ {
 		cards = append(cards, Card{ID: fmt.Sprintf("p%d-r%d-c%d", i/7, g.Round, i%7), Name: "Management Card", Kind: "resource", Period: g.Period, Cost: Cost{Cash: 10}})
