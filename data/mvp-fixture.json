@@ -1,0 +1,27 @@
+{
+  "source": "mvp-fixture",
+  "version": 1,
+  "seed": "phase-0-demo",
+  "cards": [
+    {
+      "id": "fixture-resource-001",
+      "name": "流程標準化",
+      "kind": "resource",
+      "period": 1,
+      "cost": { "cash": 10, "icons": [] },
+      "icons": ["operations"],
+      "marketChange": { "gourmet": 0, "regular": 2, "difficult": 0 },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "fixture-product-001",
+      "name": "小農鮮乳拿鐵",
+      "kind": "product",
+      "period": 1,
+      "cost": { "cash": 20, "icons": [] },
+      "icons": ["coffee"],
+      "marketChange": { "gourmet": 2, "regular": 0, "difficult": 0 },
+      "source": "mvp-fixture"
+    }
+  ]
+}

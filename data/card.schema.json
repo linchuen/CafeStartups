@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cafestartups.local/schemas/card.schema.json",
+  "title": "Café Startups Card",
+  "type": "object",
+  "required": ["id", "name", "kind", "period", "cost", "icons", "marketChange", "source"],
+  "properties": {
+    "id": { "type": "string" },
+    "name": { "type": "string" },
+    "kind": { "enum": ["resource", "product", "value", "channel", "marketing", "partner", "starter_shop"] },
+    "period": { "enum": [1, 2, 3, null] },
+    "cost": {
+      "type": "object",
+      "required": ["cash", "icons"],
+      "properties": { "cash": { "type": "integer", "minimum": 0 }, "icons": { "type": "array", "items": { "type": "string" } } }
+    },
+    "icons": { "type": "array", "items": { "type": "string" } },
+    "marketChange": {
+      "type": "object",
+      "required": ["gourmet", "regular", "difficult"],
+      "properties": { "gourmet": { "type": "integer" }, "regular": { "type": "integer" }, "difficult": { "type": "integer" } }
+    },
+    "source": { "enum": ["mvp-fixture", "rulebook-verified"] }
+  }
+}
