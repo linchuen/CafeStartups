@@ -1,0 +1,149 @@
+package domain
+
+import "testing"
+
+func gameForTest(t *testing.T) *Game {
+	t.Helper()
+	g, err := NewGame("fixed-seed", []string{"a", "b", "c", "d"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, p := range g.Players {
+		if err := g.SetKPIs(p.ID, "brand_awareness", "products"); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := g.BeginExperiment(); err != nil {
+		t.Fatal(err)
+	}
+	return g
+}
+
+func TestDraftEndsWithOneCardAndPeriodDirection(t *testing.T) {
+	g := gameForTest(t)
+	for round := 0; round < 6; round++ {
+		for _, p := range g.Players {
+			if err := g.SelectCard(p.ID, p.Hand[0].ID); err != nil {
+				t.Fatal(err)
+			}
+			if err := g.DiscardSelectedCard(p.ID); err != nil {
+				t.Fatal(err)
+			}
+		}
+		if err := g.PassHands(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if g.Phase != PhaseLearning {
+		t.Fatalf("phase=%s", g.Phase)
+	}
+	for _, p := range g.Players {
+		if len(p.Hand) != 1 {
+			t.Fatalf("player %s has %d cards", p.ID, len(p.Hand))
+		}
+	}
+}
+
+func TestCostAndMissingIcons(t *testing.T) {
+	g, _ := NewGame("x", []string{"a", "b"})
+	p := g.Players[0]
+	p.Cash = 60
+	c := Card{ID: "c", Cost: Cost{Cash: 30, Icons: []string{"coffee", "operations"}}}
+	g.selected[p.ID] = c
+	p.Hand = []Card{c}
+	g.Phase = PhaseExperiment
+	if err := g.PlaySelectedCard(p.ID); err != ErrInsufficientCash {
+		t.Fatalf("expected cash error, got %v", err)
+	}
+	p.Cash = 100
+	g.selected[p.ID] = c
+	if err := g.PlaySelectedCard(p.ID); err != nil {
+		t.Fatal(err)
+	}
+	if p.Cash != 30 {
+		t.Fatalf("cash=%d, want 30", p.Cash)
+	}
+}
+
+func TestLoanLimitInterestAndRanking(t *testing.T) {
+	g, _ := NewGame("x", []string{"a", "b"})
+	p := g.Players[0]
+	for i := 0; i < MaxLoans; i++ {
+		if err := g.TakeLoan(p.ID); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := g.TakeLoan(p.ID); err != ErrLoanLimit {
+		t.Fatalf("expected loan limit, got %v", err)
+	}
+	p.Cash = 50
+	if err := g.SettleInterest(); err != ErrInsufficientCash {
+		t.Fatalf("expected interest error, got %v", err)
+	}
+	g.Players[1].BrandAwareness = 3
+	p.BrandAwareness = 3
+	g.Players[1].Order = 0
+	p.Order = 1
+	if got := g.Rank()[0].ID; got != "b" {
+		t.Fatalf("rank=%s", got)
+	}
+}
+
+func TestInterestCanTakeLoanWhenCashIsShort(t *testing.T) {
+	g, _ := NewGame("x", []string{"a", "b"})
+	p := g.Players[0]
+	p.Loans, p.Cash = 1, 0
+	if err := g.SettleInterest(); err != nil {
+		t.Fatal(err)
+	}
+	if p.Loans != 2 || p.Cash != 40 {
+		t.Fatalf("loans=%d cash=%d", p.Loans, p.Cash)
+	}
+}
+
+func TestSeedAndRevenueAreDeterministic(t *testing.T) {
+	a := gameForTest(t)
+	b := gameForTest(t)
+	for i := range a.Players {
+		if a.Players[i].Hand[0].ID != b.Players[i].Hand[0].ID {
+			t.Fatal("same seed produced different deal")
+		}
+	}
+	a.Players[0].Tableau = []Card{{Demand: map[string]int{"gourmet": 1}}}
+	a.DistributeCustomers([]Customer{{Kind: "gourmet", Demand: "gourmet", Count: 2}, {Kind: "regular", Demand: "gourmet", Count: 1}})
+	a.SettleRevenue()
+	if a.Players[0].Revenue != 20 || a.Players[0].Cash != 170 {
+		t.Fatalf("revenue=%d cash=%d", a.Players[0].Revenue, a.Players[0].Cash)
+	}
+}
+
+func TestPeriodsAdvanceThreeTimes(t *testing.T) {
+	g := gameForTest(t)
+	for round := 0; round < 6; round++ {
+		for _, p := range g.Players {
+			if err := g.SelectCard(p.ID, p.Hand[0].ID); err != nil {
+				t.Fatal(err)
+			}
+			if err := g.DiscardSelectedCard(p.ID); err != nil {
+				t.Fatal(err)
+			}
+		}
+		if err := g.PassHands(); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := g.AdvancePeriod(); err != nil {
+		t.Fatal(err)
+	}
+	if g.Period != PeriodTwo || g.Phase != PhaseHypothesis {
+		t.Fatalf("period=%d phase=%s", g.Period, g.Phase)
+	}
+	for _, p := range g.Players {
+		if err := g.SetKPIs(p.ID, "brand_awareness", "products"); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := g.BeginExperiment(); err != nil {
+		t.Fatal(err)
+	}
+}
