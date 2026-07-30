@@ -35,6 +35,11 @@ type gameRoom struct {
 	Sessions  map[string]*session
 	Version   int64
 	Events    []event
+	Processed map[string]commandResult
+}
+type commandResult struct {
+	Status int
+	Body   []byte
 }
 type event struct {
 	Version  int64  `json:"version"`
@@ -60,6 +65,7 @@ type commandRequest struct {
 	CardID      string   `json:"cardId"`
 	KPIs        []string `json:"kpis"`
 	Count       int      `json:"count"`
+	CommandID   string   `json:"commandId"`
 }
 
 func main() {
@@ -108,7 +114,7 @@ func (s *gameStore) gamesHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		g.SetCatalog(catalog)
-		room := &gameRoom{game: game{ID: id, RoomCode: strings.ToUpper(id[:6]), Status: "lobby"}, Seed: seed, Domain: g, Sessions: map[string]*session{}}
+		room := &gameRoom{game: game{ID: id, RoomCode: strings.ToUpper(id[:6]), Status: "lobby"}, Seed: seed, Domain: g, Sessions: map[string]*session{}, Processed: map[string]commandResult{}}
 		s.Lock()
 		s.games[id] = room
 		s.Unlock()
@@ -171,6 +177,10 @@ func (s *gameStore) readyHandler(w http.ResponseWriter, r *http.Request) {
 	room, ok := s.games[r.PathValue("id")]
 	if !ok {
 		writeCode(w, http.StatusNotFound, "GAME_NOT_FOUND")
+		return
+	}
+	if room.Status != "lobby" {
+		writeCode(w, http.StatusConflict, "GAME_ALREADY_STARTED")
 		return
 	}
 	var input readyRequest
@@ -255,6 +265,10 @@ func (s *gameStore) commandHandler(w http.ResponseWriter, r *http.Request) {
 		writeCode(w, http.StatusNotFound, "GAME_NOT_FOUND")
 		return
 	}
+	if room.Status != "playing" {
+		writeCode(w, http.StatusConflict, "GAME_NOT_STARTED")
+		return
+	}
 	var input commandRequest
 	if err := decodeBody(r, &input); err != nil {
 		writeCode(w, http.StatusBadRequest, "INVALID_REQUEST")
@@ -263,6 +277,11 @@ func (s *gameStore) commandHandler(w http.ResponseWriter, r *http.Request) {
 	sess, ok := room.Sessions[input.Token]
 	if !ok {
 		writeCode(w, http.StatusUnauthorized, "INVALID_SESSION")
+		return
+	}
+	key := commandKey(input)
+	if cached, ok := room.Processed[key]; ok {
+		writeRawJSON(w, cached.Status, cached.Body)
 		return
 	}
 	if input.GameVersion != room.Version {
@@ -276,7 +295,10 @@ func (s *gameStore) commandHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	room.Version++
 	room.Events = append(room.Events, event{room.Version, input.Type, sess.PlayerID})
-	writeJSON(w, http.StatusOK, map[string]any{"gameVersion": room.Version, "event": room.Events[len(room.Events)-1], "state": room.view(input.Token)})
+	result := map[string]any{"gameVersion": room.Version, "event": room.Events[len(room.Events)-1], "state": room.view(input.Token)}
+	body, _ := json.Marshal(result)
+	room.Processed[key] = commandResult{Status: http.StatusOK, Body: body}
+	writeRawJSON(w, http.StatusOK, body)
 }
 
 func applyCommand(room *gameRoom, playerID string, input commandRequest) error {
@@ -343,6 +365,13 @@ func (s *gameStore) eventsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *gameStore) websocketEvents(w http.ResponseWriter, r *http.Request) {
+	s.RLock()
+	_, exists := s.games[r.PathValue("id")]
+	s.RUnlock()
+	if !exists {
+		writeCode(w, http.StatusNotFound, "GAME_NOT_FOUND")
+		return
+	}
 	key := r.Header.Get("Sec-WebSocket-Key")
 	if key == "" {
 		writeCode(w, http.StatusBadRequest, "INVALID_WEBSOCKET_HANDSHAKE")
@@ -457,6 +486,22 @@ func writeJSON(w http.ResponseWriter, status int, value any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 	_ = json.NewEncoder(w).Encode(value)
+}
+
+func writeRawJSON(w http.ResponseWriter, status int, body []byte) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	_, _ = w.Write(body)
+	_, _ = w.Write([]byte("\n"))
+}
+
+func commandKey(input commandRequest) string {
+	if input.CommandID != "" {
+		return input.Token + "|" + input.CommandID
+	}
+	b, _ := json.Marshal(input)
+	checksum := sha1.Sum(b)
+	return input.Token + "|" + hex.EncodeToString(checksum[:])
 }
 func withCORS(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

@@ -83,6 +83,23 @@ func TestRoomLifecycleAndVersionConflict(t *testing.T) {
 	if conflict.Code != http.StatusConflict {
 		t.Fatalf("conflict status=%d", conflict.Code)
 	}
+	loanBody := `{"token":"` + aToken + `","gameVersion":` + itoa(version) + `,"commandId":"loan-once","type":"TAKE_LOAN"}`
+	loan := httptest.NewRecorder()
+	handler.ServeHTTP(loan, httptest.NewRequest(http.MethodPost, "/api/games/"+room.ID+"/commands", strings.NewReader(loanBody)))
+	if loan.Code != http.StatusOK {
+		t.Fatalf("loan status=%d body=%s", loan.Code, loan.Body.String())
+	}
+	duplicate := httptest.NewRecorder()
+	handler.ServeHTTP(duplicate, httptest.NewRequest(http.MethodPost, "/api/games/"+room.ID+"/commands", strings.NewReader(loanBody)))
+	if duplicate.Code != http.StatusOK {
+		t.Fatalf("duplicate status=%d", duplicate.Code)
+	}
+	playerID := store.games[room.ID].Sessions[aToken].PlayerID
+	for _, player := range store.games[room.ID].Domain.Players {
+		if player.ID == playerID && player.Loans != 1 {
+			t.Fatalf("duplicate command changed loans to %d", player.Loans)
+		}
+	}
 }
 
 func TestCreateGame(t *testing.T) {
