@@ -2,10 +2,13 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
+
+	"cafestartups/internal/domain"
 )
 
 func TestHealth(t *testing.T) {
@@ -156,5 +159,84 @@ func TestSoloStartAddsRandomBots(t *testing.T) {
 		if !player.IsBot || len(player.Hand) < 6 || len(player.Hand) > 7 || !store.games[room.ID].Domain.HasActed(player.ID) {
 			t.Fatalf("bot was not initialized and acted: %+v", player)
 		}
+	}
+}
+
+func TestSoloGameCompletesThroughHTTP(t *testing.T) {
+	store := &gameStore{games: make(map[string]*gameRoom)}
+	handler := newHandler(store)
+	create := httptest.NewRecorder()
+	handler.ServeHTTP(create, httptest.NewRequest(http.MethodPost, "/api/games", strings.NewReader(`{"seed":"full-solo-seed"}`)))
+	var room game
+	if err := json.NewDecoder(create.Body).Decode(&room); err != nil {
+		t.Fatal(err)
+	}
+	join := httptest.NewRecorder()
+	handler.ServeHTTP(join, httptest.NewRequest(http.MethodPost, "/api/games/"+room.ID+"/join", strings.NewReader(`{"displayName":"Solo"}`)))
+	var joined map[string]any
+	if err := json.NewDecoder(join.Body).Decode(&joined); err != nil {
+		t.Fatal(err)
+	}
+	token := joined["token"].(string)
+	ready := httptest.NewRecorder()
+	handler.ServeHTTP(ready, httptest.NewRequest(http.MethodPost, "/api/games/"+room.ID+"/ready", strings.NewReader(`{"token":"`+token+`"}`)))
+	if ready.Code != http.StatusOK {
+		t.Fatalf("ready status=%d body=%s", ready.Code, ready.Body.String())
+	}
+	start := httptest.NewRecorder()
+	startRequest := httptest.NewRequest(http.MethodPost, "/api/games/"+room.ID+"/start", nil)
+	startRequest.Header.Set("X-Session-Token", token)
+	handler.ServeHTTP(start, startRequest)
+	if start.Code != http.StatusOK {
+		t.Fatalf("start status=%d body=%s", start.Code, start.Body.String())
+	}
+
+	commandNumber := 0
+	command := func(commandType, cardID string) {
+		commandNumber++
+		payload := map[string]any{
+			"token":       token,
+			"gameVersion": store.games[room.ID].Version,
+			"commandId":   fmt.Sprintf("full-solo-%d", commandNumber),
+			"type":        commandType,
+		}
+		if cardID != "" {
+			payload["cardId"] = cardID
+		}
+		body, err := json.Marshal(payload)
+		if err != nil {
+			t.Fatal(err)
+		}
+		recorder := httptest.NewRecorder()
+		handler.ServeHTTP(recorder, httptest.NewRequest(http.MethodPost, "/api/games/"+room.ID+"/commands", strings.NewReader(string(body))))
+		if recorder.Code != http.StatusOK {
+			t.Fatalf("command %s status=%d body=%s", commandType, recorder.Code, recorder.Body.String())
+		}
+	}
+
+	for period := 1; period <= 3; period++ {
+		for round := 0; round < 6; round++ {
+			human := store.games[room.ID].Sessions[token].PlayerID
+			player := store.games[room.ID].Domain.Players[0]
+			for _, candidate := range store.games[room.ID].Domain.Players {
+				if candidate.ID == human {
+					player = candidate
+					break
+				}
+			}
+			if len(player.Hand) == 0 {
+				t.Fatalf("period %d round %d human has no cards", period, round)
+			}
+			command("SELECT_CARD", player.Hand[0].ID)
+			command("DISCARD_SELECTED_CARD", "")
+			command("PASS_HAND", "")
+		}
+		if store.games[room.ID].Domain.Phase != domain.PhaseLearning {
+			t.Fatalf("period %d did not reach learning: %s", period, store.games[room.ID].Domain.Phase)
+		}
+		command("RESOLVE_LEARNING", "")
+	}
+	if store.games[room.ID].Status != "finished" || store.games[room.ID].Domain.Phase != domain.PhaseFinished {
+		t.Fatalf("game did not finish: status=%s phase=%s", store.games[room.ID].Status, store.games[room.ID].Domain.Phase)
 	}
 }

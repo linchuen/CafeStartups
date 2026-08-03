@@ -184,3 +184,46 @@ func TestPeriodsAdvanceThreeTimes(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestResolveLearningCompletesThreePeriods(t *testing.T) {
+	g := gameForTest(t)
+	for period := 1; period <= 3; period++ {
+		for round := 0; round < 6; round++ {
+			for _, p := range g.Players {
+				if err := g.SelectCard(p.ID, p.Hand[0].ID); err != nil {
+					t.Fatal(err)
+				}
+				if err := g.DiscardSelectedCard(p.ID); err != nil {
+					t.Fatal(err)
+				}
+			}
+			if err := g.PassHands(); err != nil {
+				t.Fatal(err)
+			}
+		}
+		if err := g.ResolveLearning(); err != nil {
+			t.Fatal(err)
+		}
+		if period < 3 {
+			if g.Phase != PhaseHypothesis || int(g.Period) != period+1 {
+				t.Fatalf("after period %d: period=%d phase=%s", period, g.Period, g.Phase)
+			}
+			for _, p := range g.Players {
+				if err := g.SetKPIs(p.ID, "brand_awareness", "products"); err != nil {
+					t.Fatal(err)
+				}
+			}
+			if err := g.BeginExperiment(); err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+	if g.Phase != PhaseFinished || g.Period != PeriodThree {
+		t.Fatalf("final state: period=%d phase=%s", g.Period, g.Phase)
+	}
+	for _, p := range g.Players {
+		if p.Score <= 0 {
+			t.Fatalf("player %s has no final score", p.ID)
+		}
+	}
+}

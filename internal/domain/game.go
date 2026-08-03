@@ -359,6 +359,43 @@ func (g *Game) SettleRevenue() {
 	}
 }
 
+// ResolveLearning applies the MVP learning phase in one server-side step.
+// Customer generation is intentionally simple and deterministic; the full
+// market/customer workshop can be added without changing the phase contract.
+func (g *Game) ResolveLearning() error {
+	if g.Phase != PhaseLearning {
+		return ErrInvalidPhase
+	}
+	if err := g.SettleInterest(); err != nil {
+		return err
+	}
+	kinds := []string{"gourmet", "regular", "difficult", "regular"}
+	customers := make([]Customer, 0, len(g.Players))
+	for i := range g.Players {
+		kind := kinds[(int(g.Period)+i)%len(kinds)]
+		demand := ""
+		if kind != "difficult" {
+			demand = kind
+		}
+		customers = append(customers, Customer{Kind: kind, Demand: demand, Count: 1})
+	}
+	g.DistributeCustomers(customers)
+	g.SettleRevenue()
+	if g.Period == PeriodThree {
+		for _, p := range g.Players {
+			p.Score = p.Cash + p.metricScore()
+		}
+		g.Phase = PhaseFinished
+		return nil
+	}
+	g.Period++
+	g.Round = 0
+	g.Phase = PhaseHypothesis
+	g.selected = map[string]Card{}
+	g.acted = map[string]bool{}
+	return nil
+}
+
 // AdvancePeriod moves from learning to the next period after the current period's
 // market, revenue and interest have been resolved.
 func (g *Game) AdvancePeriod() error {

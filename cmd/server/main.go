@@ -316,7 +316,16 @@ func (s *gameStore) commandHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	room.Version++
 	room.Events = append(room.Events, event{room.Version, input.Type, sess.PlayerID})
+	if input.Type == "RESOLVE_LEARNING" && room.Domain.Phase == domain.PhaseHypothesis {
+		if err := beginNextPeriod(room); err != nil {
+			writeDomainError(w, err)
+			return
+		}
+	}
 	runBots(room)
+	if room.Domain.Phase == domain.PhaseFinished {
+		room.Status = "finished"
+	}
 	result := map[string]any{"gameVersion": room.Version, "event": room.Events[len(room.Events)-1], "state": room.view(input.Token)}
 	body, _ := json.Marshal(result)
 	room.Processed[key] = commandResult{Status: http.StatusOK, Body: body}
@@ -344,6 +353,8 @@ func applyCommand(room *gameRoom, playerID string, input commandRequest) error {
 	case "CONFIRM_REVENUE":
 		room.Domain.SettleRevenue()
 		return nil
+	case "RESOLVE_LEARNING":
+		return room.Domain.ResolveLearning()
 	default:
 		return domain.ErrInvalidAction
 	}
@@ -464,17 +475,43 @@ func (room *gameRoom) view(token string) map[string]any {
 				ready = sess.Ready
 			}
 		}
-		players = append(players, map[string]any{"id": p.ID, "displayName": p.DisplayName, "bot": p.IsBot, "ready": ready, "cash": p.Cash, "loans": p.Loans, "handCount": len(p.Hand)})
+		players = append(players, map[string]any{"id": p.ID, "displayName": p.DisplayName, "bot": p.IsBot, "ready": ready, "cash": p.Cash, "loans": p.Loans, "revenue": p.Revenue, "score": p.Score, "handCount": len(p.Hand)})
 	}
 	result := map[string]any{"id": room.ID, "roomCode": room.RoomCode, "status": room.Status, "seed": room.Seed, "gameVersion": room.Version, "period": room.Domain.Period, "phase": room.Domain.Phase, "round": room.Domain.Round, "players": players}
 	if sess := room.Sessions[token]; sess != nil {
 		for _, p := range room.Domain.Players {
 			if p.ID == sess.PlayerID {
-				result["me"] = map[string]any{"id": p.ID, "hand": p.Hand, "tableau": p.Tableau, "discardCount": len(p.Discard), "cash": p.Cash, "loans": p.Loans}
+				result["me"] = map[string]any{"id": p.ID, "hand": p.Hand, "tableau": p.Tableau, "discardCount": len(p.Discard), "cash": p.Cash, "loans": p.Loans, "customers": p.Customers, "revenue": p.Revenue, "score": p.Score}
 			}
 		}
 	}
 	return result
+}
+
+func beginNextPeriod(room *gameRoom) error {
+	for _, player := range room.Domain.Players {
+		if player.IsBot {
+			if err := setRandomBotKPIs(room, player); err != nil {
+				return err
+			}
+		}
+	}
+	if err := room.Domain.BeginExperiment(); err != nil {
+		return err
+	}
+	room.Version++
+	room.Events = append(room.Events, event{Version: room.Version, Type: "PERIOD_STARTED"})
+	return nil
+}
+
+func setRandomBotKPIs(room *gameRoom, player *domain.Player) error {
+	kpis := []string{"brand_awareness", "products", "values", "resources"}
+	i := botChoice(room, player.ID+"-kpi", len(kpis))
+	j := botChoice(room, player.ID+"-kpi-second", len(kpis)-1)
+	if j >= i {
+		j++
+	}
+	return room.Domain.SetKPIs(player.ID, kpis[i], kpis[j])
 }
 
 func addBots(room *gameRoom) error {
@@ -500,7 +537,7 @@ func runBots(room *gameRoom) {
 			if player.IsBot && len(player.SelectedKPIs) == 0 {
 				kpis := []string{"brand_awareness", "products", "values", "resources"}
 				i := botChoice(room, player.ID, len(kpis))
-				j := (i + 1 + botChoice(room, player.ID+"-second", len(kpis)-1)) % len(kpis)
+				j := botChoice(room, player.ID+"-second", len(kpis)-1)
 				if j >= i {
 					j++
 				}
