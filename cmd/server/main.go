@@ -290,7 +290,7 @@ func (room *gameRoom) view(token string) map[string]any {
 	if token == room.Token {
 		for _, p := range room.Domain.Players {
 			if p.ID == room.PlayerID {
-				result["me"] = map[string]any{"id": p.ID, "hand": p.Hand, "tableau": p.Tableau, "discardCount": len(p.Discard), "partner": p.Partner, "starterShop": p.StarterShop, "cash": p.Cash, "loans": p.Loans, "customers": p.Customers, "revenue": p.Revenue, "score": p.Score, "selectedKPIs": p.SelectedKPIs, "brandAwareness": p.BrandAwareness, "products": p.Products, "values": p.Values, "resources": p.Resources}
+				result["me"] = map[string]any{"id": p.ID, "hand": p.Hand, "tableau": p.Tableau, "discardCount": len(p.Discard), "partner": p.Partner, "starterShop": p.StarterShop, "cash": p.Cash, "loans": p.Loans, "customers": p.Customers, "revenue": p.Revenue, "score": p.Score, "selectedKPIs": p.SelectedKPIs, "cashFlow": p.CashFlow, "cashFlowRounds": p.CashFlowRounds, "brandAwareness": p.BrandAwareness, "products": p.Products, "values": p.Values, "resources": p.Resources}
 			}
 		}
 	}

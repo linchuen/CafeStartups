@@ -276,5 +276,20 @@ func TestResolveLearningCompletesThreePeriods(t *testing.T) {
 		if p.Score <= 0 {
 			t.Fatalf("player %s has no final score", p.ID)
 		}
+		if len(p.CashFlow) != 3 {
+			t.Fatalf("player %s cash-flow statements=%d, want 3", p.ID, len(p.CashFlow))
+		}
+		if len(p.CashFlowRounds) != 3*ExperimentRounds {
+			t.Fatalf("player %s round cash-flow statements=%d, want %d", p.ID, len(p.CashFlowRounds), 3*ExperimentRounds)
+		}
+		for index, statement := range p.CashFlow {
+			if int(statement.Period) != index+1 {
+				t.Fatalf("player %s statement %d has period %d", p.ID, index, statement.Period)
+			}
+			calculated := statement.BeginningCash + statement.OperatingRevenue + statement.OtherIncome - statement.OperatingExpenses - statement.InterestPaid - statement.PrincipalRepayment + statement.NewLoans
+			if calculated != statement.EndingCash {
+				t.Fatalf("player %s period %d ending cash=%d, calculated=%d", p.ID, statement.Period, statement.EndingCash, calculated)
+			}
+		}
 	}
 }

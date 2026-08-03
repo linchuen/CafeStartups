@@ -77,10 +77,31 @@ type Player struct {
 	Revenue, Score         int
 	Order                  int
 	KPISelectionPeriod     Period
+	CashFlow               []CashFlowStatement
+	CashFlowRounds         []CashFlowStatement
+	cashFlowBeginning      int
+	cashFlowRevenue        int
+	cashFlowOtherIncome    int
+	cashFlowExpenses       int
+	cashFlowInterest       int
+	cashFlowPrincipal      int
+	cashFlowNewLoans       int
 }
 type Customer struct {
 	Kind, Demand     string
 	UnitPrice, Count int
+}
+type CashFlowStatement struct {
+	Period             Period `json:"period"`
+	Round              int    `json:"round,omitempty"`
+	BeginningCash      int    `json:"beginningCash"`
+	OperatingRevenue   int    `json:"operatingRevenue"`
+	OtherIncome        int    `json:"otherIncome"`
+	OperatingExpenses  int    `json:"operatingExpenses"`
+	InterestPaid       int    `json:"interestPaid"`
+	PrincipalRepayment int    `json:"principalRepayment"`
+	NewLoans           int    `json:"newLoans"`
+	EndingCash         int    `json:"endingCash"`
 }
 type Game struct {
 	Seed                               string
@@ -213,6 +234,15 @@ func (g *Game) BeginExperiment() error {
 	}
 	// Round 0 is the initial experiment state: cards are dealt, but no
 	// select/pass/action cycle has been completed yet.
+	for _, p := range g.Players {
+		p.cashFlowBeginning = p.Cash
+		p.cashFlowRevenue = 0
+		p.cashFlowOtherIncome = 0
+		p.cashFlowExpenses = 0
+		p.cashFlowInterest = 0
+		p.cashFlowPrincipal = 0
+		p.cashFlowNewLoans = 0
+	}
 	g.Round, g.Phase = InitialRound, PhaseExperiment
 	g.deal()
 	return nil
@@ -277,6 +307,7 @@ func (g *Game) PassHands() error {
 	}
 	g.Round++
 	g.selected, g.acted = map[string]Card{}, map[string]bool{}
+	g.recordCashFlowRound()
 	if g.Round == ExperimentRounds {
 		for _, p := range g.Players {
 			if len(p.Hand) != 1 {
@@ -326,6 +357,7 @@ func (g *Game) DiscardSelectedCard(playerID string) error {
 		return ErrInvalidAction
 	}
 	p.Cash += DiscardRefund
+	p.cashFlowOtherIncome += DiscardRefund
 	p.Discard = append(p.Discard, c)
 	removeCard(&p.Hand, c.ID)
 	g.acted[playerID] = true
@@ -342,6 +374,7 @@ func (g *Game) TakeLoan(playerID string) error {
 	}
 	p.Loans++
 	p.Cash += LoanAmount
+	p.cashFlowNewLoans += LoanAmount
 	return nil
 }
 func (g *Game) RepayLoan(playerID string, count int) error {
@@ -354,6 +387,7 @@ func (g *Game) RepayLoan(playerID string, count int) error {
 	}
 	p.Loans -= count
 	p.Cash -= count * LoanAmount
+	p.cashFlowPrincipal += count * LoanAmount
 	return nil
 }
 func (g *Game) SettleInterest() error {
@@ -373,7 +407,10 @@ func (g *Game) SettleInterest() error {
 		newLoans[idx], newCash[idx] = loans, cash-interest
 	}
 	for i, p := range g.Players {
+		newLoansTaken := newLoans[i] - p.Loans
 		p.Loans, p.Cash = newLoans[i], newCash[i]
+		p.cashFlowInterest += LoanInterest * (p.Loans - newLoansTaken)
+		p.cashFlowNewLoans += newLoansTaken * LoanAmount
 	}
 	return nil
 }
@@ -439,6 +476,49 @@ func (g *Game) SettleRevenue() {
 		}
 		p.Revenue = revenue
 		p.Cash += revenue
+		p.cashFlowRevenue += revenue
+	}
+}
+
+func (g *Game) recordCashFlow() {
+	for _, p := range g.Players {
+		p.CashFlow = append(p.CashFlow, CashFlowStatement{
+			Period:             g.Period,
+			Round:              g.Round,
+			BeginningCash:      p.cashFlowBeginning,
+			OperatingRevenue:   p.cashFlowRevenue,
+			OtherIncome:        p.cashFlowOtherIncome,
+			OperatingExpenses:  p.cashFlowExpenses,
+			InterestPaid:       p.cashFlowInterest,
+			PrincipalRepayment: p.cashFlowPrincipal,
+			NewLoans:           p.cashFlowNewLoans,
+			EndingCash:         p.Cash,
+		})
+	}
+}
+
+func (g *Game) recordCashFlowRound() {
+	for _, p := range g.Players {
+		statement := CashFlowStatement{
+			Period:             g.Period,
+			Round:              g.Round,
+			BeginningCash:      p.cashFlowBeginning,
+			OperatingRevenue:   p.cashFlowRevenue,
+			OtherIncome:        p.cashFlowOtherIncome,
+			OperatingExpenses:  p.cashFlowExpenses,
+			InterestPaid:       p.cashFlowInterest,
+			PrincipalRepayment: p.cashFlowPrincipal,
+			NewLoans:           p.cashFlowNewLoans,
+			EndingCash:         p.Cash,
+		}
+		if len(p.CashFlowRounds) > 0 {
+			last := &p.CashFlowRounds[len(p.CashFlowRounds)-1]
+			if last.Period == statement.Period && last.Round == statement.Round {
+				*last = statement
+				continue
+			}
+		}
+		p.CashFlowRounds = append(p.CashFlowRounds, statement)
 	}
 }
 
@@ -474,6 +554,8 @@ func (g *Game) ResolveLearning() error {
 	}
 	g.DistributeCustomers(customers)
 	g.SettleRevenue()
+	g.recordCashFlow()
+	g.recordCashFlowRound()
 	if g.Period == PeriodThree {
 		for _, p := range g.Players {
 			p.Score = p.Cash + p.metricScore()
@@ -571,6 +653,7 @@ func (g *Game) pay(p *Player, c Card) error {
 		return ErrInsufficientCash
 	}
 	p.Cash -= cost
+	p.cashFlowExpenses += cost
 	return nil
 }
 func (g *Game) player(id string) (*Player, error) {
