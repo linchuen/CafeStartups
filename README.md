@@ -41,4 +41,4 @@ npm run typecheck
 npm run build
 ```
 
-規則與後續階段請參閱 [Agent.md](./Agent.md) 與 [MVP 階段式需求](./docs/MVP-階段式需求.md)。
+規則與後續階段請參閱 [Agent.md](./Agent.md)、[Agent 可執行規則](./docs/Agent-可執行規則.md) 與 [MVP 階段式需求](./docs/MVP-階段式需求.md)。
