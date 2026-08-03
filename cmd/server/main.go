@@ -273,10 +273,6 @@ func (s *gameStore) startHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	var input struct {
-		KPIs []string `json:"kpis"`
-	}
-	_ = decodeBody(r, &input)
 	if len(room.Sessions) < 1 {
 		writeCode(w, http.StatusConflict, "NOT_ENOUGH_PLAYERS")
 		return
@@ -290,24 +286,6 @@ func (s *gameStore) startHandler(w http.ResponseWriter, r *http.Request) {
 	if err := room.Domain.Start(); err != nil {
 		writeDomainError(w, err)
 		return
-	}
-	hostSession := room.Sessions[token]
-	for _, p := range room.Domain.Players {
-		if p.IsBot {
-			if err := setRandomBotKPIs(room, p); err != nil {
-				writeDomainError(w, err)
-				return
-			}
-			continue
-		}
-		kpis := []string{"brand_awareness", "products"}
-		if hostSession != nil && p.ID == hostSession.PlayerID && len(input.KPIs) == 2 {
-			kpis = input.KPIs
-		}
-		if err := room.Domain.SetKPIs(p.ID, kpis...); err != nil {
-			writeDomainError(w, err)
-			return
-		}
 	}
 	if err := room.Domain.BeginExperiment(); err != nil {
 		writeDomainError(w, err)
@@ -369,13 +347,13 @@ func (s *gameStore) commandHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	room.Version++
 	room.Events = append(room.Events, event{room.Version, input.Type, sess.PlayerID})
-	if input.Type == "RESOLVE_LEARNING" && room.Domain.Phase == domain.PhaseHypothesis {
+	runBots(room)
+	if allKPIsSelected(room) {
 		if err := beginNextPeriod(room); err != nil {
 			writeDomainError(w, err)
 			return
 		}
 	}
-	runBots(room)
 	if room.Domain.Phase == domain.PhaseFinished {
 		room.Status = "finished"
 	}
@@ -543,7 +521,7 @@ func (room *gameRoom) view(token string) map[string]any {
 
 func beginNextPeriod(room *gameRoom) error {
 	for _, player := range room.Domain.Players {
-		if player.IsBot {
+		if player.IsBot && player.KPISelectionPeriod != room.Domain.Period {
 			if err := setRandomBotKPIs(room, player); err != nil {
 				return err
 			}
@@ -555,6 +533,18 @@ func beginNextPeriod(room *gameRoom) error {
 	room.Version++
 	room.Events = append(room.Events, event{Version: room.Version, Type: "PERIOD_STARTED"})
 	return nil
+}
+
+func allKPIsSelected(room *gameRoom) bool {
+	if room.Domain.Phase != domain.PhaseHypothesis || room.Domain.Period == domain.PeriodOne {
+		return false
+	}
+	for _, player := range room.Domain.Players {
+		if len(player.SelectedKPIs) != 2 || player.KPISelectionPeriod != room.Domain.Period {
+			return false
+		}
+	}
+	return len(room.Domain.Players) > 0
 }
 
 func setRandomBotKPIs(room *gameRoom, player *domain.Player) error {
@@ -587,7 +577,7 @@ func addBots(room *gameRoom) error {
 func runBots(room *gameRoom) {
 	if room.Domain.Phase == domain.PhaseHypothesis {
 		for _, player := range room.Domain.Players {
-			if player.IsBot && len(player.SelectedKPIs) == 0 {
+			if player.IsBot && player.KPISelectionPeriod != room.Domain.Period {
 				kpis := []string{"brand_awareness", "products", "values", "resources"}
 				i := botChoice(room, player.ID, len(kpis))
 				j := botChoice(room, player.ID+"-second", len(kpis)-1)

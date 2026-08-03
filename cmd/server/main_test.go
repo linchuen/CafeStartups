@@ -152,8 +152,8 @@ func TestSoloStartAddsRandomBots(t *testing.T) {
 	if start.Code != http.StatusOK {
 		t.Fatalf("start status=%d body=%s", start.Code, start.Body.String())
 	}
-	if got := store.games[room.ID].Domain.Players[0].SelectedKPIs; len(got) != 2 || got[0] != "values" || got[1] != "resources" {
-		t.Fatalf("requested KPIs were not applied: %v", got)
+	if got := store.games[room.ID].Domain.Players[0].SelectedKPIs; len(got) != 0 {
+		t.Fatalf("KPIs must not be selected before period one ends: %v", got)
 	}
 	if len(store.games[room.ID].Domain.Players) != 4 {
 		t.Fatalf("expected 4 players, got %d", len(store.games[room.ID].Domain.Players))
@@ -206,6 +206,9 @@ func TestSoloGameCompletesThroughHTTP(t *testing.T) {
 		if cardID != "" {
 			payload["cardId"] = cardID
 		}
+		if commandType == "SET_KPI" {
+			payload["kpis"] = []string{"values", "resources"}
+		}
 		body, err := json.Marshal(payload)
 		if err != nil {
 			t.Fatal(err)
@@ -238,6 +241,9 @@ func TestSoloGameCompletesThroughHTTP(t *testing.T) {
 			t.Fatalf("period %d did not reach learning: %s", period, store.games[room.ID].Domain.Phase)
 		}
 		command("RESOLVE_LEARNING", "")
+		if period < 3 {
+			command("SET_KPI", "")
+		}
 	}
 	if store.games[room.ID].Status != "finished" || store.games[room.ID].Domain.Phase != domain.PhaseFinished {
 		t.Fatalf("game did not finish: status=%s phase=%s", store.games[room.ID].Status, store.games[room.ID].Domain.Phase)

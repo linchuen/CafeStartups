@@ -106,16 +106,19 @@ Player {
 
 ```text
 lobby
-  -- START_GAME --> period=1, hypothesis
-hypothesis
-  -- all KPI choices complete --> experiment, deal 7 cards
-experiment(round=0..5)
+  -- START_GAME --> period=1, experiment, round=0, deal 7 cards
+experiment(round=0..6)
   -- each player selects + plays/discards --> pass remaining hand, round += 1
 experiment(round=6 complete)
   -- final card covered --> learning
-learning
-  -- learning steps complete, period < 3 --> period += 1, hypothesis
-learning
+learning(period=1)
+  -- resolve --> period=2, hypothesis, wait for KPI choices
+hypothesis(period=2)
+  -- all KPI choices complete --> experiment, round=0, deal 7 cards
+learning(period=2)
+  -- resolve --> period=3, hypothesis, allow one KPI reselection
+hypothesis(period=3)
+  -- all KPI choices complete --> experiment, round=0, deal 7 cards
   -- learning steps complete, period == 3 --> finished
 ```
 
@@ -133,7 +136,9 @@ learning
 
 ### 數位 MVP 指令
 
-目前 API 可用一次 `SET_KPI(kpis=[kpiA,kpiB])` 設定兩個不同指標。這是 MVP 的同步化簡，不代表正式桌遊的逐期選擇方式。若要還原正式規則，應改為逐期 command，而不是讓前端自行修改標記。
+數位 MVP 的 KPI 時機固定如下：第 1 期（試營運）開始時不選指標；第 1 期結束、進入第 2 期前，每位玩家選 2 個不同指標；第 2 期結束、進入第 3 期前，每位玩家可重選 1 次。所有玩家完成當期選擇後，伺服器才開始下一期。
+
+API 使用 `SET_KPI(kpis=[kpiA,kpiB])`。同一期只能成功設定一次；第 1 期實驗中、已開始下一期後或重複送出，都必須回傳 `INVALID_ACTION`。
 
 允許的 KPI id：
 
@@ -318,7 +323,7 @@ totalScore = cashScore + score(selectedKPI_1) + score(selectedKPI_2)
 
 Bot 不是策略型 AI。Bot 每次只能從伺服器計算出的合法選項中，以可重現隨機方式選 1 項：
 
-1. 選 KPI：從合法 KPI 集合隨機選 2 個不同項目。
+1. 選 KPI：只在第 1 期或第 2 期結束後的 KPI 選擇階段，從合法 KPI 集合隨機選 2 個不同項目；同一期只選一次。
 2. 選牌：從自己的當前手牌隨機選 1 張。
 3. 行動：在合法的「打出」與「棄掉」中隨機選；若打出因資金/貸款限制失敗，必須改為棄牌。
 4. 不讀取或推理對手分數、需求、最佳策略或長期勝率。
@@ -340,7 +345,7 @@ Bot 不是策略型 AI。Bot 每次只能從伺服器計算出的合法選項中
 |---|---|---|
 | 單人遊玩 | 正式規則為 2–4 人 | 自動補 Bot 至 4 席 |
 | 卡牌資料 | 84 張正式卡牌逐張依卡面 | 可使用 `mvp-fixture`，但要標示來源 |
-| KPI 設定 | 第 1、2 期逐期設定，第 3 期可移動 | API 可一次設定 2 個 KPI |
+| KPI 設定 | 第 1 期結束後設定，第 2 期結束後可重選一次 | `SET_KPI` 每期只接受一次，所有玩家完成後才進入下一期 |
 | 顧客與市場袋 | 依卡片變動、需求、排名與通路完整計算 | 可由固定 seed 的簡化產生器代替，必須標示 |
 | 同步傳輸 | 所有玩家同步完成才前進 | 伺服器等待真人與 Bot 完成 |
 | 平手 | 最近喝咖啡者優先 | 使用固定玩家順序 |

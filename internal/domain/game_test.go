@@ -22,11 +22,6 @@ func TestCatalogDealsPeriodCards(t *testing.T) {
 		t.Fatal(err)
 	}
 	g.SetCatalog(catalog)
-	for _, p := range g.Players {
-		if err := g.SetKPIs(p.ID, "brand_awareness", "products"); err != nil {
-			t.Fatal(err)
-		}
-	}
 	if err := g.BeginExperiment(); err != nil {
 		t.Fatal(err)
 	}
@@ -45,11 +40,6 @@ func gameForTest(t *testing.T) *Game {
 	if err != nil {
 		t.Fatal(err)
 	}
-	for _, p := range g.Players {
-		if err := g.SetKPIs(p.ID, "brand_awareness", "products"); err != nil {
-			t.Fatal(err)
-		}
-	}
 	if err := g.BeginExperiment(); err != nil {
 		t.Fatal(err)
 	}
@@ -58,6 +48,9 @@ func gameForTest(t *testing.T) *Game {
 
 func TestExperimentStartsAtRoundZero(t *testing.T) {
 	g := gameForTest(t)
+	if err := g.SetKPIs(g.Players[0].ID, "brand_awareness", "products"); err != ErrInvalidAction {
+		t.Fatalf("expected KPI selection to be locked during period one, got %v", err)
+	}
 	if g.Round != InitialRound {
 		t.Fatalf("round=%d, want initial round %d", g.Round, InitialRound)
 	}
@@ -257,9 +250,18 @@ func TestResolveLearningCompletesThreePeriods(t *testing.T) {
 			if g.Phase != PhaseHypothesis || int(g.Period) != period+1 {
 				t.Fatalf("after period %d: period=%d phase=%s", period, g.Period, g.Phase)
 			}
+			kpis := []string{"brand_awareness", "products"}
+			if period == 2 {
+				kpis = []string{"values", "resources"}
+			}
 			for _, p := range g.Players {
-				if err := g.SetKPIs(p.ID, "brand_awareness", "products"); err != nil {
+				if err := g.SetKPIs(p.ID, kpis...); err != nil {
 					t.Fatal(err)
+				}
+			}
+			if period == 2 {
+				if err := g.SetKPIs(g.Players[0].ID, "brand_awareness", "products"); err != ErrInvalidAction {
+					t.Fatalf("expected only one KPI reselection after period two, got %v", err)
 				}
 			}
 			if err := g.BeginExperiment(); err != nil {

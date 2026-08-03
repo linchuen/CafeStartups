@@ -76,6 +76,7 @@ type Player struct {
 	Customers              []Customer
 	Revenue, Score         int
 	Order                  int
+	KPISelectionPeriod     Period
 }
 type Customer struct {
 	Kind, Demand     string
@@ -179,14 +180,18 @@ func (g *Game) Start() error {
 }
 
 func (g *Game) SetKPIs(playerID string, kpis ...string) error {
-	if g.Phase != PhaseHypothesis || len(kpis) != 2 || kpis[0] == kpis[1] {
+	if g.Phase != PhaseHypothesis || g.Period == PeriodOne || len(kpis) != 2 || kpis[0] == kpis[1] {
 		return ErrInvalidAction
 	}
 	p, err := g.player(playerID)
 	if err != nil {
 		return err
 	}
+	if p.KPISelectionPeriod == g.Period {
+		return ErrInvalidAction
+	}
 	p.SelectedKPIs = append([]string(nil), kpis...)
+	p.KPISelectionPeriod = g.Period
 	return nil
 }
 
@@ -194,8 +199,15 @@ func (g *Game) BeginExperiment() error {
 	if g.Phase != PhaseHypothesis || len(g.Players) < 2 {
 		return ErrInvalidPhase
 	}
+	if g.Period != PeriodOne {
+		for _, p := range g.Players {
+			if len(p.SelectedKPIs) != 2 || p.KPISelectionPeriod != g.Period {
+				return ErrInvalidAction
+			}
+		}
+	}
 	for _, p := range g.Players {
-		if len(p.SelectedKPIs) != 2 {
+		if g.Period == PeriodOne && len(p.SelectedKPIs) != 0 {
 			return ErrInvalidAction
 		}
 	}
