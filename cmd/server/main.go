@@ -167,6 +167,10 @@ func (s *gameStore) joinHandler(w http.ResponseWriter, r *http.Request) {
 		writeCode(w, http.StatusConflict, "GAME_ALREADY_STARTED")
 		return
 	}
+	if len(room.Sessions) >= 1 {
+		writeCode(w, http.StatusConflict, "SINGLE_PLAYER_MVP")
+		return
+	}
 	if len(room.Domain.Players) >= 4 {
 		writeCode(w, http.StatusConflict, "ROOM_FULL")
 		return

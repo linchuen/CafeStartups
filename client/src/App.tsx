@@ -72,7 +72,6 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 export function App() {
   const [screen, setScreen] = useState<Screen>('home')
   const [name, setName] = useState('咖啡創業家')
-  const [roomInput, setRoomInput] = useState('')
   const [seed, setSeed] = useState('phase-3-demo')
   const [room, setRoom] = useState<GameState | null>(null)
   const [token, setToken] = useState(() => localStorage.getItem('cafe-session') ?? '')
@@ -89,19 +88,19 @@ export function App() {
     localStorage.setItem('cafe-game-id', id); localStorage.setItem('cafe-session', session); localStorage.setItem('cafe-player-id', player)
   }
 
-  const joinRoom = async (key: string, asHost = false) => {
+  const enterLocalGame = async (key: string, asHost = false) => {
     setBusy(true); setError('')
     try {
       const joined = await request<{ token: string; playerId: string; state: GameState }>(`/api/games/${encodeURIComponent(key)}/join`, { method: 'POST', body: JSON.stringify({ displayName: name.trim() || '咖啡創業家' }) })
       saveSession(joined.state.id, joined.token, joined.playerId); setHost(asHost); setRoom(joined.state); setScreen('lobby')
-    } catch (cause) { setError(cause instanceof Error ? cause.message : '加入房間失敗') } finally { setBusy(false) }
+    } catch (cause) { setError(cause instanceof Error ? cause.message : '本機遊戲建立失敗') } finally { setBusy(false) }
   }
 
   const createRoom = async () => {
     setBusy(true); setError('')
     try {
       const created = await request<{ id: string }>('/api/games', { method: 'POST', body: JSON.stringify({ seed }) })
-      await joinRoom(created.id, true)
+      await enterLocalGame(created.id, true)
     } catch (cause) { setError(cause instanceof Error ? cause.message : '建立房間失敗'); setBusy(false) }
   }
 
@@ -159,14 +158,14 @@ export function App() {
 
   return <main className="app-shell">
     <header className="topbar"><span className="brand-mark">CS</span><span>Café Startups</span>{room && <span className="sync-pill">v{room.gameVersion} · 已同步</span>}</header>
-    {screen === 'home' && <Home name={name} setName={setName} roomInput={roomInput} setRoomInput={setRoomInput} seed={seed} setSeed={setSeed} createRoom={createRoom} joinRoom={() => joinRoom(roomInput)} busy={busy} error={error} />}
+    {screen === 'home' && <Home name={name} setName={setName} seed={seed} setSeed={setSeed} createRoom={createRoom} busy={busy} error={error} />}
     {screen === 'lobby' && room && <Lobby room={room} host={host} busy={busy} allReady={allReady} toggleReady={toggleReady} setupInitialCards={setupInitialCards} startGame={startGame} leave={leave} error={error} />}
     {screen === 'game' && room && <><KpiPicker room={room} kpis={kpis} setKpis={setKpis} command={command} busy={busy} /><GameTable room={room} selectedCard={selectedCard} setSelectedCard={setSelectedCard} command={command} busy={busy} error={error} leave={leave} /></>}
   </main>
 }
 
-function Home(props: { name: string; setName: (v: string) => void; roomInput: string; setRoomInput: (v: string) => void; seed: string; setSeed: (v: string) => void; createRoom: () => void; joinRoom: () => void; busy: boolean; error: string }) {
-  return <section className="landing layout-grid"><div className="intro"><p className="eyebrow">LEAN STARTUP · DIGITAL BOARD GAME</p><h1>把假設<br /><em>煮成一杯</em><br />好生意。</h1><p className="lead">選擇你的策略、傳遞你的牌，從一間小咖啡店開始驗證商業模式。</p><div className="stat-row"><span><strong>3</strong> 時期</span><span><strong>84</strong> 張 MVP 卡</span><span><strong>1–4</strong> 真人</span></div></div><div className="panel home-panel"><h2>開始一局</h2><label>你的名稱<input value={props.name} onChange={(e) => props.setName(e.target.value)} maxLength={20} /></label><button className="primary full" onClick={props.createRoom} disabled={props.busy}>{props.busy ? '建立中…' : '建立新房間'}</button><p className="hint">單人開始時，系統會自動加入隨機電腦玩家。</p><div className="divider"><span>或</span></div><label>房間代碼<input value={props.roomInput} onChange={(e) => props.setRoomInput(e.target.value.toUpperCase())} placeholder="例如 A1B2C3" maxLength={32} /></label><button className="secondary full" onClick={props.joinRoom} disabled={props.busy || !props.roomInput.trim()}>加入房間</button><details><summary>測試 seed（建立房間用）</summary><input value={props.seed} onChange={(e) => props.setSeed(e.target.value)} /></details>{props.error && <p className="error">{props.error}</p>}</div></section>
+function Home(props: { name: string; setName: (v: string) => void; seed: string; setSeed: (v: string) => void; createRoom: () => void; busy: boolean; error: string }) {
+  return <section className="landing layout-grid"><div className="intro"><p className="eyebrow">LOCAL BOARD GAME · MVP</p><h1>把假設<br /><em>煮成一杯</em><br />好生意。</h1><p className="lead">一位玩家在本機驗證咖啡館策略，電腦玩家只負責合法且可重播的隨機行動。</p><div className="stat-row"><span><strong>3</strong> 時期</span><span><strong>84</strong> 張 MVP 卡</span><span><strong>1</strong> 位玩家</span></div></div><div className="panel home-panel"><p className="eyebrow">SINGLE-PLAYER MVP</p><h2>開始單機桌遊</h2><label>你的名稱<input value={props.name} onChange={(e) => props.setName(e.target.value)} maxLength={20} /></label><button className="primary full" onClick={props.createRoom} disabled={props.busy}>{props.busy ? '建立中…' : '開始本機遊戲'}</button><p className="hint">遊戲會在本機自動補足隨機電腦玩家；目前不開放區網或線上加入。</p><details><summary>測試 seed（建立房間用）</summary><input value={props.seed} onChange={(e) => props.setSeed(e.target.value)} /></details>{props.error && <p className="error">{props.error}</p>}</div></section>
 }
 
 function InitialCardPicker(props: { room: GameState; busy: boolean; setupInitialCards: (partnerId: string, starterShopId: string) => void }) {

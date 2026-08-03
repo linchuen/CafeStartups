@@ -51,7 +51,11 @@ func TestRoomLifecycleAndVersionConflict(t *testing.T) {
 		return body["token"].(string), body["state"].(map[string]any)
 	}
 	aToken, _ := join("Alice")
-	bToken, _ := join("Bob")
+	second := httptest.NewRecorder()
+	handler.ServeHTTP(second, httptest.NewRequest(http.MethodPost, "/api/games/"+room.ID+"/join", strings.NewReader(`{"displayName":"Bob"}`)))
+	if second.Code != http.StatusConflict {
+		t.Fatalf("single-player MVP accepted a second human: status=%d body=%s", second.Code, second.Body.String())
+	}
 	ready := func(token string) {
 		rec := httptest.NewRecorder()
 		req := httptest.NewRequest(http.MethodPost, "/api/games/"+room.ID+"/ready", strings.NewReader(`{"token":"`+token+`"}`))
@@ -61,7 +65,6 @@ func TestRoomLifecycleAndVersionConflict(t *testing.T) {
 		}
 	}
 	ready(aToken)
-	ready(bToken)
 	start := httptest.NewRecorder()
 	req := httptest.NewRequest(http.MethodPost, "/api/games/"+room.ID+"/start", nil)
 	req.Header.Set("X-Session-Token", aToken)
@@ -73,7 +76,7 @@ func TestRoomLifecycleAndVersionConflict(t *testing.T) {
 	_ = json.NewDecoder(start.Body).Decode(&started)
 	version := int64(started["gameVersion"].(float64))
 	state := httptest.NewRecorder()
-	req = httptest.NewRequest(http.MethodGet, "/api/games/"+room.ID+"?token="+bToken, nil)
+	req = httptest.NewRequest(http.MethodGet, "/api/games/"+room.ID+"?token="+aToken, nil)
 	handler.ServeHTTP(state, req)
 	var visible map[string]any
 	_ = json.NewDecoder(state.Body).Decode(&visible)
@@ -139,6 +142,11 @@ func TestSoloStartAddsRandomBots(t *testing.T) {
 		t.Fatal(err)
 	}
 	token := joined["token"].(string)
+	secondJoin := httptest.NewRecorder()
+	handler.ServeHTTP(secondJoin, httptest.NewRequest(http.MethodPost, "/api/games/"+room.ID+"/join", strings.NewReader(`{"displayName":"Second"}`)))
+	if secondJoin.Code != http.StatusConflict {
+		t.Fatalf("single-player MVP accepted a second human: status=%d body=%s", secondJoin.Code, secondJoin.Body.String())
+	}
 
 	ready := httptest.NewRecorder()
 	handler.ServeHTTP(ready, httptest.NewRequest(http.MethodPost, "/api/games/"+room.ID+"/ready", strings.NewReader(`{"token":"`+token+`"}`)))
