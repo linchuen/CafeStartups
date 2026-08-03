@@ -61,6 +61,7 @@ type Card struct {
 }
 type Player struct {
 	ID, DisplayName        string
+	IsBot                  bool
 	Cash, Loans            int
 	BrandAwareness         int
 	Products               int
@@ -177,6 +178,15 @@ func (g *Game) SelectCard(playerID, cardID string) error {
 	}
 	return ErrCardNotFound
 }
+
+// HasSelected and HasActed expose read-only action state to the server's bot
+// adapter without allowing callers to mutate the domain internals.
+func (g *Game) HasSelected(playerID string) bool {
+	_, ok := g.selected[playerID]
+	return ok
+}
+
+func (g *Game) HasActed(playerID string) bool { return g.acted[playerID] }
 
 // PassHands resolves one simultaneous drafting round. The selected card is played or
 // discarded first, then the remaining six cards move to the next player.

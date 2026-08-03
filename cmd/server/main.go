@@ -230,7 +230,13 @@ func (s *gameStore) startHandler(w http.ResponseWriter, r *http.Request) {
 		writeCode(w, http.StatusForbidden, "ONLY_HOST_CAN_START")
 		return
 	}
-	if len(room.Sessions) < 2 {
+	if len(room.Domain.Players) < 4 {
+		if err := addBots(room); err != nil {
+			writeDomainError(w, err)
+			return
+		}
+	}
+	if len(room.Sessions) < 1 {
 		writeCode(w, http.StatusConflict, "NOT_ENOUGH_PLAYERS")
 		return
 	}
@@ -257,6 +263,7 @@ func (s *gameStore) startHandler(w http.ResponseWriter, r *http.Request) {
 	room.Status = "playing"
 	room.Version++
 	room.Events = append(room.Events, event{Version: room.Version, Type: "GAME_STARTED"})
+	runBots(room)
 	writeJSON(w, http.StatusOK, room.view(token))
 }
 
@@ -309,6 +316,7 @@ func (s *gameStore) commandHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	room.Version++
 	room.Events = append(room.Events, event{room.Version, input.Type, sess.PlayerID})
+	runBots(room)
 	result := map[string]any{"gameVersion": room.Version, "event": room.Events[len(room.Events)-1], "state": room.view(input.Token)}
 	body, _ := json.Marshal(result)
 	room.Processed[key] = commandResult{Status: http.StatusOK, Body: body}
@@ -450,13 +458,13 @@ func writeWebSocketText(conn interface{ Write([]byte) (int, error) }, payload []
 func (room *gameRoom) view(token string) map[string]any {
 	players := make([]map[string]any, 0, len(room.Domain.Players))
 	for _, p := range room.Domain.Players {
-		ready := false
+		ready := p.IsBot
 		for _, sess := range room.Sessions {
 			if sess.PlayerID == p.ID {
 				ready = sess.Ready
 			}
 		}
-		players = append(players, map[string]any{"id": p.ID, "displayName": p.DisplayName, "ready": ready, "cash": p.Cash, "loans": p.Loans, "handCount": len(p.Hand)})
+		players = append(players, map[string]any{"id": p.ID, "displayName": p.DisplayName, "bot": p.IsBot, "ready": ready, "cash": p.Cash, "loans": p.Loans, "handCount": len(p.Hand)})
 	}
 	result := map[string]any{"id": room.ID, "roomCode": room.RoomCode, "status": room.Status, "seed": room.Seed, "gameVersion": room.Version, "period": room.Domain.Period, "phase": room.Domain.Phase, "round": room.Domain.Round, "players": players}
 	if sess := room.Sessions[token]; sess != nil {
@@ -467,6 +475,82 @@ func (room *gameRoom) view(token string) map[string]any {
 		}
 	}
 	return result
+}
+
+func addBots(room *gameRoom) error {
+	for len(room.Domain.Players) < 4 {
+		index := len(room.Domain.Players) + 1
+		id := fmt.Sprintf("bot-%d", index)
+		if err := room.Domain.AddPlayer(id, fmt.Sprintf("電腦玩家 %d", index)); err != nil {
+			return err
+		}
+		room.Domain.Players[len(room.Domain.Players)-1].IsBot = true
+		room.Version++
+		room.Events = append(room.Events, event{Version: room.Version, Type: "BOT_JOINED", PlayerID: id})
+	}
+	return nil
+}
+
+// runBots performs intentionally naive, deterministic random actions. It is
+// only a pacing helper for solo MVP games; all actual legality checks remain in
+// the domain layer.
+func runBots(room *gameRoom) {
+	if room.Domain.Phase == domain.PhaseHypothesis {
+		for _, player := range room.Domain.Players {
+			if player.IsBot && len(player.SelectedKPIs) == 0 {
+				kpis := []string{"brand_awareness", "products", "values", "resources"}
+				i := botChoice(room, player.ID, len(kpis))
+				j := (i + 1 + botChoice(room, player.ID+"-second", len(kpis)-1)) % len(kpis)
+				if j >= i {
+					j++
+				}
+				if err := room.Domain.SetKPIs(player.ID, kpis[i], kpis[j]); err == nil {
+					room.Version++
+					room.Events = append(room.Events, event{room.Version, "BOT_SET_KPI", player.ID})
+				}
+			}
+		}
+	}
+	if room.Domain.Phase != domain.PhaseExperiment {
+		return
+	}
+	for _, player := range room.Domain.Players {
+		if !player.IsBot {
+			continue
+		}
+		if !room.Domain.HasSelected(player.ID) {
+			if len(player.Hand) == 0 {
+				continue
+			}
+			card := player.Hand[botChoice(room, player.ID, len(player.Hand))]
+			if err := room.Domain.SelectCard(player.ID, card.ID); err == nil {
+				room.Version++
+				room.Events = append(room.Events, event{room.Version, "BOT_SELECT_CARD", player.ID})
+			}
+		}
+		if room.Domain.HasActed(player.ID) {
+			continue
+		}
+		if botChoice(room, player.ID+"-action", 2) == 0 {
+			if err := room.Domain.PlaySelectedCard(player.ID); err == nil {
+				room.Version++
+				room.Events = append(room.Events, event{room.Version, "BOT_PLAY_SELECTED_CARD", player.ID})
+				continue
+			}
+		}
+		if err := room.Domain.DiscardSelectedCard(player.ID); err == nil {
+			room.Version++
+			room.Events = append(room.Events, event{room.Version, "BOT_DISCARD_SELECTED_CARD", player.ID})
+		}
+	}
+}
+
+func botChoice(room *gameRoom, key string, size int) int {
+	if size <= 1 {
+		return 0
+	}
+	sum := sha1.Sum([]byte(room.Seed + "|" + key + "|" + itoa(room.Version)))
+	return int(sum[0]) % size
 }
 func roomSummary(room *gameRoom) game { return room.game }
 func tokenFrom(r *http.Request) string {

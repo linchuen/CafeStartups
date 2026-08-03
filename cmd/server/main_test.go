@@ -118,3 +118,43 @@ func TestCreateGame(t *testing.T) {
 		t.Fatalf("unexpected game response: %+v", created)
 	}
 }
+
+func TestSoloStartAddsRandomBots(t *testing.T) {
+	store := &gameStore{games: make(map[string]*gameRoom)}
+	handler := newHandler(store)
+	create := httptest.NewRecorder()
+	handler.ServeHTTP(create, httptest.NewRequest(http.MethodPost, "/api/games", strings.NewReader(`{"seed":"solo-seed"}`)))
+	var room game
+	if err := json.NewDecoder(create.Body).Decode(&room); err != nil {
+		t.Fatal(err)
+	}
+
+	join := httptest.NewRecorder()
+	handler.ServeHTTP(join, httptest.NewRequest(http.MethodPost, "/api/games/"+room.ID+"/join", strings.NewReader(`{"displayName":"Solo"}`)))
+	var joined map[string]any
+	if err := json.NewDecoder(join.Body).Decode(&joined); err != nil {
+		t.Fatal(err)
+	}
+	token := joined["token"].(string)
+
+	ready := httptest.NewRecorder()
+	handler.ServeHTTP(ready, httptest.NewRequest(http.MethodPost, "/api/games/"+room.ID+"/ready", strings.NewReader(`{"token":"`+token+`"}`)))
+	if ready.Code != http.StatusOK {
+		t.Fatalf("ready status=%d body=%s", ready.Code, ready.Body.String())
+	}
+	start := httptest.NewRecorder()
+	startReq := httptest.NewRequest(http.MethodPost, "/api/games/"+room.ID+"/start", nil)
+	startReq.Header.Set("X-Session-Token", token)
+	handler.ServeHTTP(start, startReq)
+	if start.Code != http.StatusOK {
+		t.Fatalf("start status=%d body=%s", start.Code, start.Body.String())
+	}
+	if len(store.games[room.ID].Domain.Players) != 4 {
+		t.Fatalf("expected 4 players, got %d", len(store.games[room.ID].Domain.Players))
+	}
+	for _, player := range store.games[room.ID].Domain.Players[1:] {
+		if !player.IsBot || len(player.Hand) < 6 || len(player.Hand) > 7 || !store.games[room.ID].Domain.HasActed(player.ID) {
+			t.Fatalf("bot was not initialized and acted: %+v", player)
+		}
+	}
+}
