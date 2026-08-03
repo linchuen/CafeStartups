@@ -53,6 +53,7 @@ type Card struct {
 	ID                                          string         `json:"id"`
 	Name                                        string         `json:"name"`
 	Kind                                        string         `json:"kind"`
+	Description                                 string         `json:"description,omitempty"`
 	Period                                      Period         `json:"period"`
 	Cost                                        Cost           `json:"cost"`
 	Icons                                       []string       `json:"icons"`
@@ -81,25 +82,26 @@ type Customer struct {
 	UnitPrice, Count int
 }
 type Game struct {
-	Seed        string
-	Period      Period
-	Phase       Phase
-	Round       int
-	Players     []*Player
-	Center      Card
-	Market      []Card
-	Catalog     []Card
-	DemandBoard map[string]int
-	selected    map[string]Card
-	acted       map[string]bool
-	rng         *rand.Rand
+	Seed                               string
+	Period                             Period
+	Phase                              Phase
+	Round                              int
+	Players                            []*Player
+	Center                             Card
+	Market                             []Card
+	Catalog                            []Card
+	PartnerOptions, StarterShopOptions []Card
+	DemandBoard                        map[string]int
+	selected                           map[string]Card
+	acted                              map[string]bool
+	rng                                *rand.Rand
 }
 
 func (g *Game) SetCatalog(cards []Card) { g.Catalog = append([]Card(nil), cards...) }
 
 // NewGame creates a deterministic, offline game. Two to four players are required to start.
 func NewGame(seed string, playerIDs []string) (*Game, error) {
-	g := &Game{Seed: seed, Period: PeriodOne, Phase: PhaseHypothesis, DemandBoard: map[string]int{"gourmet": 0, "regular": 0, "difficult": 0}, selected: map[string]Card{}, acted: map[string]bool{}, rng: rand.New(rand.NewSource(seedValue(seed)))}
+	g := &Game{Seed: seed, Period: PeriodOne, Phase: PhaseHypothesis, PartnerOptions: MVPPartnerCards(), StarterShopOptions: MVPStarterShopCards(), DemandBoard: map[string]int{"gourmet": 0, "regular": 0, "difficult": 0}, selected: map[string]Card{}, acted: map[string]bool{}, rng: rand.New(rand.NewSource(seedValue(seed)))}
 	for _, id := range playerIDs {
 		if err := g.AddPlayer(id, id); err != nil {
 			return nil, err
@@ -118,10 +120,52 @@ func (g *Game) AddPlayer(id, displayName string) error {
 		}
 	}
 	p := &Player{ID: id, DisplayName: displayName, Cash: InitialCash, Order: len(g.Players)}
-	p.Partner = Card{ID: "partner-" + id, Name: "Partner", Kind: "partner"}
-	p.StarterShop = Card{ID: "starter-shop-" + id, Name: "Founding Shop", Kind: "starter_shop"}
+	if len(g.PartnerOptions) > 0 {
+		p.Partner = g.PartnerOptions[len(g.Players)%len(g.PartnerOptions)]
+	}
+	if len(g.StarterShopOptions) > 0 {
+		p.StarterShop = g.StarterShopOptions[len(g.Players)%len(g.StarterShopOptions)]
+	}
 	g.Players = append(g.Players, p)
 	return nil
+}
+
+// SetInitialCards changes a player's lobby selections. The default cards make
+// old clients and deterministic tests compatible while new clients can choose
+// explicit MVP cards before the game starts.
+func (g *Game) SetInitialCards(playerID, partnerID, starterShopID string) error {
+	if g.Phase != PhaseHypothesis || partnerID == "" || starterShopID == "" {
+		return ErrInvalidAction
+	}
+	p, err := g.player(playerID)
+	if err != nil {
+		return err
+	}
+	partner, ok := findCard(g.PartnerOptions, partnerID)
+	if !ok {
+		return ErrCardNotFound
+	}
+	starterShop, ok := findCard(g.StarterShopOptions, starterShopID)
+	if !ok {
+		return ErrCardNotFound
+	}
+	for _, other := range g.Players {
+		if other.ID != playerID && other.Partner.ID == partner.ID {
+			return ErrInvalidAction
+		}
+	}
+	p.Partner = partner
+	p.StarterShop = starterShop
+	return nil
+}
+
+func findCard(cards []Card, id string) (Card, bool) {
+	for _, card := range cards {
+		if card.ID == id {
+			return card, true
+		}
+	}
+	return Card{}, false
 }
 
 func (g *Game) Start() error {

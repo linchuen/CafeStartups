@@ -72,6 +72,11 @@ type readyRequest struct {
 	Token string `json:"token"`
 	Ready *bool  `json:"ready"`
 }
+type setupRequest struct {
+	Token         string `json:"token"`
+	PartnerID     string `json:"partnerId"`
+	StarterShopID string `json:"starterShopId"`
+}
 type commandRequest struct {
 	Token       string   `json:"token"`
 	GameVersion int64    `json:"gameVersion"`
@@ -95,6 +100,7 @@ func newHandler(store *gameStore) http.Handler {
 	mux.HandleFunc("/api/games", store.gamesHandler)
 	mux.HandleFunc("POST /api/games/{id}/join", store.joinHandler)
 	mux.HandleFunc("POST /api/games/{id}/ready", store.readyHandler)
+	mux.HandleFunc("POST /api/games/{id}/setup", store.setupHandler)
 	mux.HandleFunc("POST /api/games/{id}/start", store.startHandler)
 	mux.HandleFunc("GET /api/games/{id}", store.stateHandler)
 	mux.HandleFunc("POST /api/games/{id}/commands", store.commandHandler)
@@ -214,6 +220,37 @@ func (s *gameStore) readyHandler(w http.ResponseWriter, r *http.Request) {
 	sess.Ready = ready
 	room.Version++
 	room.Events = append(room.Events, event{room.Version, "PLAYER_READY", sess.PlayerID})
+	writeJSON(w, http.StatusOK, room.view(input.Token))
+}
+
+func (s *gameStore) setupHandler(w http.ResponseWriter, r *http.Request) {
+	s.Lock()
+	defer s.Unlock()
+	room, ok := s.roomLocked(r.PathValue("id"))
+	if !ok {
+		writeCode(w, http.StatusNotFound, "GAME_NOT_FOUND")
+		return
+	}
+	if room.Status != "lobby" {
+		writeCode(w, http.StatusConflict, "GAME_ALREADY_STARTED")
+		return
+	}
+	var input setupRequest
+	if err := decodeBody(r, &input); err != nil {
+		writeCode(w, http.StatusBadRequest, "INVALID_REQUEST")
+		return
+	}
+	sess, ok := room.Sessions[input.Token]
+	if !ok {
+		writeCode(w, http.StatusUnauthorized, "INVALID_SESSION")
+		return
+	}
+	if err := room.Domain.SetInitialCards(sess.PlayerID, input.PartnerID, input.StarterShopID); err != nil {
+		writeDomainError(w, err)
+		return
+	}
+	room.Version++
+	room.Events = append(room.Events, event{room.Version, "INITIAL_CARDS_SELECTED", sess.PlayerID})
 	writeJSON(w, http.StatusOK, room.view(input.Token))
 }
 
@@ -493,11 +530,11 @@ func (room *gameRoom) view(token string) map[string]any {
 		}
 		players = append(players, map[string]any{"id": p.ID, "displayName": p.DisplayName, "bot": p.IsBot, "ready": ready, "cash": p.Cash, "loans": p.Loans, "revenue": p.Revenue, "score": p.Score, "selectedKPIs": p.SelectedKPIs, "brandAwareness": p.BrandAwareness, "products": p.Products, "values": p.Values, "resources": p.Resources, "handCount": len(p.Hand)})
 	}
-	result := map[string]any{"id": room.ID, "roomCode": room.RoomCode, "status": room.Status, "seed": room.Seed, "gameVersion": room.Version, "period": room.Domain.Period, "phase": room.Domain.Phase, "round": room.Domain.Round, "demandBoard": room.Domain.DemandBoard, "center": room.Domain.Center, "players": players}
+	result := map[string]any{"id": room.ID, "roomCode": room.RoomCode, "status": room.Status, "seed": room.Seed, "gameVersion": room.Version, "period": room.Domain.Period, "phase": room.Domain.Phase, "round": room.Domain.Round, "demandBoard": room.Domain.DemandBoard, "center": room.Domain.Center, "partnerOptions": room.Domain.PartnerOptions, "starterShopOptions": room.Domain.StarterShopOptions, "players": players}
 	if sess := room.Sessions[token]; sess != nil {
 		for _, p := range room.Domain.Players {
 			if p.ID == sess.PlayerID {
-				result["me"] = map[string]any{"id": p.ID, "hand": p.Hand, "tableau": p.Tableau, "discardCount": len(p.Discard), "cash": p.Cash, "loans": p.Loans, "customers": p.Customers, "revenue": p.Revenue, "score": p.Score, "selectedKPIs": p.SelectedKPIs, "brandAwareness": p.BrandAwareness, "products": p.Products, "values": p.Values, "resources": p.Resources}
+				result["me"] = map[string]any{"id": p.ID, "hand": p.Hand, "tableau": p.Tableau, "discardCount": len(p.Discard), "partner": p.Partner, "starterShop": p.StarterShop, "cash": p.Cash, "loans": p.Loans, "customers": p.Customers, "revenue": p.Revenue, "score": p.Score, "selectedKPIs": p.SelectedKPIs, "brandAwareness": p.BrandAwareness, "products": p.Products, "values": p.Values, "resources": p.Resources}
 			}
 		}
 	}

@@ -66,6 +66,22 @@ func TestExperimentStartsAtRoundZero(t *testing.T) {
 	}
 }
 
+func TestInitialCardsCanBeSelectedInLobby(t *testing.T) {
+	g, err := NewGame("setup-seed", []string{"a", "b"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := g.SetInitialCards("a", "partner-service", "starter-station"); err != nil {
+		t.Fatal(err)
+	}
+	if g.Players[0].Partner.ID != "partner-service" || g.Players[0].StarterShop.ID != "starter-station" {
+		t.Fatalf("selected cards not saved: partner=%s shop=%s", g.Players[0].Partner.ID, g.Players[0].StarterShop.ID)
+	}
+	if err := g.SetInitialCards("b", "partner-service", "starter-songshan"); err == nil {
+		t.Fatal("expected duplicate partner selection to be rejected")
+	}
+}
+
 func TestDraftEndsWithOneCardAndPeriodDirection(t *testing.T) {
 	g := gameForTest(t)
 	for round := InitialRound; round < ExperimentRounds; round++ {

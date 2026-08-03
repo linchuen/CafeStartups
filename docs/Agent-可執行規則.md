@@ -41,7 +41,7 @@
 Game {
   id, roomCode, seed, gameVersion
   status: lobby | playing | finished
-  period: 1 | 2 | 3
+  period: 1 | 2 | 3（1 = 試營運，2 = 正式營運，3 = 擴大營運）
   phase: hypothesis | experiment | learning | finished
   round: 0..6（0 = 已發牌但尚未完成第一個選牌/傳牌/同步行動）
   playerOrder: [playerId]
@@ -99,7 +99,7 @@ Player {
 
 1. 單人房由伺服器自動補足至 4 個席位；補入的席位標記 `isBot=true`。
 2. 真人房仍不得超過 4 個席位；開始前所有真人必須準備。
-3. 若 MVP fixture 尚未有完整合夥人或創始店資料，必須在資料上標記 `source: mvp-fixture`，並在 UI/文件顯示「MVP 簡化」。不得把 placeholder 卡宣稱為正式卡片效果。
+3. MVP 使用 `MVPPartnerCards()` 與 `MVPStarterShopCards()` 提供創辦人卡與創業店卡選擇；資料標記 `source: mvp-fixture`，並在 UI 顯示「示意卡片 · MVP」。卡片詳細效果與正式成本仍需逐張校對，不得宣稱已完成正式效果還原。
 4. seed 是遊戲隨機性的唯一來源。洗牌、抽牌、抽顧客與 Bot 選擇都必須可由相同 seed 重播。
 
 ## 4. 狀態機與合法進入條件
