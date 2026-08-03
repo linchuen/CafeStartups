@@ -1,6 +1,6 @@
 # Café Startups Web
 
-Go + React 的《Café Startups》數位桌遊 MVP。
+Go + React 的《Café Startups》數位桌遊 MVP。單人即可開始遊戲，其餘席位由不考慮策略、只做合法隨機選擇的 MVP 電腦玩家補足。
 
 ## Phase 0
 
@@ -10,6 +10,7 @@ Go + React 的《Café Startups》數位桌遊 MVP。
 - React + TypeScript + Vite 首頁與建立房間流程
 - 卡牌 JSON Schema 與 MVP fixture
 - Go 基礎測試與前端 typecheck/build scripts
+- 單人遊玩設計：預設由 MVP 隨機電腦玩家補足其他席位
 
 ## 啟動
 
