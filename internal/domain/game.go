@@ -25,11 +25,13 @@ const (
 )
 
 const (
-	InitialCash   = 150
-	LoanAmount    = 50
-	LoanInterest  = 10
-	MaxLoans      = 6
-	DiscardRefund = 20
+	InitialCash      = 150
+	LoanAmount       = 50
+	LoanInterest     = 10
+	MaxLoans         = 6
+	DiscardRefund    = 20
+	InitialRound     = 0
+	ExperimentRounds = 6
 )
 
 var (
@@ -153,7 +155,9 @@ func (g *Game) BeginExperiment() error {
 			return ErrInvalidAction
 		}
 	}
-	g.Round, g.Phase = 0, PhaseExperiment
+	// Round 0 is the initial experiment state: cards are dealt, but no
+	// select/pass/action cycle has been completed yet.
+	g.Round, g.Phase = InitialRound, PhaseExperiment
 	g.deal()
 	return nil
 }
@@ -217,7 +221,7 @@ func (g *Game) PassHands() error {
 	}
 	g.Round++
 	g.selected, g.acted = map[string]Card{}, map[string]bool{}
-	if g.Round == 6 {
+	if g.Round == ExperimentRounds {
 		for _, p := range g.Players {
 			if len(p.Hand) != 1 {
 				return fmt.Errorf("%w: hand size", ErrInvalidAction)

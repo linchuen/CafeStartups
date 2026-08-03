@@ -43,7 +43,7 @@ Game {
   status: lobby | playing | finished
   period: 1 | 2 | 3
   phase: hypothesis | experiment | learning | finished
-  round: 0..6
+  round: 0..6（0 = 已發牌但尚未完成第一個選牌/傳牌/同步行動）
   playerOrder: [playerId]
   demandBoard: 4 gourmet slots + 4 regular slots
   marketBag: customer tokens
@@ -111,7 +111,7 @@ hypothesis
   -- all KPI choices complete --> experiment, deal 7 cards
 experiment(round=0..5)
   -- each player selects + plays/discards --> pass remaining hand, round += 1
-experiment(round=5 complete)
+experiment(round=6 complete)
   -- final card covered --> learning
 learning
   -- learning steps complete, period < 3 --> period += 1, hypothesis
@@ -151,7 +151,7 @@ surplus
 
 ## 6. 實驗階段（Experiment）
 
-每期開始，將該期牌堆洗牌，依玩家順序每人發 7 張。共進行 6 回合；每回合必須按照下列順序執行，不能由 UI 任意改順序。
+每期開始，將該期牌堆洗牌，依玩家順序每人發 7 張，後端將 `round` 設為 `0`。第 0 回合是「已發牌、尚未完成任何選牌/傳牌/同步行動」的初始狀態；之後完成第 1 至第 6 回合。每回合必須按照下列順序執行，不能由 UI 任意改順序。
 
 ### 6.1 選定計畫
 
@@ -199,8 +199,8 @@ missingCostIcons = 成本欄要求的圖示中，玩家牌組尚未持有的數�
 當且僅當每位玩家都已選牌並完成打出或棄牌：
 
 1. 傳遞未選手牌。
-2. `round += 1`。
-3. 回到 6.1，直到完成第 6 回合。
+2. `round += 1`；因此第 0 回合完成第一輪後變成第 1 回合。
+3. 回到 6.1，直到 `round == 6`。
 4. 第 6 回合完成後，每位玩家應剩 1 張手牌；將該牌面朝下覆蓋到中央，進入學習階段。
 
 ## 7. 學習階段（Learning）
@@ -354,7 +354,7 @@ Bot 不是策略型 AI。Bot 每次只能從伺服器計算出的合法選項中
 
 1. 固定 seed 產生相同牌序、Bot 行動序列與結果。
 2. 1 真人 + 3 Bot 可從建房完成三期並進入結算。
-3. 每期每人 7 張起始手牌；完成 6 回合後每人剩 1 張中央覆蓋牌。
+3. 每期每人 7 張起始手牌；後端先處於第 0 回合，完成第 1–6 回合後每人剩 1 張中央覆蓋牌。
 4. 第 1/3 期向左傳牌，第 2 期向右傳牌。
 5. 成本等於現金欄加上缺少圖示數乘 20；資金不足且無法合法增貸時只能棄牌。
 6. 普通貸款不可超過 6 張；利息增貸可處理現金不足情況。

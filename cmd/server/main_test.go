@@ -218,7 +218,7 @@ func TestSoloGameCompletesThroughHTTP(t *testing.T) {
 	}
 
 	for period := 1; period <= 3; period++ {
-		for round := 0; round < 6; round++ {
+		for round := domain.InitialRound; round < domain.ExperimentRounds; round++ {
 			human := store.games[room.ID].Sessions[token].PlayerID
 			player := store.games[room.ID].Domain.Players[0]
 			for _, candidate := range store.games[room.ID].Domain.Players {

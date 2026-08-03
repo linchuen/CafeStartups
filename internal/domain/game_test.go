@@ -56,9 +56,19 @@ func gameForTest(t *testing.T) *Game {
 	return g
 }
 
+func TestExperimentStartsAtRoundZero(t *testing.T) {
+	g := gameForTest(t)
+	if g.Round != InitialRound {
+		t.Fatalf("round=%d, want initial round %d", g.Round, InitialRound)
+	}
+	if len(g.Players[0].Hand) != 7 {
+		t.Fatalf("initial hand=%d, want 7", len(g.Players[0].Hand))
+	}
+}
+
 func TestDraftEndsWithOneCardAndPeriodDirection(t *testing.T) {
 	g := gameForTest(t)
-	for round := 0; round < 6; round++ {
+	for round := InitialRound; round < ExperimentRounds; round++ {
 		for _, p := range g.Players {
 			if err := g.SelectCard(p.ID, p.Hand[0].ID); err != nil {
 				t.Fatal(err)
@@ -69,6 +79,9 @@ func TestDraftEndsWithOneCardAndPeriodDirection(t *testing.T) {
 		}
 		if err := g.PassHands(); err != nil {
 			t.Fatal(err)
+		}
+		if g.Round != round+1 {
+			t.Fatalf("after draft round %d: round=%d", round, g.Round)
 		}
 	}
 	if g.Phase != PhaseLearning {
@@ -176,7 +189,7 @@ func TestSeedAndRevenueAreDeterministic(t *testing.T) {
 
 func TestPeriodsAdvanceThreeTimes(t *testing.T) {
 	g := gameForTest(t)
-	for round := 0; round < 6; round++ {
+	for round := InitialRound; round < ExperimentRounds; round++ {
 		for _, p := range g.Players {
 			if err := g.SelectCard(p.ID, p.Hand[0].ID); err != nil {
 				t.Fatal(err)
@@ -208,7 +221,7 @@ func TestPeriodsAdvanceThreeTimes(t *testing.T) {
 func TestResolveLearningCompletesThreePeriods(t *testing.T) {
 	g := gameForTest(t)
 	for period := 1; period <= 3; period++ {
-		for round := 0; round < 6; round++ {
+		for round := InitialRound; round < ExperimentRounds; round++ {
 			for _, p := range g.Players {
 				if err := g.SelectCard(p.ID, p.Hand[0].ID); err != nil {
 					t.Fatal(err)
