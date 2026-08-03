@@ -74,10 +74,30 @@ func TestDraftEndsWithOneCardAndPeriodDirection(t *testing.T) {
 	if g.Phase != PhaseLearning {
 		t.Fatalf("phase=%s", g.Phase)
 	}
+	if g.Center.ID == "" {
+		t.Fatal("expected final covered card in center")
+	}
 	for _, p := range g.Players {
 		if len(p.Hand) != 1 {
 			t.Fatalf("player %s has %d cards", p.ID, len(p.Hand))
 		}
+	}
+}
+
+func TestPlayingCardAppliesMetricAndMarketEffects(t *testing.T) {
+	g, _ := NewGame("effects", []string{"a", "b"})
+	p := g.Players[0]
+	g.Phase = PhaseExperiment
+	card := Card{ID: "marketing-card", Kind: "marketing", Cost: Cost{Cash: 10}, MarketChange: map[string]int{"gourmet": 2}}
+	p.Hand = []Card{card}
+	if err := g.SelectCard(p.ID, card.ID); err != nil {
+		t.Fatal(err)
+	}
+	if err := g.PlaySelectedCard(p.ID); err != nil {
+		t.Fatal(err)
+	}
+	if p.BrandAwareness != 1 || g.DemandBoard["gourmet"] != 2 {
+		t.Fatalf("effects not applied: brand=%d demand=%d", p.BrandAwareness, g.DemandBoard["gourmet"])
 	}
 }
 

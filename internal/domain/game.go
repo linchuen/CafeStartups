@@ -223,6 +223,9 @@ func (g *Game) PassHands() error {
 				return fmt.Errorf("%w: hand size", ErrInvalidAction)
 			}
 		}
+		// The final unselected card becomes the central covered card in the
+		// digital MVP. It remains visible only through its public count/state.
+		g.Center = g.Players[0].Hand[0]
 		g.Phase = PhaseLearning
 	}
 	return nil
@@ -244,6 +247,7 @@ func (g *Game) PlaySelectedCard(playerID string) error {
 		return err
 	}
 	p.Tableau = append(p.Tableau, c)
+	g.applyCardEffects(p, c)
 	removeCard(&p.Hand, c.ID)
 	g.acted[playerID] = true
 	return nil
@@ -334,11 +338,30 @@ func (g *Game) DistributeCustomers(customers []Customer) {
 
 func (g *Game) satisfies(p *Player, demand string) bool {
 	for _, c := range p.Tableau {
-		if c.Demand[demand] > 0 {
+		if c.Demand[demand] > 0 || c.MarketChange[demand] > 0 {
 			return true
 		}
 	}
 	return demand == "" // a blank demand is useful for fixture customers
+}
+
+func (g *Game) applyCardEffects(p *Player, c Card) {
+	switch c.Kind {
+	case "marketing":
+		p.BrandAwareness++
+	case "product":
+		p.Products++
+	case "value":
+		p.Values++
+	case "resource", "channel":
+		p.Resources++
+	}
+	for demand, change := range c.MarketChange {
+		g.DemandBoard[demand] += change
+		if g.DemandBoard[demand] < 0 {
+			g.DemandBoard[demand] = 0
+		}
+	}
 }
 
 func basePrice(kind string) int {
@@ -369,10 +392,20 @@ func (g *Game) ResolveLearning() error {
 	if err := g.SettleInterest(); err != nil {
 		return err
 	}
-	kinds := []string{"gourmet", "regular", "difficult", "regular"}
+	market := make([]string, 0)
+	for _, kind := range []string{"gourmet", "regular", "difficult"} {
+		count := g.DemandBoard[kind]
+		if count < 1 {
+			count = 1
+		}
+		for i := 0; i < count; i++ {
+			market = append(market, kind)
+		}
+	}
+	g.rng.Shuffle(len(market), func(i, j int) { market[i], market[j] = market[j], market[i] })
 	customers := make([]Customer, 0, len(g.Players))
 	for i := range g.Players {
-		kind := kinds[(int(g.Period)+i)%len(kinds)]
+		kind := market[(int(g.Period)+i)%len(market)]
 		demand := ""
 		if kind != "difficult" {
 			demand = kind

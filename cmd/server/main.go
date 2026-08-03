@@ -236,6 +236,10 @@ func (s *gameStore) startHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
+	var input struct {
+		KPIs []string `json:"kpis"`
+	}
+	_ = decodeBody(r, &input)
 	if len(room.Sessions) < 1 {
 		writeCode(w, http.StatusConflict, "NOT_ENOUGH_PLAYERS")
 		return
@@ -250,8 +254,20 @@ func (s *gameStore) startHandler(w http.ResponseWriter, r *http.Request) {
 		writeDomainError(w, err)
 		return
 	}
+	hostSession := room.Sessions[token]
 	for _, p := range room.Domain.Players {
-		if err := room.Domain.SetKPIs(p.ID, "brand_awareness", "products"); err != nil {
+		if p.IsBot {
+			if err := setRandomBotKPIs(room, p); err != nil {
+				writeDomainError(w, err)
+				return
+			}
+			continue
+		}
+		kpis := []string{"brand_awareness", "products"}
+		if hostSession != nil && p.ID == hostSession.PlayerID && len(input.KPIs) == 2 {
+			kpis = input.KPIs
+		}
+		if err := room.Domain.SetKPIs(p.ID, kpis...); err != nil {
 			writeDomainError(w, err)
 			return
 		}
@@ -475,13 +491,13 @@ func (room *gameRoom) view(token string) map[string]any {
 				ready = sess.Ready
 			}
 		}
-		players = append(players, map[string]any{"id": p.ID, "displayName": p.DisplayName, "bot": p.IsBot, "ready": ready, "cash": p.Cash, "loans": p.Loans, "revenue": p.Revenue, "score": p.Score, "handCount": len(p.Hand)})
+		players = append(players, map[string]any{"id": p.ID, "displayName": p.DisplayName, "bot": p.IsBot, "ready": ready, "cash": p.Cash, "loans": p.Loans, "revenue": p.Revenue, "score": p.Score, "selectedKPIs": p.SelectedKPIs, "brandAwareness": p.BrandAwareness, "products": p.Products, "values": p.Values, "resources": p.Resources, "handCount": len(p.Hand)})
 	}
-	result := map[string]any{"id": room.ID, "roomCode": room.RoomCode, "status": room.Status, "seed": room.Seed, "gameVersion": room.Version, "period": room.Domain.Period, "phase": room.Domain.Phase, "round": room.Domain.Round, "players": players}
+	result := map[string]any{"id": room.ID, "roomCode": room.RoomCode, "status": room.Status, "seed": room.Seed, "gameVersion": room.Version, "period": room.Domain.Period, "phase": room.Domain.Phase, "round": room.Domain.Round, "demandBoard": room.Domain.DemandBoard, "center": room.Domain.Center, "players": players}
 	if sess := room.Sessions[token]; sess != nil {
 		for _, p := range room.Domain.Players {
 			if p.ID == sess.PlayerID {
-				result["me"] = map[string]any{"id": p.ID, "hand": p.Hand, "tableau": p.Tableau, "discardCount": len(p.Discard), "cash": p.Cash, "loans": p.Loans, "customers": p.Customers, "revenue": p.Revenue, "score": p.Score}
+				result["me"] = map[string]any{"id": p.ID, "hand": p.Hand, "tableau": p.Tableau, "discardCount": len(p.Discard), "cash": p.Cash, "loans": p.Loans, "customers": p.Customers, "revenue": p.Revenue, "score": p.Score, "selectedKPIs": p.SelectedKPIs, "brandAwareness": p.BrandAwareness, "products": p.Products, "values": p.Values, "resources": p.Resources}
 			}
 		}
 	}

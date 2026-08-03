@@ -146,11 +146,14 @@ func TestSoloStartAddsRandomBots(t *testing.T) {
 		t.Fatalf("ready status=%d body=%s", ready.Code, ready.Body.String())
 	}
 	start := httptest.NewRecorder()
-	startReq := httptest.NewRequest(http.MethodPost, "/api/games/"+room.ID+"/start", nil)
+	startReq := httptest.NewRequest(http.MethodPost, "/api/games/"+room.ID+"/start", strings.NewReader(`{"kpis":["values","resources"]}`))
 	startReq.Header.Set("X-Session-Token", token)
 	handler.ServeHTTP(start, startReq)
 	if start.Code != http.StatusOK {
 		t.Fatalf("start status=%d body=%s", start.Code, start.Body.String())
+	}
+	if got := store.games[room.ID].Domain.Players[0].SelectedKPIs; len(got) != 2 || got[0] != "values" || got[1] != "resources" {
+		t.Fatalf("requested KPIs were not applied: %v", got)
 	}
 	if len(store.games[room.ID].Domain.Players) != 4 {
 		t.Fatalf("expected 4 players, got %d", len(store.games[room.ID].Domain.Players))
