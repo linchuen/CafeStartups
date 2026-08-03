@@ -39,7 +39,7 @@
 
 ```text
 Game {
-  id, roomCode, seed, gameVersion
+  id, seed, gameVersion, localSession
   status: lobby | playing | finished
   period: 1 | 2 | 3（1 = 試營運，2 = 正式營運，3 = 擴大營運）
   phase: hypothesis | experiment | learning | finished

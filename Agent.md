@@ -65,7 +65,7 @@
 
 主要 aggregate：`Game`、`Player`、`Card`、`DemandCard`、`MarketBag`、`Round`、`Score`。
 
-每個 state mutation 建議產生事件：`GAME_CREATED`、`PLAYER_JOINED`、`PHASE_STARTED`、`CARD_SELECTED`、`CARDS_PASSED`、`CARD_PLAYED`、`CARD_DISCARDED`、`CUSTOMERS_DISTRIBUTED`、`REVENUE_SETTLED`、`GAME_FINISHED`。
+每個 state mutation 建議產生事件：`GAME_CREATED`、`PHASE_STARTED`、`CARD_SELECTED`、`CARDS_PASSED`、`CARD_PLAYED`、`CARD_DISCARDED`、`CUSTOMERS_DISTRIBUTED`、`REVENUE_SETTLED`、`GAME_FINISHED`。單機 MVP 不產生玩家加入、準備或房間同步事件。
 
 前端不要直接依賴 Go struct 的內部欄位；以 versioned DTO 回傳 `gameVersion`，避免未來規則調整破壞 UI。
 

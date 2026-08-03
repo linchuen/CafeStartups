@@ -164,24 +164,21 @@
 
 ```text
 Game
-  id, roomCode, status, playerOrder, activePeriod, phase, round
+  id, status, playerOrder, activePeriod, phase, round
   seed, gameVersion, demandBoard, marketBag, eventLog
 Player
-  id, displayName, ready, cash, loans, partner, starterShop
+  id, displayName, isBot, cash, loans, partner, starterShop
   hand, tableau, selectedKpis, customers, currentPeriodStats, score
 ```
 
 ### Command 草案
 
 ```text
-POST /api/games                         建立房間
-POST /api/games/{id}/join               （區網階段才啟用）加入房間
-POST /api/games/{id}/ready              準備/取消準備
+POST /api/games                         建立單機遊戲並回傳本機 token
 POST /api/games/{id}/setup              選擇創辦人卡與創業店卡
 POST /api/games/{id}/start              開始遊戲
 GET  /api/games/{id}                    取得目前可見狀態
 POST /api/games/{id}/commands           送出遊戲指令
-WS   /api/games/{id}/events             接收狀態更新
 ```
 
 `commands` 至少包含：`SET_KPI`、`SELECT_CARD`、`PASS_HAND`、`PLAY_SELECTED_CARD`、`DISCARD_SELECTED_CARD`、`TAKE_LOAN`、`REPAY_LOAN`、`CONFIRM_REVENUE`、`CONFIRM_INTEREST`。
@@ -204,5 +201,5 @@ WS   /api/games/{id}/events             接收狀態更新
 - PDF 文字抽取對圖示與部分卡面資料不完整：正式資料建檔時必須以卡面視覺校對，不可只依抽取文字。
 - 實體遊戲含秘密資訊與同步操作：單機 MVP 先驗證本機狀態與 Bot 不會卡住流程；WebSocket 私有訊息與「等待所有人」流程留待區網階段。
 - 需求配對涉及同圖示由左至右及卡片可重複用於兩類客群：應以純函式測試固定範例，避免 UI 自行推導。
-- 需決定 MVP 是否允許房主重新開始、遊戲中途離線多久、是否保存未完成房間；預設為同一 server 執行期間保存，房主可在結算後重新開局。
+- 需決定 MVP 是否允許玩家重新開始、遊戲中途離線多久、是否保存未完成遊戲；預設為同一 server 執行期間保存，玩家可在結算後重新開局。
 - 需在 playtest 後決定是否加入倒數計時；未確認前不將倒數視為核心規則。

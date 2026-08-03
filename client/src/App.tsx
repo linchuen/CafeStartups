@@ -1,11 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 const API = 'http://localhost:8080'
 
 type Screen = 'home' | 'lobby' | 'game'
 type Card = { id: string; name: string; kind: string; period: number; description?: string; cost: { cash: number; icons: string[] }; icons: string[] }
-type Player = { id: string; displayName: string; bot?: boolean; ready: boolean; cash: number; loans: number; revenue?: number; score?: number; selectedKPIs?: string[]; brandAwareness?: number; products?: number; values?: number; resources?: number; handCount: number }
-type GameState = { id: string; roomCode: string; status: string; seed: string; gameVersion: number; period: number; phase: string; round: number; demandBoard?: Record<string, number>; partnerOptions?: Card[]; starterShopOptions?: Card[]; players: Player[]; me?: { id: string; hand: Card[]; tableau: Card[]; discardCount: number; partner?: Card; starterShop?: Card; cash: number; loans: number; customers?: { kind: string; demand: string; unitPrice: number; count: number }[]; revenue?: number; score?: number; selectedKPIs?: string[]; kpiSelectionPeriod?: number; brandAwareness?: number; products?: number; values?: number; resources?: number } }
+type Player = { id: string; displayName: string; bot?: boolean; ready?: boolean; cash: number; loans: number; revenue?: number; score?: number; selectedKPIs?: string[]; brandAwareness?: number; products?: number; values?: number; resources?: number; handCount: number }
+type GameState = { id: string; status: string; seed: string; gameVersion: number; period: number; phase: string; round: number; demandBoard?: Record<string, number>; partnerOptions?: Card[]; starterShopOptions?: Card[]; players: Player[]; me?: { id: string; hand: Card[]; tableau: Card[]; discardCount: number; partner?: Card; starterShop?: Card; cash: number; loans: number; customers?: { kind: string; demand: string; unitPrice: number; count: number }[]; revenue?: number; score?: number; selectedKPIs?: string[]; kpiSelectionPeriod?: number; brandAwareness?: number; products?: number; values?: number; resources?: number } }
 type ApiError = Error & { code?: string }
 const KPI_OPTIONS = [{ id: 'brand_awareness', label: '品牌知名度' }, { id: 'products', label: '特色產品' }, { id: 'values', label: '價值主張' }, { id: 'resources', label: '關鍵資源' }]
 const REFERENCE_KPIS = [
@@ -77,7 +77,6 @@ export function App() {
   const [token, setToken] = useState(() => localStorage.getItem('cafe-session') ?? '')
   const [gameId, setGameId] = useState(() => localStorage.getItem('cafe-game-id') ?? '')
   const [playerId, setPlayerId] = useState(() => localStorage.getItem('cafe-player-id') ?? '')
-  const [host, setHost] = useState(false)
   const [selectedCard, setSelectedCard] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
@@ -88,19 +87,11 @@ export function App() {
     localStorage.setItem('cafe-game-id', id); localStorage.setItem('cafe-session', session); localStorage.setItem('cafe-player-id', player)
   }
 
-  const enterLocalGame = async (key: string, asHost = false) => {
-    setBusy(true); setError('')
-    try {
-      const joined = await request<{ token: string; playerId: string; state: GameState }>(`/api/games/${encodeURIComponent(key)}/join`, { method: 'POST', body: JSON.stringify({ displayName: name.trim() || '咖啡創業家' }) })
-      saveSession(joined.state.id, joined.token, joined.playerId); setHost(asHost); setRoom(joined.state); setScreen('lobby')
-    } catch (cause) { setError(cause instanceof Error ? cause.message : '本機遊戲建立失敗') } finally { setBusy(false) }
-  }
-
   const createRoom = async () => {
     setBusy(true); setError('')
     try {
-      const created = await request<{ id: string }>('/api/games', { method: 'POST', body: JSON.stringify({ seed }) })
-      await enterLocalGame(created.id, true)
+      const created = await request<{ id: string; token: string; playerId: string; state: GameState }>('/api/games', { method: 'POST', body: JSON.stringify({ seed, displayName: name.trim() || '咖啡創業家' }) })
+      saveSession(created.id, created.token, created.playerId); setRoom(created.state); setScreen('lobby')
     } catch (cause) { setError(cause instanceof Error ? cause.message : '建立房間失敗'); setBusy(false) }
   }
 
@@ -128,16 +119,6 @@ export function App() {
     } finally { setBusy(false) }
   }
 
-  const ownPlayer = useMemo(() => room?.players.find((player) => player.id === playerId), [room, playerId])
-  const allReady = Boolean(room?.players.length && room.players.every((player) => player.ready))
-
-  const toggleReady = async () => {
-    if (!room) return
-    setBusy(true); setError('')
-    try { const next = await request<GameState>(`/api/games/${encodeURIComponent(room.id)}/ready`, { method: 'POST', body: JSON.stringify({ token, ready: !ownPlayer?.ready }) }); setRoom(next) }
-    catch (cause) { setError(cause instanceof Error ? cause.message : '準備狀態更新失敗') } finally { setBusy(false) }
-  }
-
   const setupInitialCards = async (partnerId: string, starterShopId: string) => {
     if (!room) return
     setBusy(true); setError('')
@@ -159,7 +140,7 @@ export function App() {
   return <main className="app-shell">
     <header className="topbar"><span className="brand-mark">CS</span><span>Café Startups</span>{room && <span className="sync-pill">v{room.gameVersion} · 已同步</span>}</header>
     {screen === 'home' && <Home name={name} setName={setName} seed={seed} setSeed={setSeed} createRoom={createRoom} busy={busy} error={error} />}
-    {screen === 'lobby' && room && <Lobby room={room} host={host} busy={busy} allReady={allReady} toggleReady={toggleReady} setupInitialCards={setupInitialCards} startGame={startGame} leave={leave} error={error} />}
+    {screen === 'lobby' && room && <Lobby room={room} busy={busy} setupInitialCards={setupInitialCards} startGame={startGame} leave={leave} error={error} />}
     {screen === 'game' && room && <><KpiPicker room={room} kpis={kpis} setKpis={setKpis} command={command} busy={busy} /><GameTable room={room} selectedCard={selectedCard} setSelectedCard={setSelectedCard} command={command} busy={busy} error={error} leave={leave} /></>}
   </main>
 }
@@ -179,8 +160,8 @@ function InitialCardPicker(props: { room: GameState; busy: boolean; setupInitial
   </section>
 }
 
-function Lobby(props: { room: GameState; host: boolean; busy: boolean; allReady: boolean; toggleReady: () => void; setupInitialCards: (partnerId: string, starterShopId: string) => void; startGame: () => void; leave: () => void; error: string }) {
-  return <section className="lobby-page layout-grid"><div className="panel room-card"><p className="eyebrow">WAITING ROOM</p><h1>{props.room.roomCode}</h1><p className="muted">單人可直接開始；開始後不足席位會由隨機電腦玩家補足。</p><div className="player-list">{props.room.players.map((player, index) => <div className="player-row" key={player.id}><span className="avatar">{player.displayName.slice(0, 1)}</span><span><strong>{player.displayName}</strong>{player.bot && <small>電腦</small>}{index === 0 && <small>房主</small>}</span><span className={player.ready ? 'ready' : 'waiting'}>{player.ready ? '已準備' : '等待中'}</span></div>)}{Array.from({ length: 4 - props.room.players.length }).map((_, i) => <div className="player-row empty" key={i}><span className="avatar">·</span><span>等待玩家加入</span></div>)}</div><InitialCardPicker room={props.room} busy={props.busy} setupInitialCards={props.setupInitialCards} /><div className="lobby-actions"><button className="secondary" onClick={props.leave}>離開</button><button className="primary" onClick={props.toggleReady} disabled={props.busy}>{props.room.players.find((p) => p.id === props.room.me?.id)?.ready ? '取消準備' : '準備完成'}</button>{props.host && <button className="accent" onClick={props.startGame} disabled={props.busy || !props.allReady}>開始遊戲</button>}</div>{props.host && !props.allReady && <p className="hint">準備完成後即可開始，其他席位會自動加入電腦玩家。</p>}{props.error && <p className="error">{props.error}</p>}</div><aside className="rules-card"><p className="eyebrow">HOW TO PLAY</p><h2>一場實驗，六次選擇</h2><p>每個時期會拿到 7 張管理牌。選牌、傳牌，最後把你的策略打進咖啡館。</p><ol><li>第 1 期結束後選擇關鍵指標</li><li>第 2 期結束後可重選一次</li><li>選牌、傳牌並完成市場結算</li></ol></aside></section>
+function Lobby(props: { room: GameState; busy: boolean; setupInitialCards: (partnerId: string, starterShopId: string) => void; startGame: () => void; leave: () => void; error: string }) {
+  return <section className="lobby-page layout-grid"><div className="panel room-card"><p className="eyebrow">LOCAL SETUP</p><h1>單機桌遊</h1><p className="muted">你是一位真人玩家；開始後由本機伺服器自動補足隨機電腦玩家。</p><div className="player-list">{props.room.players.map((player) => <div className="player-row" key={player.id}><span className="avatar">{player.displayName.slice(0, 1)}</span><span><strong>{player.displayName}</strong>{player.bot && <small>電腦玩家</small>}</span><span className="ready">本機</span></div>)}</div><InitialCardPicker room={props.room} busy={props.busy} setupInitialCards={props.setupInitialCards} /><div className="lobby-actions"><button className="secondary" onClick={props.leave}>離開</button><button className="accent" onClick={props.startGame} disabled={props.busy}>開始遊戲</button></div>{props.error && <p className="error">{props.error}</p>}</div><aside className="rules-card"><p className="eyebrow">SINGLE-PLAYER MVP</p><h2>先把玩法煮熟</h2><p>目前只驗證單機規則與 Bot 行動；區域網路與線上模式會在玩法確認後再開發。</p><ol><li>選擇創辦人與創業店</li><li>完成三個營運時期</li><li>檢查卡牌、營收與結算</li></ol></aside></section>
 }
 
 function KpiPicker(props: { room: GameState; kpis: [string, string]; setKpis: (value: [string, string]) => void; command: (type: string, extra?: Record<string, unknown>) => void; busy: boolean }) {
