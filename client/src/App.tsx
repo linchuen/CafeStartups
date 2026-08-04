@@ -77,9 +77,10 @@ export function App() {
   const [name, setName] = useState('咖啡創業家')
   const [seed, setSeed] = useState('phase-3-demo')
   const [room, setRoom] = useState<GameState | null>(null)
-  const [token, setToken] = useState(() => localStorage.getItem('cafe-session') ?? '')
-  const [gameId, setGameId] = useState(() => localStorage.getItem('cafe-game-id') ?? '')
-  const [playerId, setPlayerId] = useState(() => localStorage.getItem('cafe-player-id') ?? '')
+  // Each visit to the home screen starts a fresh local game.
+  const [token, setToken] = useState('')
+  const [gameId, setGameId] = useState('')
+  const [playerId, setPlayerId] = useState('')
   const [selectedCard, setSelectedCard] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
@@ -87,7 +88,6 @@ export function App() {
 
   const saveSession = (id: string, session: string, player: string) => {
     setGameId(id); setToken(session); setPlayerId(player)
-    localStorage.setItem('cafe-game-id', id); localStorage.setItem('cafe-session', session); localStorage.setItem('cafe-player-id', player)
   }
 
   const createRoom = async () => {
@@ -95,7 +95,7 @@ export function App() {
     try {
       const created = await request<{ id: string; token: string; playerId: string; state: GameState }>('/api/games', { method: 'POST', body: JSON.stringify({ seed, displayName: name.trim() || '咖啡創業家' }) })
       saveSession(created.id, created.token, created.playerId); setRoom(created.state); setScreen('lobby')
-    } catch (cause) { setError(cause instanceof Error ? cause.message : '建立房間失敗'); setBusy(false) }
+    } catch (cause) { setError(cause instanceof Error ? cause.message : '建立房間失敗') } finally { setBusy(false) }
   }
 
   const refresh = useCallback(async () => {
