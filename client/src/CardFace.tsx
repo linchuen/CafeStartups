@@ -6,6 +6,7 @@ export type CardFaceData = {
   kind: string
   period: number
   description?: string
+  effect?: string
   cost: { cash: number; icons: string[] }
   icons: string[]
   marketChange?: Record<string, number>

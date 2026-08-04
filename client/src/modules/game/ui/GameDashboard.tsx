@@ -11,27 +11,28 @@ type DashboardPlayer = { id: string; displayName: string; bot?: boolean; handCou
 type CashFlowStatement = { period: number; beginningCash: number; operatingRevenue: number; otherIncome: number; operatingExpenses: number; interestPaid: number; principalRepayment: number; newLoans: number; endingCash: number }
 type DashboardRoom = { period: number; round: number; phase: string; players: DashboardPlayer[]; demandBoard?: Record<string, number>; me?: { id: string; hand: PlayerCard[] | null; tableau: PlayerCard[] | null; partner?: PlayerCard; starterShop?: PlayerCard; cash: number; loans: number; revenue?: number; score?: number; selectedKPIs?: string[]; cashFlow?: CashFlowStatement[] | null; cashFlowRounds?: CashFlowStatement[] | null; brandAwareness?: number; products?: number; values?: number; resources?: number } }
 
-const kindMeta: Record<string, { label: string; color: string; icon: typeof Coffee }> = {
-  partner: { label: '合夥人卡', color: '#714b38', icon: Groups },
-  starter_shop: { label: '創始店卡', color: '#287477', icon: Storefront },
-  resource: { label: '資源', color: '#3976a6', icon: Coffee },
-  product: { label: '產品', color: '#b98a25', icon: Coffee },
-  value: { label: '價值', color: '#b44f52', icon: Psychology },
-  channel: { label: '通路', color: '#3f7d66', icon: Storefront },
-  marketing: { label: '行銷', color: '#7a5ba5', icon: Psychology },
+const kindMeta: Record<string, { label: string; color: string; background: string; icon: typeof Coffee }> = {
+  partner: { label: '合夥人卡', color: '#714b38', background: '#f3e5d8', icon: Groups },
+  starter_shop: { label: '創始店卡', color: '#287477', background: '#dff0ed', icon: Storefront },
+  resource: { label: '資源', color: '#3976a6', background: '#e4eff7', icon: Coffee },
+  product: { label: '產品', color: '#b98a25', background: '#f8efd1', icon: Coffee },
+  value: { label: '價值', color: '#b44f52', background: '#f6e3e4', icon: Psychology },
+  channel: { label: '通路', color: '#3f7d66', background: '#e2f0e8', icon: Storefront },
+  marketing: { label: '行銷', color: '#7a5ba5', background: '#eee7f7', icon: Psychology },
 }
 
 function CardTile({ card, selected, onClick }: { card: PlayerCard; selected?: boolean; onClick?: () => void }) {
-  const meta = kindMeta[card.kind] ?? { label: card.kind, color: '#765341', icon: Coffee }
+  const meta = kindMeta[card.kind] ?? { label: card.kind, color: '#765341', background: '#f1e8df', icon: Coffee }
   const Icon = meta.icon
-  return <MuiCard onClick={onClick} variant="outlined" sx={{ height: '100%', minHeight: 172, cursor: onClick ? 'pointer' : 'default', borderColor: selected ? meta.color : 'divider', borderWidth: selected ? 2 : 1, transition: 'transform .15s, box-shadow .15s', '&:hover': onClick ? { transform: 'translateY(-3px)', boxShadow: 3 } : undefined }}>
+  return <MuiCard onClick={onClick} variant="outlined" sx={{ height: '100%', minHeight: 172, cursor: onClick ? 'pointer' : 'default', bgcolor: meta.background, borderColor: selected ? meta.color : `${meta.color}55`, borderWidth: selected ? 2 : 1, transition: 'transform .15s, box-shadow .15s', '&:hover': onClick ? { transform: 'translateY(-3px)', boxShadow: 3 } : undefined }}>
     <Box sx={{ height: 6, bgcolor: meta.color }} />
     <CardContent sx={{ display: 'flex', height: 'calc(100% - 6px)', flexDirection: 'column', gap: 1.1 }}>
       <Stack direction="row" justifyContent="space-between" alignItems="center"><Chip size="small" label={meta.label} sx={{ color: meta.color, bgcolor: `${meta.color}18`, fontWeight: 700 }} /><Typography variant="caption" color="text.secondary">第 {card.period} 期</Typography></Stack>
       <Box sx={{ display: 'grid', placeItems: 'center', height: 44, borderRadius: 2, color: meta.color, bgcolor: `${meta.color}12` }}><Icon /></Box>
       <Typography variant="subtitle1" fontWeight={800}>{card.name}</Typography>
-      <Typography variant="caption" color="text.secondary" sx={{ minHeight: 32 }}>{card.description ?? '可用於咖啡館經營的卡牌。'}</Typography>
-      <Stack direction="row" justifyContent="space-between" sx={{ mt: 'auto' }}><Typography variant="caption" color="text.secondary">成本</Typography><Typography variant="body2" fontWeight={800} color={meta.color}>${card.cost.cash}</Typography></Stack>
+      <Typography variant="caption" color="text.secondary" sx={{ minHeight: 30 }}>{card.description ?? '可用於咖啡館經營的卡牌。'}</Typography>
+      <Box sx={{ px: 1, py: .7, borderRadius: 1, bgcolor: '#ffffffaa' }}><Typography variant="caption" fontWeight={800} color={meta.color}>{card.kind === 'starter_shop' ? '顧客效果' : card.kind === 'partner' ? '合夥人功能' : '卡牌效果'}</Typography><Typography variant="body2" fontWeight={800}>{card.effect ?? '—'}</Typography></Box>
+      <Stack direction="row" justifyContent="space-between" sx={{ mt: 'auto' }}><Typography variant="caption" color="text.secondary">成本</Typography><Typography variant="body2" fontWeight={800} color={meta.color}>${card.cost?.cash ?? 0} 萬</Typography></Stack>
     </CardContent>
   </MuiCard>
 }
