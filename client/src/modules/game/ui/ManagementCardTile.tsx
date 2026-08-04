@@ -1,0 +1,19 @@
+// @ts-nocheck
+import { Box, Card as MuiCard, Stack, Typography } from '@mui/material'
+import type { PlayerCard } from './gameDashboardCardTypes'
+
+const managementMeta: Record<string, { color: string; pale: string; function: string }> = {
+  resource: { color: '#2d6897', pale: '#d5e7ef', function: '取得營運資源' },
+  product: { color: '#c88d28', pale: '#f3dfb7', function: '推出特色產品' },
+  value: { color: '#bd584f', pale: '#f3d9d3', function: '提升顧客價值' },
+  channel: { color: '#2d6897', pale: '#d5e7ef', function: '拓展銷售通路' },
+  marketing: { color: '#bd584f', pale: '#f3d9d3', function: '推廣品牌與服務' },
+}
+
+const managementIcons: Record<string, string> = { operations: '⚙', coffee: '☕', value: '♥', channel: '⚑', marketing: '⚑', people: '♟' }
+
+export function ManagementCardTile({ card, selected, onClick }: { card: PlayerCard; selected?: boolean; onClick?: () => void }) {
+  const meta = managementMeta[card.kind] ?? managementMeta.resource
+  const marketChange = Object.entries(card.marketChange ?? {}).filter(([key, value]) => (key === 'gourmet' || key === 'regular') && value !== 0).map(([key, value]) => `${key === 'gourmet' ? '饕客' : '一般客'} ${value > 0 ? '+' : ''}${value}`).join('／') || '無市場變動'
+  return <MuiCard onClick={onClick} variant="outlined" sx={{ height: '100%', minHeight: 290, overflow: 'hidden', cursor: onClick ? 'pointer' : 'default', bgcolor: meta.pale, borderColor: selected ? meta.color : `${meta.color}66`, borderWidth: selected ? 3 : 1 }}><Box sx={{ px: 1.5, py: .9, bgcolor: meta.color, color: 'white', textAlign: 'center' }}><Typography variant="caption" fontWeight={900}>{card.name}</Typography></Box><Box sx={{ px: 1.5, py: .85, display: 'flex', alignItems: 'center', gap: 1, bgcolor: `${meta.color}dd`, color: 'white' }}><Box>{card.icons.slice(0, 4).map((icon, index) => <span key={`${icon}-${index}`} style={{ marginRight: 4 }}>{managementIcons[icon] ?? '◆'}</span>)}</Box><Box><Typography variant="caption" sx={{ display: 'block', opacity: .8 }}>卡片功能</Typography><Typography variant="body2" fontWeight={900}>{meta.function}</Typography></Box></Box><Box sx={{ display: 'grid', placeItems: 'center', minHeight: 88, color: meta.color, background: 'linear-gradient(145deg, #f0f0ed, #dfe1df)' }}><Typography sx={{ fontSize: 46 }}>{managementIcons[card.icons[0]] ?? '◆'}</Typography></Box><Box sx={{ px: 1.5, py: 1, bgcolor: '#ffffffcc' }}><Typography variant="caption" color="text.secondary">卡片說明</Typography><Typography variant="body2" sx={{ minHeight: 34 }}>{card.description ?? '可執行的經營管理行動。'}</Typography></Box><Stack direction="row" justifyContent="space-between" sx={{ px: 1.5, py: .8, bgcolor: meta.pale }}><Box><Typography variant="caption" fontWeight={900} color={meta.color}>{marketChange}</Typography><Typography display="block" variant="caption">市場變動</Typography></Box><Box><Typography variant="body2" fontWeight={900} color={meta.color}>${card.cost?.cash ?? 0}</Typography><Typography display="block" variant="caption">成本</Typography></Box></Stack></MuiCard>
+}
