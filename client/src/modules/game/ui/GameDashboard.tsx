@@ -41,9 +41,31 @@ function CardGroup({ title, subtitle, cards, selectedId, onSelect }: { title: st
   return <Box sx={{ mt: 2.5 }}><Stack direction="row" alignItems="baseline" spacing={1} sx={{ mb: 1.2 }}><Typography variant="subtitle1" fontWeight={800}>{title}</Typography><Typography variant="caption" color="text.secondary">{subtitle}</Typography></Stack><Grid container spacing={1.5}>{cards.map((card) => <Grid key={card.id} size={{ xs: 12, sm: 6, md: 3, lg: 2 }}><CardTile card={card} selected={selectedId === card.id} onClick={onSelect ? () => onSelect(card.id) : undefined} /></Grid>)}</Grid></Box>
 }
 
-function GamePanel({ room, market }: { room: DashboardRoom; market: [string, number][] }) {
+function CompactGamePanel({ room, market }: { room: DashboardRoom; market: [string, number][] }) {
   const metrics = [['品牌知名度', room.me?.brandAwareness ?? 0], ['產品能力', room.me?.products ?? 0], ['價值主張', room.me?.values ?? 0], ['資源能力', room.me?.resources ?? 0]]
   return <Paper sx={{ p: { xs: 2, md: 2.5 }, mb: 2.5, borderRadius: 3, border: '1px solid', borderColor: 'divider' }}><Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" spacing={2}><Box><Typography variant="overline" color="primary">GAME BOARD</Typography><Typography variant="h5" fontWeight={900}>遊戲面板</Typography><Typography variant="body2" color="text.secondary">第 {room.period} 期・第 {room.round} 回合・{room.phase}</Typography></Box><Stack direction="row" spacing={1} alignItems="center" sx={{ minWidth: { md: 280 } }}>{[1, 2, 3].map((period) => <Box key={period} sx={{ flex: 1 }}><Stack direction="row" justifyContent="space-between"><Typography variant="caption">第 {period} 期</Typography><Typography variant="caption" color={room.period >= period ? 'primary' : 'text.disabled'}>{room.period >= period ? '進行中' : '未開始'}</Typography></Stack><LinearProgress variant="determinate" value={room.period >= period ? 100 : 0} color={room.period === period ? 'primary' : 'secondary'} /></Box>)}</Stack></Stack><Divider sx={{ my: 2 }} /><Grid container spacing={1.5}>{metrics.map(([label, value]) => <Grid key={label} size={{ xs: 6, sm: 3 }}><Paper variant="outlined" sx={{ p: 1.4, bgcolor: '#faf7f2' }}><Typography variant="caption" color="text.secondary">{label}</Typography><Typography variant="h6" fontWeight={900}>{value}</Typography></Paper></Grid>)}{market.map(([key, value]) => <Grid key={key} size={{ xs: 6, sm: 3 }}><Paper variant="outlined" sx={{ p: 1.4, bgcolor: '#f1f8f7' }}><Typography variant="caption" color="text.secondary">市場・{key}</Typography><Typography variant="h6" fontWeight={900}>{value}</Typography></Paper></Grid>)}</Grid></Paper>
+}
+
+const referenceKpis = [
+  ['品牌知名度', '品牌聲量'], ['現金', '現金餘額'], ['通路', '銷售通路'],
+  ['顧客關係', '回訪顧客'], ['產品品質', '產品品質'], ['服務體驗', '服務體驗'],
+  ['產品組合', '產品組合'], ['營運效率', '營運效率'], ['成本控制', '成本控制'],
+]
+
+function GamePanel({ room, market }: { room: DashboardRoom; market: [string, number][] }) {
+  const periodNames = ['試營運', '正式營運', '擴大營運']
+  return <Paper sx={{ mb: 2.5, overflow: 'hidden', borderRadius: 2, bgcolor: '#4d382b', color: '#fff8ef', boxShadow: '0 12px 28px rgba(73,47,33,.2)' }}>
+    <Box sx={{ px: { xs: 2, md: 3 }, py: 1.8, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,.16)' }}><Stack direction="row" spacing={1.2} alignItems="center"><Coffee sx={{ color: '#e4b27b' }} /><Box><Typography variant="overline" sx={{ color: '#dfc6b2', letterSpacing: '.12em' }}>CAFE STARTUPS</Typography><Typography variant="h6" fontWeight={900}>遊戲面板</Typography></Box></Stack><Chip label={`第 ${room.period} 期・第 ${room.round} 回合`} sx={{ color: '#f7dfc9', bgcolor: 'rgba(255,255,255,.12)', border: '1px solid rgba(255,255,255,.18)' }} /></Box>
+    <Box sx={{ p: { xs: 1.5, md: 2.5 } }}>
+      <Typography variant="caption" sx={{ color: '#dfc6b2' }}>關鍵指標區・選擇兩項觀察你的創業假設</Typography>
+      <Grid container spacing={1} sx={{ mt: 1, mb: 2.5 }}>{referenceKpis.map(([label, detail], index) => <Grid key={label} size={{ xs: 6, sm: 4, md: 2.4 }}><Paper sx={{ p: 1.2, minHeight: 68, bgcolor: index < 2 ? '#805b43' : '#604536', color: '#fff8ef', border: '1px solid rgba(255,255,255,.12)', borderRadius: 1.5 }}><Typography variant="caption" sx={{ color: '#f1d8c1', display: 'block' }}>{label}</Typography><Typography variant="body2" fontWeight={800}>{detail}</Typography></Paper></Grid>)}</Grid>
+      <Box sx={{ borderRadius: 1.5, overflow: 'hidden', border: '1px solid rgba(255,255,255,.15)' }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: '1.25fr repeat(3, 1fr)', bgcolor: '#765341', color: '#f6dfca' }}><Typography sx={{ p: 1.2 }} variant="caption">需求市場</Typography>{periodNames.map((name, index) => <Box key={name} sx={{ p: 1.2, textAlign: 'center', bgcolor: room.period === index + 1 ? '#9a6847' : 'transparent' }}><Typography variant="caption" fontWeight={800}>第 {index + 1} 期</Typography><Typography display="block" variant="caption" sx={{ opacity: .75 }}>{name}</Typography></Box>)}</Box>
+        {['gourmet', 'regular', 'difficult'].map((kind) => <Box key={kind} sx={{ display: 'grid', gridTemplateColumns: '1.25fr repeat(3, 1fr)', bgcolor: '#5b4335', borderTop: '1px solid rgba(255,255,255,.1)' }}><Typography sx={{ p: 1.2 }} variant="body2">{kind === 'gourmet' ? '精品顧客' : kind === 'regular' ? '一般顧客' : '困難市場'}</Typography>{[1, 2, 3].map((period) => <Typography key={period} sx={{ p: 1.2, textAlign: 'center', bgcolor: room.period === period ? 'rgba(228,178,123,.18)' : 'transparent' }} variant="body2" fontWeight={700}>{market.find(([key]) => key === kind)?.[1] ?? 0}</Typography>)}</Box>)}
+      </Box>
+      <Stack direction={{ xs: 'column', md: 'row' }} spacing={1.5} sx={{ mt: 2 }}><Paper sx={{ p: 1.5, flex: 1, bgcolor: '#5b4335', color: '#f6dfca' }}><Typography variant="caption">目前現金</Typography><Typography variant="h6" fontWeight={900}>${room.me?.cash ?? 0} 萬</Typography></Paper><Paper sx={{ p: 1.5, flex: 1, bgcolor: '#5b4335', color: '#f6dfca' }}><Typography variant="caption">玩家排名</Typography><Typography variant="h6" fontWeight={900}>{room.players.slice().sort((a, b) => (b.score ?? 0) - (a.score ?? 0)).findIndex((player) => player.id === room.me?.id) + 1 || '—'} / {room.players.length}</Typography></Paper><Paper sx={{ p: 1.5, flex: 1, bgcolor: '#5b4335', color: '#f6dfca' }}><Typography variant="caption">遊戲狀態</Typography><Typography variant="h6" fontWeight={900}>{room.phase === 'finished' ? '已完成' : '進行中'}</Typography></Paper></Stack>
+    </Box>
+  </Paper>
 }
 
 function CashFlowPanel({ room }: { room: DashboardRoom }) {
