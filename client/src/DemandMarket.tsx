@@ -44,13 +44,18 @@ function DemandCard({ card, revealed }: { card: DemandCardData; revealed: boolea
   </div>
 }
 
-export function DemandMarket({ period }: { period: number }) {
+export function DemandMarket({ period, round }: { period: number; round: number }) {
   const groups: Array<{ id: DemandCardData['group']; label: string }> = [{ id: 'gourmet', label: '饕客' }, { id: 'regular', label: '一般客' }]
   return <section className="demand-market panel" aria-label="顧客需求區">
     <div className="demand-market-heading"><div><p className="eyebrow">DEMAND CARDS</p><h2>顧客需求區</h2></div><span>普通 1 圖示 · 進階 2 圖示</span></div>
     <div className="demand-market-rows">{groups.map((group) => <div className={`demand-market-row ${group.id}`} key={group.id}>
       <div className="demand-group-label"><strong>{group.label}</strong><small>{group.id === 'gourmet' ? '高消費力客群' : '一般消費客群'}</small></div>
-      {DEMAND_CARDS.filter((card) => card.group === group.id).map((card) => <DemandCard key={card.id} card={card} revealed={card.period <= period} />)}
+      {DEMAND_CARDS.filter((card) => card.group === group.id).map((card, index) => {
+        // A card is revealed only after its matching round is completed. Cards
+        // from earlier periods stay face-up; future-period cards stay hidden.
+        const revealed = card.period < period || (card.period === period && index < round)
+        return <DemandCard key={card.id} card={card} revealed={revealed} />
+      })}
     </div>)}</div>
   </section>
 }
