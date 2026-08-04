@@ -127,7 +127,9 @@ export function App() {
     setBusy(true); setError('')
     try {
       const created = await request<{ id: string; token: string; playerId: string; state: GameState }>('/api/games', { method: 'POST', body: JSON.stringify({ seed, displayName: name.trim() || '咖啡創業家' }) })
-      saveSession(created.id, created.token, created.playerId); setRoom(created.state); setScreen('lobby')
+      saveSession(created.id, created.token, created.playerId)
+      const started = await request<GameState>(`/api/games/${encodeURIComponent(created.id)}/start`, { method: 'POST', headers: { 'X-Session-Token': created.token } })
+      setRoom(started); setScreen('game')
     } catch (cause) { setError(cause instanceof Error ? cause.message : '建立房間失敗') } finally { setBusy(false) }
   }
 
@@ -176,8 +178,8 @@ export function App() {
   return <main className="app-shell">
     <header className="topbar"><span className="brand-mark">CS</span><span>Café Startups</span>{room && <span className="sync-pill">v{room.gameVersion} · 已同步</span>}</header>
     {screen === 'home' && <Home name={name} setName={setName} seed={seed} setSeed={setSeed} createRoom={createRoom} busy={busy} error={error} />}
-    {screen === 'lobby' && room && <Lobby room={room} busy={busy} setupInitialCards={setupInitialCards} startGame={startGame} leave={leave} error={error} />}
-    {screen === 'game' && room && <><ReferenceBoard period={room.period} round={room.round} seed={room.seed} /><GameDashboard room={room} selectedCard={selectedCard} setSelectedCard={setSelectedCard} command={command} busy={busy} error={error} leave={leave} /><CashFlowTable room={room} /></>}
+    {screen === 'lobby' && room && <Lobby room={room} busy={busy} startGame={startGame} leave={leave} error={error} />}
+    {screen === 'game' && room && <><ReferenceBoard period={room.period} round={room.round} seed={room.seed} /><GameDashboard room={room} selectedCard={selectedCard} setSelectedCard={setSelectedCard} command={command} busy={busy} error={error} leave={leave} setupInitialCards={setupInitialCards} /><CashFlowTable room={room} /></>}
   </main>
 }
 
@@ -185,19 +187,8 @@ function Home(props: { name: string; setName: (v: string) => void; seed: string;
   return <section className="landing layout-grid"><div className="intro"><p className="eyebrow">LOCAL BOARD GAME · MVP</p><h1>把假設<br /><em>煮成一杯</em><br />好生意。</h1><p className="lead">一位玩家在本機驗證咖啡館策略，電腦玩家只負責合法且可重播的隨機行動。</p><div className="stat-row"><span><strong>3</strong> 時期</span><span><strong>84</strong> 張 MVP 卡</span><span><strong>1</strong> 位玩家</span></div></div><div className="panel home-panel"><p className="eyebrow">SINGLE-PLAYER MVP</p><h2>開始單機桌遊</h2><label>你的名稱<input value={props.name} onChange={(e) => props.setName(e.target.value)} maxLength={20} /></label><button className="primary full" onClick={props.createRoom} disabled={props.busy}>{props.busy ? '建立中…' : '開始本機遊戲'}</button><p className="hint">遊戲會在本機自動補足隨機電腦玩家；目前不開放區網或線上加入。</p><details><summary>測試 seed（建立房間用）</summary><input value={props.seed} onChange={(e) => props.setSeed(e.target.value)} /></details>{props.error && <p className="error">{props.error}</p>}</div></section>
 }
 
-function InitialCardPicker(props: { room: GameState; busy: boolean; setupInitialCards: (partnerId: string, starterShopId: string) => void }) {
-  const selectedPartner = props.room.me?.partner?.id ?? props.room.partnerOptions?.[0]?.id ?? ''
-  const selectedShop = props.room.me?.starterShop?.id ?? props.room.starterShopOptions?.[0]?.id ?? ''
-  return <section className="initial-card-picker" aria-label="創業卡片選擇">
-    <div className="initial-card-heading"><div><p className="eyebrow">START YOUR CAFÉ</p><h2>選擇創辦人與創業店</h2></div><span>示意卡片 · MVP</span></div>
-    <p className="initial-card-note">創業前先選擇 1 張創辦人卡與 1 張創業店卡；選擇會儲存在後端房間狀態。</p>
-    <div className="initial-card-group"><strong>創辦人卡</strong><div className="initial-card-grid">{(props.room.partnerOptions ?? []).map((card) => <button type="button" className={`initial-card ${selectedPartner === card.id ? 'selected' : ''}`} key={card.id} onClick={() => props.setupInitialCards(card.id, selectedShop)} disabled={props.busy}><span className="initial-card-symbol">♟</span><span><b>{card.name}</b><small>{card.description}</small></span>{selectedPartner === card.id && <em>已選</em>}</button>)}</div></div>
-    <div className="initial-card-group"><strong>創業店卡</strong><div className="initial-card-grid">{(props.room.starterShopOptions ?? []).map((card) => <button type="button" className={`initial-card shop-card ${selectedShop === card.id ? 'selected' : ''}`} key={card.id} onClick={() => props.setupInitialCards(selectedPartner, card.id)} disabled={props.busy}><span className="initial-card-symbol">⌂</span><span><b>{card.name}</b><small>{card.description}</small></span>{selectedShop === card.id && <em>已選</em>}</button>)}</div></div>
-  </section>
-}
-
-function Lobby(props: { room: GameState; busy: boolean; setupInitialCards: (partnerId: string, starterShopId: string) => void; startGame: () => void; leave: () => void; error: string }) {
-  return <section className="lobby-page layout-grid"><div className="panel room-card"><p className="eyebrow">LOCAL SETUP</p><h1>單機桌遊</h1><p className="muted">你是一位真人玩家；開始後由本機伺服器自動補足隨機電腦玩家。</p><div className="player-list">{props.room.players.map((player) => <div className="player-row" key={player.id}><span className="avatar">{player.displayName.slice(0, 1)}</span><span><strong>{player.displayName}</strong>{player.bot && <small>電腦玩家</small>}</span><span className="ready">本機</span></div>)}</div><InitialCardPicker room={props.room} busy={props.busy} setupInitialCards={props.setupInitialCards} /><div className="lobby-actions"><button className="secondary" onClick={props.leave}>離開</button><button className="accent" onClick={props.startGame} disabled={props.busy}>開始遊戲</button></div>{props.error && <p className="error">{props.error}</p>}</div><aside className="rules-card"><p className="eyebrow">SINGLE-PLAYER MVP</p><h2>先把玩法煮熟</h2><p>目前只驗證單機規則與 Bot 行動；區域網路與線上模式會在玩法確認後再開發。</p><ol><li>選擇創辦人與創業店</li><li>完成三個營運時期</li><li>檢查卡牌、營收與結算</li></ol></aside></section>
+function Lobby(props: { room: GameState; busy: boolean; startGame: () => void; leave: () => void; error: string }) {
+  return <section className="lobby-page layout-grid"><div className="panel room-card"><p className="eyebrow">LOCAL SETUP</p><h1>單機桌遊</h1><p className="muted">你是一位真人玩家；開始後由本機伺服器自動補足隨機電腦玩家。</p><div className="player-list">{props.room.players.map((player) => <div className="player-row" key={player.id}><span className="avatar">{player.displayName.slice(0, 1)}</span><span><strong>{player.displayName}</strong>{player.bot && <small>電腦玩家</small>}</span><span className="ready">本機</span></div>)}</div><div className="lobby-actions"><button className="secondary" onClick={props.leave}>離開</button><button className="accent" onClick={props.startGame} disabled={props.busy}>進入遊戲</button></div>{props.error && <p className="error">{props.error}</p>}</div><aside className="rules-card"><p className="eyebrow">SINGLE-PLAYER MVP</p><h2>先把玩法煮熟</h2><p>進入遊戲後，再選擇合夥人與初始店面；區域網路與線上模式會在玩法確認後再開發。</p><ol><li>進入遊戲面板</li><li>選擇合夥人與初始店面</li><li>完成三個營運時期</li></ol></aside></section>
 }
 
 function KpiPicker(props: { room: GameState; kpis: [string, string]; setKpis: (value: [string, string]) => void; command: (type: string, extra?: Record<string, unknown>) => void; busy: boolean }) {

@@ -255,6 +255,8 @@ func (s *gameStore) commandHandler(w http.ResponseWriter, r *http.Request) {
 
 func applyCommand(room *gameRoom, playerID string, input commandRequest) error {
 	switch input.Type {
+	case "BEGIN_EXPERIMENT":
+		return room.Domain.BeginExperiment()
 	case "SET_KPI":
 		return room.Domain.SetKPIs(playerID, input.KPIs...)
 	case "SELECT_CARD":
