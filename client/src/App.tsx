@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { CardFace } from './CardFace'
 import type { CardFaceData } from './CardFace'
-import { DemandMarket } from './DemandMarket'
+import { arrangeDemandCards, DemandCard, DemandMarket } from './DemandMarket'
 import { GameDashboard } from './modules/game/ui/GameDashboard'
 
 const API = 'http://localhost:8080'
@@ -30,7 +30,7 @@ const REFERENCE_PERIODS = [
   { id: 3, label: '擴大營運', gourmet: '+30', regular: '+10', customers: [5, 3, 2, 1] },
 ]
 
-function ReferenceBoard(props: { period: number; round?: number }) {
+function ReferenceBoard(props: { period: number; round?: number; seed?: string }) {
   return <details className="reference-panel" open>
     <summary><span><span className="reference-panel-icon">?</span>玩家參考面板</span><small>示意內容 · 規則速查 · 可收合</small></summary>
     <div className="reference-board" aria-label="玩家規則參考面板">
@@ -48,8 +48,8 @@ function ReferenceBoard(props: { period: number; round?: number }) {
         <div className="reference-brand-lockup"><span className="reference-cup">☕</span><span><strong>CAFÉ STARTUPS</strong><small>BREWING SUCCESSFUL ENTREPRENEURS</small></span></div>
         <div className="reference-period-head"><span className="reference-customer-spacer">客群需求與來客</span><span className="reference-initial"><strong>0</strong><small>創業</small></span>{REFERENCE_PERIODS.map((item) => <span className={props.period === item.id ? 'is-current' : ''} key={item.id}><strong>{item.id}</strong><small>{item.label}</small></span>)}</div>
         <div className="reference-demand-and-cards"><div className="reference-demand-table">
-        <ReferenceDemandRow type="gourmet" label="饕客" base="$10" additions={REFERENCE_PERIODS.map((item) => item.gourmet)} activePeriod={props.period} />
-        <ReferenceDemandRow type="regular" label="一般客" base="$10" additions={REFERENCE_PERIODS.map((item) => item.regular)} activePeriod={props.period} />
+        <ReferenceDemandRow type="gourmet" label="饕客" base="$10" additions={REFERENCE_PERIODS.map((item) => item.gourmet)} activePeriod={props.period} round={props.round} seed={props.seed} />
+        <ReferenceDemandRow type="regular" label="一般客" base="$10" additions={REFERENCE_PERIODS.map((item) => item.regular)} activePeriod={props.period} round={props.round} seed={props.seed} />
         </div></div><div className="reference-bottom">
           <div className="reference-summary"><span className="reference-cube blue">◆</span><span>關鍵資源</span><strong>$0</strong><div className="reference-metric-order"><b>?</b><b>→</b><b>▣</b><b>→</b><b>■</b><b>→</b><b>◆</b></div></div>
           <div className="reference-ranking"><div className="reference-ranking-title"><span>市場排名</span><small>抽取市場袋顧客數</small></div><div className="reference-ranking-grid"><div className="reference-rank-labels"><span>1st</span><span>2nd</span><span>3rd</span><span>4th</span></div>{REFERENCE_PERIODS.map((item) => <div className={props.period === item.id ? 'reference-rank-column is-current' : 'reference-rank-column'} key={item.id}>{item.customers.map((count, index) => <span key={`${item.id}-${index}`}><b>{count}</b><i>●</i></span>)}</div>)}</div></div>
@@ -59,12 +59,19 @@ function ReferenceBoard(props: { period: number; round?: number }) {
   </details>
 }
 
-function ReferenceDemandRow(props: { type: 'gourmet' | 'regular'; label: string; base: string; additions: string[]; activePeriod: number; round?: number }) {
+function ReferenceDemandRow(props: { type: 'gourmet' | 'regular'; label: string; base: string; additions: string[]; activePeriod: number; round?: number; seed?: string }) {
   const questionMarks = (period: number) => props.type === 'gourmet' ? (period === 0 ? '?' : '??') : (period <= 2 ? '?' : '??')
+  const numericSeed = [...(props.seed ?? 'local-game')].reduce((value, character) => ((value * 31) + character.charCodeAt(0)) >>> 0, 1)
+  const cards = arrangeDemandCards(numericSeed)[props.type === 'gourmet' ? 'ordinary' : 'advanced']
+  const cardAt = (column: number) => cards[column]
+  const slot = (column: number, fallback: string) => {
+    const card = cardAt(column)
+    return card && column <= (props.round ?? 0) ? <DemandCard card={card} revealed /> : <><b>{questionMarks(column)}</b><small>{fallback}</small></>
+  }
   return <div className={`reference-demand-row reference-demand-${props.type}`}>
     <div className="reference-customer-label"><span className="reference-customer-figures"><i /><i /></span><strong>{props.label}</strong><small>{props.type === 'gourmet' ? '饕客需求' : '一般客需求'}</small></div>
-    <div className="reference-demand-slot reference-demand-base"><b>{questionMarks(0)}</b><small>{props.base}</small></div>
-    {props.additions.map((addition, index) => <div className={`reference-demand-slot ${props.activePeriod === index + 1 ? 'is-current' : ''}`} key={`${props.type}-${index}`}><b>{questionMarks(index + 1)}</b><small>{addition}</small></div>)}
+    <div className="reference-demand-slot reference-demand-base">{slot(0, props.base)}</div>
+    {props.additions.map((addition, index) => <div className={`reference-demand-slot ${props.activePeriod === index + 1 ? 'is-current' : ''}`} key={`${props.type}-${index}`}>{slot(index + 1, addition)}</div>)}
   </div>
 }
 
@@ -170,7 +177,7 @@ export function App() {
     <header className="topbar"><span className="brand-mark">CS</span><span>Café Startups</span>{room && <span className="sync-pill">v{room.gameVersion} · 已同步</span>}</header>
     {screen === 'home' && <Home name={name} setName={setName} seed={seed} setSeed={setSeed} createRoom={createRoom} busy={busy} error={error} />}
     {screen === 'lobby' && room && <Lobby room={room} busy={busy} setupInitialCards={setupInitialCards} startGame={startGame} leave={leave} error={error} />}
-    {screen === 'game' && room && <><ReferenceBoard period={room.period} round={room.round} /><GameDashboard room={room} selectedCard={selectedCard} setSelectedCard={setSelectedCard} command={command} busy={busy} error={error} leave={leave} /><CashFlowTable room={room} /></>}
+    {screen === 'game' && room && <><ReferenceBoard period={room.period} round={room.round} seed={room.seed} /><GameDashboard room={room} selectedCard={selectedCard} setSelectedCard={setSelectedCard} command={command} busy={busy} error={error} leave={leave} /><CashFlowTable room={room} /></>}
   </main>
 }
 

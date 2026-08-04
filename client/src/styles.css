@@ -226,3 +226,17 @@ button { border: 0; border-radius: 10px; padding: 12px 17px; font-weight: 700; t
 .demand-card-footer small { font-size: 8px; }
 @media (max-width: 900px) { .demand-card-grid { grid-template-columns: repeat(2, minmax(170px, 1fr)); } }
 @media (max-width: 560px) { .demand-card-grid { grid-template-columns: 1fr; } .demand-stage-heading { align-items: start; flex-direction: column; } }
+.reference-demand-slot > .demand-card { width: calc(100% - 12px); min-height: 104px; border-radius: 7px; box-shadow: 0 2px 0 #c6ac92; }
+.reference-demand-slot > .demand-card .demand-card-heading { padding: 5px 6px; font-size: 8px; }
+.reference-demand-slot > .demand-card .demand-card-icons { min-height: 30px; padding-top: 5px; gap: 4px; }
+.reference-demand-slot > .demand-card .demand-card-icons span { width: 23px; height: 23px; font-size: 12px; }
+.reference-demand-slot > .demand-card .demand-card-labels { min-height: 16px; padding-top: 2px; font-size: 7px; }
+.reference-demand-slot > .demand-card .demand-card-bonus { padding: 4px; font-size: 8px; }
+.reference-demand-slot > .demand-card .demand-card-bonus strong { font-size: 11px; }
+.demand-card-back { background: linear-gradient(145deg, color-mix(in srgb, var(--demand-accent) 78%, #5a4032), #5a4032); }
+.demand-card-face { background: var(--demand-pale, #fffaf2); }
+.demand-card-type-label span { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; color: #fff; background: currentColor; font-size: 14px; }
+.demand-card-type-label span svg { color: #fff; }
+.demand-card-icons span { width: 34px; height: 34px; font-size: 21px; }
+.demand-card-type-label span { width: 28px; height: 28px; font-size: 18px; }
+.reference-demand-slot > .demand-card .demand-card-icons span { width: 29px; height: 29px; font-size: 18px; }
