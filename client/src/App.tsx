@@ -30,10 +30,8 @@ const REFERENCE_PERIODS = [
   { id: 3, label: '擴大營運', gourmet: '+30', regular: '+10', customers: [5, 3, 2, 1] },
 ]
 
-let activeGameRoom: GameState | undefined
-
-function ReferenceBoard(props: { period: number; room?: GameState }) {
-  return <><details className="reference-panel" open>
+function ReferenceBoard(props: { period: number }) {
+  return <details className="reference-panel" open>
     <summary><span><span className="reference-panel-icon">?</span>玩家參考面板</span><small>示意內容 · 規則速查 · 可收合</small></summary>
     <div className="reference-board" aria-label="玩家規則參考面板">
       <div className="reference-kpis">
@@ -57,7 +55,7 @@ function ReferenceBoard(props: { period: number; room?: GameState }) {
         </div>
       </div>
     </div>
-  </details>{(props.room ?? activeGameRoom) && <PlayerCardsPanel room={props.room ?? activeGameRoom!} />}</>
+  </details>
 }
 
 function ReferenceDemandRow(props: { type: 'gourmet' | 'regular'; label: string; base: string; additions: string[]; activePeriod: number }) {
@@ -148,7 +146,7 @@ export function App() {
     <header className="topbar"><span className="brand-mark">CS</span><span>Café Startups</span>{room && <span className="sync-pill">v{room.gameVersion} · 已同步</span>}</header>
     {screen === 'home' && <Home name={name} setName={setName} seed={seed} setSeed={setSeed} createRoom={createRoom} busy={busy} error={error} />}
     {screen === 'lobby' && room && <Lobby room={room} busy={busy} setupInitialCards={setupInitialCards} startGame={startGame} leave={leave} error={error} />}
-    {screen === 'game' && room && <GameDashboard room={room} selectedCard={selectedCard} setSelectedCard={setSelectedCard} command={command} busy={busy} error={error} leave={leave} />}
+    {screen === 'game' && room && <><ReferenceBoard period={room.period} /><GameDashboard room={room} selectedCard={selectedCard} setSelectedCard={setSelectedCard} command={command} busy={busy} error={error} leave={leave} /></>}
   </main>
 }
 
@@ -215,7 +213,6 @@ function PlayerCardsPanel(props: { room: GameState }) {
 
 function GameTable(props: { room: GameState; selectedCard: string; setSelectedCard: (id: string) => void; command: (type: string, extra?: Record<string, unknown>) => void; busy: boolean; error: string; leave: () => void }) {
   const me = props.room.me
-  activeGameRoom = props.room
   const selected = me?.hand.find((card) => card.id === props.selectedCard)
   const finalRanking = [...props.room.players].sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
   const phaseLabel: Record<string, string> = { hypothesis: '假設', experiment: '實驗', learning: '學習', finished: '結算' }
