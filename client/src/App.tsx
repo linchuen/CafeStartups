@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { CardFace } from './CardFace'
 import type { CardFaceData } from './CardFace'
 import { DemandMarket } from './DemandMarket'
+import { GameDashboard } from './modules/game/ui/GameDashboard'
 
 const API = 'http://localhost:8080'
 
@@ -29,8 +30,10 @@ const REFERENCE_PERIODS = [
   { id: 3, label: '擴大營運', gourmet: '+30', regular: '+10', customers: [5, 3, 2, 1] },
 ]
 
-function ReferenceBoard(props: { period: number }) {
-  return <details className="reference-panel" open>
+let activeGameRoom: GameState | undefined
+
+function ReferenceBoard(props: { period: number; room?: GameState }) {
+  return <><details className="reference-panel" open>
     <summary><span><span className="reference-panel-icon">?</span>玩家參考面板</span><small>示意內容 · 規則速查 · 可收合</small></summary>
     <div className="reference-board" aria-label="玩家規則參考面板">
       <div className="reference-kpis">
@@ -54,7 +57,7 @@ function ReferenceBoard(props: { period: number }) {
         </div>
       </div>
     </div>
-  </details>
+  </details>{(props.room ?? activeGameRoom) && <PlayerCardsPanel room={props.room ?? activeGameRoom!} />}</>
 }
 
 function ReferenceDemandRow(props: { type: 'gourmet' | 'regular'; label: string; base: string; additions: string[]; activePeriod: number }) {
@@ -145,7 +148,7 @@ export function App() {
     <header className="topbar"><span className="brand-mark">CS</span><span>Café Startups</span>{room && <span className="sync-pill">v{room.gameVersion} · 已同步</span>}</header>
     {screen === 'home' && <Home name={name} setName={setName} seed={seed} setSeed={setSeed} createRoom={createRoom} busy={busy} error={error} />}
     {screen === 'lobby' && room && <Lobby room={room} busy={busy} setupInitialCards={setupInitialCards} startGame={startGame} leave={leave} error={error} />}
-    {screen === 'game' && room && <><KpiPicker room={room} kpis={kpis} setKpis={setKpis} command={command} busy={busy} /><GameTable room={room} selectedCard={selectedCard} setSelectedCard={setSelectedCard} command={command} busy={busy} error={error} leave={leave} /><CashFlowTable room={room} /></>}
+    {screen === 'game' && room && <GameDashboard room={room} selectedCard={selectedCard} setSelectedCard={setSelectedCard} command={command} busy={busy} error={error} leave={leave} />}
   </main>
 }
 
@@ -191,8 +194,28 @@ function CashFlowTable(props: { room: GameState }) {
   return <section className="cash-flow-panel panel" aria-label="現金流量表"><div className="cash-flow-heading"><div><p className="eyebrow">CASH FLOW STATEMENT</p><h2>現金流量表</h2><p>每回合結束更新目前期；第 6 回合完成後，再補上營收與利息結算。</p></div><span>單位：萬元</span></div><div className="cash-flow-grid"><div className="cash-flow-corner">項目</div>{periods.map((period) => <div className={`cash-flow-period ${props.room.period === period ? 'is-current' : ''}`} key={period}><strong>{period}</strong><small>{period === 1 ? '試營運' : period === 2 ? '正式營運' : '擴大營運'}</small></div>)}<div className="cash-flow-section">A. 期初現金</div>{periods.map((period) => <div className="cash-flow-value" key={`beginning-${period}`}>{cell(period, 'beginningCash')}</div>)}<div className="cash-flow-section">B. 營業收入</div>{periods.map((period) => <div className="cash-flow-value positive" key={`revenue-${period}`}>{cell(period, 'operatingRevenue', true)}</div>)}<div className="cash-flow-detail">B1. 顧客營收</div>{periods.map((period) => <div className="cash-flow-value detail" key={`customer-${period}`}>{cell(period, 'operatingRevenue', true)}</div>)}<div className="cash-flow-detail">B2. 棄牌補貼</div>{periods.map((period) => <div className="cash-flow-value detail" key={`other-${period}`}>{cell(period, 'otherIncome', true)}</div>)}<div className="cash-flow-section">C. 營運支出</div>{periods.map((period) => <div className="cash-flow-value negative" key={`expense-${period}`}>{cell(period, 'operatingExpenses', true)}</div>)}<div className="cash-flow-section">D. 籌資活動</div>{periods.map((period) => { const statement = statementFor(period); const financing = statement ? statement.newLoans - statement.interestPaid - statement.principalRepayment : undefined; return <div className="cash-flow-value" key={`financing-${period}`}>{money(financing, true)}</div> })}<div className="cash-flow-detail">D1. 支付利息</div>{periods.map((period) => <div className="cash-flow-value detail negative" key={`interest-${period}`}>{cell(period, 'interestPaid', true)}</div>)}<div className="cash-flow-detail">D2. 償還本金</div>{periods.map((period) => <div className="cash-flow-value detail negative" key={`principal-${period}`}>{cell(period, 'principalRepayment', true)}</div>)}<div className="cash-flow-detail">D3. 增貸資金</div>{periods.map((period) => <div className="cash-flow-value detail positive" key={`loans-${period}`}>{cell(period, 'newLoans', true)}</div>)}<div className="cash-flow-total">期末結餘（A+B+C+D）</div>{periods.map((period) => <div className="cash-flow-value cash-flow-total" key={`ending-${period}`}>{cell(period, 'endingCash')}</div>)}</div></section>
 }
 
+function PlayerCardsPanel(props: { room: GameState }) {
+  const me = props.room.me
+  const startingCards = [me?.partner, me?.starterShop].filter((card): card is Card => Boolean(card))
+  const hand = me?.hand ?? []
+  const tableau = me?.tableau ?? []
+  const total = startingCards.length + hand.length + tableau.length
+
+  return <section className="player-cards-panel panel" aria-label="我的卡牌">
+    <div className="player-cards-heading">
+      <div><p className="eyebrow">YOUR COLLECTION</p><h2>我的卡牌 <span>{total}</span></h2></div>
+      <p>開局取得的卡牌與目前持有的手牌都會顯示在這裡。</p>
+    </div>
+    {total === 0 && <p className="empty player-cards-empty">尚未取得卡牌</p>}
+    {startingCards.length > 0 && <div className="player-card-group"><div className="player-card-group-title"><strong>開局卡牌</strong><small>合夥人卡・創始店卡</small></div><div className="player-card-grid player-card-grid-starting">{startingCards.map((card) => <div className="player-card-tile" key={card.id}><CardFace card={card} /></div>)}</div></div>}
+    {hand.length > 0 && <div className="player-card-group"><div className="player-card-group-title"><strong>目前手牌</strong><small>{hand.length} 張</small></div><div className="player-card-grid">{hand.map((card) => <div className="player-card-tile" key={card.id}><CardFace card={card} /></div>)}</div></div>}
+    {tableau.length > 0 && <div className="player-card-group"><div className="player-card-group-title"><strong>已打出卡牌</strong><small>{tableau.length} 張</small></div><div className="player-card-grid">{tableau.map((card) => <div className="player-card-tile" key={card.id}><CardFace card={card} /></div>)}</div></div>}
+  </section>
+}
+
 function GameTable(props: { room: GameState; selectedCard: string; setSelectedCard: (id: string) => void; command: (type: string, extra?: Record<string, unknown>) => void; busy: boolean; error: string; leave: () => void }) {
   const me = props.room.me
+  activeGameRoom = props.room
   const selected = me?.hand.find((card) => card.id === props.selectedCard)
   const finalRanking = [...props.room.players].sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
   const phaseLabel: Record<string, string> = { hypothesis: '假設', experiment: '實驗', learning: '學習', finished: '結算' }

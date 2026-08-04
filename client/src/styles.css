@@ -100,3 +100,19 @@ button { border: 0; border-radius: 10px; padding: 12px 17px; font-weight: 700; t
 .cash-flow-total { color: #fff9ef !important; background: #765341 !important; font-weight: 700 !important; }
 .cash-flow-grid > .cash-flow-value.cash-flow-total { justify-content: flex-end !important; }
 @media (max-width: 680px) { .cash-flow-panel { padding: 16px; } .cash-flow-heading { align-items: start; flex-direction: column; gap: 10px; } .cash-flow-grid { grid-template-columns: minmax(145px, 1.4fr) repeat(3, minmax(82px, 1fr)); } .cash-flow-grid > div { padding: 8px 7px; font-size: 10px; } .cash-flow-detail { padding-left: 12px !important; } }
+.player-cards-panel { margin: 18px 0 25px; padding: 22px; background: #fffaf4; }
+.player-cards-heading { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin-bottom: 18px; }
+.player-cards-heading h2 { margin: 0; color: #4a362c; font-size: 28px; }
+.player-cards-heading h2 span { display: inline-grid; place-items: center; min-width: 25px; height: 25px; margin-left: 5px; border-radius: 50%; color: #fffaf4; background: #b36f42; font: 700 12px 'DM Mono', monospace; vertical-align: middle; }
+.player-cards-heading > p { max-width: 360px; margin: 0; color: #9a8476; font-size: 12px; line-height: 1.5; text-align: right; }
+.player-card-group + .player-card-group { margin-top: 20px; padding-top: 18px; border-top: 1px solid #eaded4; }
+.player-card-group-title { display: flex; align-items: baseline; gap: 9px; margin-bottom: 10px; }
+.player-card-group-title strong { color: #765341; font-size: 13px; }
+.player-card-group-title small { color: #a78d7b; font: 10px 'DM Mono', monospace; }
+.player-card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); gap: 11px; }
+.player-card-grid-starting { grid-template-columns: repeat(2, minmax(145px, 190px)); }
+.player-card-tile { min-width: 0; min-height: 174px; }
+.player-card-tile .game-card { height: 100%; min-height: 174px; cursor: default; }
+.player-card-tile .game-card:hover { transform: none; border-color: #e1d1c2; box-shadow: 0 5px 0 #eadbcb; }
+.player-cards-empty { margin: 0; padding: 18px 0; }
+@media (max-width: 680px) { .player-cards-heading { align-items: start; flex-direction: column; } .player-cards-heading > p { max-width: none; text-align: left; } .player-card-grid-starting { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
