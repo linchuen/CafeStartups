@@ -30,7 +30,7 @@ const REFERENCE_PERIODS = [
   { id: 3, label: '擴大營運', gourmet: '+30', regular: '+10', customers: [5, 3, 2, 1] },
 ]
 
-function ReferenceBoard(props: { period: number }) {
+function ReferenceBoard(props: { period: number; round?: number }) {
   return <details className="reference-panel" open>
     <summary><span><span className="reference-panel-icon">?</span>玩家參考面板</span><small>示意內容 · 規則速查 · 可收合</small></summary>
     <div className="reference-board" aria-label="玩家規則參考面板">
@@ -47,9 +47,10 @@ function ReferenceBoard(props: { period: number }) {
       <div className="reference-rules">
         <div className="reference-brand-lockup"><span className="reference-cup">☕</span><span><strong>CAFÉ STARTUPS</strong><small>BREWING SUCCESSFUL ENTREPRENEURS</small></span></div>
         <div className="reference-period-head"><span className="reference-customer-spacer">客群需求與來客</span><span className="reference-initial"><strong>0</strong><small>創業</small></span>{REFERENCE_PERIODS.map((item) => <span className={props.period === item.id ? 'is-current' : ''} key={item.id}><strong>{item.id}</strong><small>{item.label}</small></span>)}</div>
+        <div className="reference-demand-and-cards"><div className="reference-demand-table">
         <ReferenceDemandRow type="gourmet" label="饕客" base="$10" additions={REFERENCE_PERIODS.map((item) => item.gourmet)} activePeriod={props.period} />
         <ReferenceDemandRow type="regular" label="一般客" base="$10" additions={REFERENCE_PERIODS.map((item) => item.regular)} activePeriod={props.period} />
-        <div className="reference-bottom">
+        </div></div><div className="reference-bottom">
           <div className="reference-summary"><span className="reference-cube blue">◆</span><span>關鍵資源</span><strong>$0</strong><div className="reference-metric-order"><b>?</b><b>→</b><b>▣</b><b>→</b><b>■</b><b>→</b><b>◆</b></div></div>
           <div className="reference-ranking"><div className="reference-ranking-title"><span>市場排名</span><small>抽取市場袋顧客數</small></div><div className="reference-ranking-grid"><div className="reference-rank-labels"><span>1st</span><span>2nd</span><span>3rd</span><span>4th</span></div>{REFERENCE_PERIODS.map((item) => <div className={props.period === item.id ? 'reference-rank-column is-current' : 'reference-rank-column'} key={item.id}>{item.customers.map((count, index) => <span key={`${item.id}-${index}`}><b>{count}</b><i>●</i></span>)}</div>)}</div></div>
         </div>
@@ -58,7 +59,27 @@ function ReferenceBoard(props: { period: number }) {
   </details>
 }
 
-function ReferenceDemandRow(props: { type: 'gourmet' | 'regular'; label: string; base: string; additions: string[]; activePeriod: number }) {
+function ReferenceDemandRow(props: { type: 'gourmet' | 'regular'; label: string; base: string; additions: string[]; activePeriod: number; round?: number }) {
+  const questionMarks = (period: number) => props.type === 'gourmet' ? (period === 0 ? '?' : '??') : (period <= 2 ? '?' : '??')
+  return <div className={`reference-demand-row reference-demand-${props.type}`}>
+    <div className="reference-customer-label"><span className="reference-customer-figures"><i /><i /></span><strong>{props.label}</strong><small>{props.type === 'gourmet' ? '饕客需求' : '一般客需求'}</small></div>
+    <div className="reference-demand-slot reference-demand-base"><b>{questionMarks(0)}</b><small>{props.base}</small></div>
+    {props.additions.map((addition, index) => <div className={`reference-demand-slot ${props.activePeriod === index + 1 ? 'is-current' : ''}`} key={`${props.type}-${index}`}><b>{questionMarks(index + 1)}</b><small>{addition}</small></div>)}
+  </div>
+}
+
+/* Legacy card-in-slot experiment kept out of the active board layout.
+function ReferenceDemandRowWithCards(props: { type: 'gourmet' | 'regular'; label: string; base: string; additions: string[]; activePeriod: number; round?: number }) {
+  const cardForPeriod = (period: number) => DEMAND_CARDS.find((card) => card.group === props.type && card.period === period)
+  const revealed = (period: number) => period < props.activePeriod || period === props.activePeriod && period <= (props.round ?? 0)
+  return <div className={`reference-demand-row reference-demand-${props.type}`}>
+    <div className="reference-customer-label"><span className="reference-customer-figures"><i /><i /></span><strong>{props.label}</strong><small>{props.type === 'gourmet' ? '饕客需求' : '一般客需求'}</small></div>
+    <div className="reference-demand-slot reference-demand-base"><b>?</b><small>{props.base}</small></div>
+    {props.additions.map((addition, index) => { const period = index + 1; const card = cardForPeriod(period); return <div className={`reference-demand-slot reference-demand-card-slot ${props.activePeriod === period ? 'is-current' : ''}`} key={`${props.type}-${index}`}>{card ? <DemandCard card={card} revealed={revealed(period)} /> : <><b>?</b><small>{addition}</small></>}</div> })}
+  </div>
+}
+
+function LegacyReferenceDemandRow(props: { type: 'gourmet' | 'regular'; label: string; base: string; additions: string[]; activePeriod: number; round?: number }) {
   const questionMarks = (period: number) => props.type === 'gourmet' ? (period === 0 ? '?' : '??') : (period <= 2 ? '?' : '??')
   return <div className={`reference-demand-row reference-demand-${props.type}`}>
     <div className="reference-customer-label"><span className="reference-customer-figures"><i /><i /></span><strong>{props.label}</strong><small>{props.type === 'gourmet' ? '高消費客群' : '一般消費客群'}</small></div>
@@ -66,6 +87,9 @@ function ReferenceDemandRow(props: { type: 'gourmet' | 'regular'; label: string;
     {props.additions.map((addition, index) => <div className={`reference-demand-slot ${props.activePeriod === index + 1 ? 'is-current' : ''}`} key={`${props.type}-${index}`}><b>{questionMarks(index + 1)}</b><small>✓ {addition}</small></div>)}
   </div>
 }
+
+}
+*/
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API}${path}`, { headers: { 'Content-Type': 'application/json', ...(init?.headers ?? {}) }, ...init })
@@ -146,7 +170,7 @@ export function App() {
     <header className="topbar"><span className="brand-mark">CS</span><span>Café Startups</span>{room && <span className="sync-pill">v{room.gameVersion} · 已同步</span>}</header>
     {screen === 'home' && <Home name={name} setName={setName} seed={seed} setSeed={setSeed} createRoom={createRoom} busy={busy} error={error} />}
     {screen === 'lobby' && room && <Lobby room={room} busy={busy} setupInitialCards={setupInitialCards} startGame={startGame} leave={leave} error={error} />}
-    {screen === 'game' && room && <><ReferenceBoard period={room.period} /><GameDashboard room={room} selectedCard={selectedCard} setSelectedCard={setSelectedCard} command={command} busy={busy} error={error} leave={leave} /><CashFlowTable room={room} /></>}
+    {screen === 'game' && room && <><ReferenceBoard period={room.period} round={room.round} /><GameDashboard room={room} selectedCard={selectedCard} setSelectedCard={setSelectedCard} command={command} busy={busy} error={error} leave={leave} /><CashFlowTable room={room} /></>}
   </main>
 }
 

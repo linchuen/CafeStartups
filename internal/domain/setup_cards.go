@@ -16,9 +16,9 @@ func MVPPartnerCards() []Card {
 // lobby setup. Costs and detailed card effects remain fixture data for now.
 func MVPStarterShopCards() []Card {
 	return []Card{
-		{ID: "starter-songshan", Name: "松山店", Kind: "starter_shop", Description: "吸引高消費力的饕客。", Effect: "每期 +2 位精品顧客", Cost: Cost{Cash: 20}, Demand: map[string]int{"gourmet": 2}, Source: "mvp-fixture"},
-		{ID: "starter-minsheng", Name: "民生店", Kind: "starter_shop", Description: "吸引高消費力的饕客與一般客。", Effect: "每期 +1 位精品顧客、+1 位一般顧客", Cost: Cost{Cash: 25}, Demand: map[string]int{"gourmet": 1, "regular": 1}, Source: "mvp-fixture"},
-		{ID: "starter-xinyi", Name: "信義店", Kind: "starter_shop", Description: "開設分店，同時吸引饕客與一般客群。", Effect: "每期 +1 位精品顧客、+2 位一般顧客", Cost: Cost{Cash: 30}, Demand: map[string]int{"gourmet": 1, "regular": 2}, Source: "mvp-fixture"},
-		{ID: "starter-station", Name: "站前品牌旗艦店", Kind: "starter_shop", Description: "開設旗艦店，吸引大批一般消費客群。", Effect: "每期 +3 位一般顧客", Cost: Cost{Cash: 35}, Demand: map[string]int{"regular": 3}, Source: "mvp-fixture"},
+		{ID: "starter-songshan", Name: "松山店", Kind: "starter_shop", Description: "吸引高消費力的饕客。", Effect: "每期 +2 位饕客", Cost: Cost{Cash: 20}, Demand: map[string]int{"gourmet": 2}, Source: "mvp-fixture"},
+		{ID: "starter-minsheng", Name: "民生店", Kind: "starter_shop", Description: "吸引高消費力的饕客與一般客。", Effect: "每期 +1 位饕客、+1 位一般客", Cost: Cost{Cash: 25}, Demand: map[string]int{"gourmet": 1, "regular": 1}, Source: "mvp-fixture"},
+		{ID: "starter-xinyi", Name: "信義店", Kind: "starter_shop", Description: "開設分店，同時吸引饕客與一般客群。", Effect: "每期 +1 位饕客、+2 位一般客", Cost: Cost{Cash: 30}, Demand: map[string]int{"gourmet": 1, "regular": 2}, Source: "mvp-fixture"},
+		{ID: "starter-station", Name: "站前品牌旗艦店", Kind: "starter_shop", Description: "開設旗艦店，吸引大批一般客。", Effect: "每期 +3 位一般客", Cost: Cost{Cash: 35}, Demand: map[string]int{"regular": 3}, Source: "mvp-fixture"},
 	}
 }

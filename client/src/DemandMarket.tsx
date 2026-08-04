@@ -1,61 +1,46 @@
 import type { CSSProperties } from 'react'
 
-export type DemandCardData = {
-  id: string
-  group: 'gourmet' | 'regular'
-  period: number
-  tier: 'ordinary' | 'advanced'
-  icons: string[]
-  valueBonus: number
-}
+export type DemandCardData = { id: string; row: 'ordinary' | 'advanced'; quantity: 1 | 2; icons: string[]; source?: string }
 
-const ICONS: Record<string, { label: string; symbol: string }> = {
-  coffee: { label: '咖啡', symbol: '☕' },
-  dessert: { label: '甜點', symbol: '◆' },
-  beans: { label: '咖啡豆', symbol: '●' },
-  taste: { label: '可口美味', symbol: '✦' },
-  service: { label: '貼心服務', symbol: '♥' },
-  price: { label: '合理價格', symbol: '$' },
-}
+const DEMAND_TYPES = [
+  { id: 'coffee', label: '\u5496\u5561', symbol: '\u2615' },
+  { id: 'dessert', label: '\u751c\u9ede', symbol: '\u25c7' },
+  { id: 'beans', label: '\u5496\u5561\u8c46', symbol: '\u25c9' },
+  { id: 'taste', label: '\u53ef\u53e3\u7f8e\u5473', symbol: '\u2665' },
+  { id: 'service', label: '\u8cbc\u5fc3\u670d\u52d9', symbol: '\u2665' },
+  { id: 'price', label: '\u5408\u7406\u50f9\u683c', symbol: '$' },
+] as const
 
-// The first visual slice of the demand-card board. The final deck rules can
-// replace this fixture without changing the card component or board layout.
-const DEMAND_CARDS: DemandCardData[] = [
-  { id: 'gourmet-1', group: 'gourmet', period: 1, tier: 'ordinary', icons: ['coffee'], valueBonus: 10 },
-  { id: 'gourmet-2', group: 'gourmet', period: 1, tier: 'advanced', icons: ['coffee', 'taste'], valueBonus: 20 },
-  { id: 'gourmet-3', group: 'gourmet', period: 2, tier: 'ordinary', icons: ['beans'], valueBonus: 10 },
-  { id: 'gourmet-4', group: 'gourmet', period: 3, tier: 'advanced', icons: ['dessert', 'service'], valueBonus: 30 },
-  { id: 'regular-1', group: 'regular', period: 1, tier: 'ordinary', icons: ['price'], valueBonus: 10 },
-  { id: 'regular-2', group: 'regular', period: 1, tier: 'advanced', icons: ['coffee', 'service'], valueBonus: 10 },
-  { id: 'regular-3', group: 'regular', period: 2, tier: 'ordinary', icons: ['dessert'], valueBonus: 10 },
-  { id: 'regular-4', group: 'regular', period: 3, tier: 'advanced', icons: ['beans', 'price'], valueBonus: 10 },
+export const DEMAND_CARDS: DemandCardData[] = [
+  ...DEMAND_TYPES.map((type, index) => ({ id: `ordinary-${String(index + 1).padStart(2, '0')}`, row: 'ordinary' as const, quantity: 1 as const, icons: [type.id], source: 'mvp-fixture' })),
+  ...DEMAND_TYPES.map((type, index) => ({ id: `advanced-${String(index + 1).padStart(2, '0')}`, row: 'advanced' as const, quantity: 2 as const, icons: [type.id, DEMAND_TYPES[(index + 1) % DEMAND_TYPES.length].id], source: 'mvp-fixture' })),
 ]
 
-function DemandCard({ card, revealed }: { card: DemandCardData; revealed: boolean }) {
-  const accent = card.group === 'gourmet' ? '#e36d46' : '#d1aa32'
-  const style = { '--demand-accent': accent } as CSSProperties
-  if (!revealed) return <div className="demand-card demand-card-back" style={style} aria-label="未翻開的需求卡"><span>CS</span><small>需求卡</small></div>
+const iconOf = (id: string) => DEMAND_TYPES.find((type) => type.id === id) ?? DEMAND_TYPES[0]
 
-  return <div className={`demand-card demand-card-face ${card.tier}`} style={style}>
-    <div className="demand-card-heading"><span>{card.tier === 'advanced' ? '進階需求' : '普通需求'}</span><b>第 {card.period} 期</b></div>
-    <div className="demand-card-icons">{card.icons.map((icon) => <span key={icon} title={ICONS[icon].label}>{ICONS[icon].symbol}</span>)}</div>
-    <div className="demand-card-labels">{card.icons.map((icon) => <small key={icon}>{ICONS[icon].label}</small>)}</div>
-    <div className="demand-card-bonus">客單價 <strong>+{card.valueBonus}</strong></div>
-  </div>
+// A seeded shuffle keeps every player on the same random board while the seed
+// can be replaced by the server's game seed when the API exposes it.
+const shuffle = <T,>(items: T[], seed: number) => {
+  const result = [...items]
+  let value = seed || 1
+  for (let index = result.length - 1; index > 0; index -= 1) {
+    value = (value * 1664525 + 1013904223) >>> 0
+    const target = value % (index + 1)
+    ;[result[index], result[target]] = [result[target], result[index]]
+  }
+  return result
 }
 
-export function DemandMarket({ period, round }: { period: number; round: number }) {
-  const groups: Array<{ id: DemandCardData['group']; label: string }> = [{ id: 'gourmet', label: '饕客' }, { id: 'regular', label: '一般客' }]
-  return <section className="demand-market panel" aria-label="顧客需求區">
-    <div className="demand-market-heading"><div><p className="eyebrow">DEMAND CARDS</p><h2>顧客需求區</h2></div><span>普通 1 圖示 · 進階 2 圖示</span></div>
-    <div className="demand-market-rows">{groups.map((group) => <div className={`demand-market-row ${group.id}`} key={group.id}>
-      <div className="demand-group-label"><strong>{group.label}</strong><small>{group.id === 'gourmet' ? '高消費力客群' : '一般消費客群'}</small></div>
-      {DEMAND_CARDS.filter((card) => card.group === group.id).map((card, index) => {
-        // A card is revealed only after its matching round is completed. Cards
-        // from earlier periods stay face-up; future-period cards stay hidden.
-        const revealed = card.period < period || (card.period === period && index < round)
-        return <DemandCard key={card.id} card={card} revealed={revealed} />
-      })}
-    </div>)}</div>
-  </section>
+export function DemandCard({ card, revealed }: { card: DemandCardData; revealed: boolean }) {
+  const style = { '--demand-accent': card.row === 'ordinary' ? '#c8b8a7' : '#aa9885' } as CSSProperties
+  if (!revealed) return <div className="demand-card demand-card-back" style={style} aria-label="\u5c1a\u672a\u63ed\u793a\u9700\u6c42\u5361"><span>{card.row === 'ordinary' ? '?' : '??'}</span></div>
+  return <div className={`demand-card demand-card-face ${card.row}`} style={style}><div className="demand-card-heading"><span>{card.row === 'ordinary' ? '\u666e\u901a\u9700\u6c42' : '\u9032\u968e\u9700\u6c42'}</span></div><div className="demand-card-icons">{card.icons.map((icon) => <span key={icon} title={iconOf(icon).label}>{iconOf(icon).symbol}</span>)}</div><div className="demand-card-labels">{card.icons.map((icon) => <small key={icon}>{iconOf(icon).label}</small>)}</div><div className="demand-card-bonus">\u9700\u6c42\u6578\u91cf<strong>{card.quantity}</strong></div></div>
+}
+
+export function DemandMarket({ period, round, embedded = false, seed = 1 }: { period: number; round: number; embedded?: boolean; seed?: number }) {
+  const revealedColumn = Math.max(0, Math.min(5, round))
+  const positioned = (row: DemandCardData['row']) => shuffle(DEMAND_CARDS.filter((card) => card.row === row), seed + (row === 'advanced' ? 97 : 0))
+  const ordinary = positioned('ordinary')
+  const advanced = positioned('advanced')
+  return <section className={`demand-market ${embedded ? 'demand-market-embedded' : 'panel'}`} aria-label="\u9700\u6c42\u5361"><div className="demand-market-heading"><div><p className="eyebrow">DEMAND CARDS</p><h2>\u9700\u6c42\u5361</h2></div><span>\u7b2c {period} \u671f\u30fb\u7b2c {round} \u56de\u5408</span></div><div className="demand-card-board"><div className="demand-card-board-labels"><span>\u5361\u80cc</span><span>\u666e\u901a\u9700\u6c42\u5361</span><span>\u9032\u968e\u9700\u6c42\u5361</span></div><div className="demand-card-board-grid">{DEMAND_TYPES.map((type, column) => <div className="demand-card-column" key={type.id}><div className="demand-card-type-label"><span>{type.symbol}</span><small>{type.label}</small></div><DemandCard card={ordinary[column]} revealed={column <= revealedColumn} /><DemandCard card={advanced[column]} revealed={column <= revealedColumn} /></div>)}</div></div></section>
 }

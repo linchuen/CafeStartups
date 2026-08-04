@@ -1,8 +1,8 @@
 // MUI 9 exposes several system props through `sx`; this screen is kept isolated
 // while the project migrates its remaining legacy JSX to the same API.
 // @ts-nocheck
-import { useMemo } from 'react'
-import { Coffee, Groups, Storefront, Paid, Psychology } from '@mui/icons-material'
+import { useMemo, type CSSProperties } from 'react'
+import { Coffee, Groups, Storefront, Paid, Psychology, Settings } from '@mui/icons-material'
 import { Alert, Box, Button, Card as MuiCard, CardContent, Chip, Container, Divider, Grid, LinearProgress, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Toolbar, Typography } from '@mui/material'
 import type { CardFaceData } from '../../../CardFace'
 
@@ -21,7 +21,89 @@ const kindMeta: Record<string, { label: string; color: string; background: strin
   marketing: { label: '行銷', color: '#7a5ba5', background: '#eee7f7', icon: Psychology },
 }
 
+const partnerMeta: Record<string, { color: string; pale: string; icon: typeof Coffee; role: string }> = {
+  'partner-barista': { color: '#2f87a8', pale: '#dceff5', icon: Coffee, role: '咖啡師・營運專業' },
+  'partner-roaster': { color: '#9a623b', pale: '#f3e3d4', icon: Coffee, role: '烘豆師・產品專業' },
+  'partner-marketer': { color: '#7656a5', pale: '#eee5f7', icon: Psychology, role: '行銷師・品牌專業' },
+  'partner-service': { color: '#39826c', pale: '#dff0e8', icon: Groups, role: '服務設計・體驗專業' },
+}
+
+function PartnerCardTile({ card, selected, onClick }: { card: PlayerCard; selected?: boolean; onClick?: () => void }) {
+  const meta = partnerMeta[card.id] ?? { color: '#714b38', pale: '#f3e5d8', icon: Groups, role: '創業夥伴' }
+  const Icon = meta.icon
+  return <MuiCard onClick={onClick} variant="outlined" sx={{ height: '100%', minHeight: 290, overflow: 'hidden', cursor: onClick ? 'pointer' : 'default', bgcolor: meta.pale, borderColor: selected ? meta.color : `${meta.color}66`, borderWidth: selected ? 3 : 1, transition: 'transform .15s, box-shadow .15s', '&:hover': onClick ? { transform: 'translateY(-3px)', boxShadow: 4 } : undefined }}>
+    <Box sx={{ px: 1.5, py: .9, bgcolor: meta.color, color: 'white', textAlign: 'center' }}><Typography variant="caption" fontWeight={900} sx={{ letterSpacing: '.08em' }}>{card.name}</Typography></Box>
+    <Box sx={{ px: 1.5, py: .85, display: 'flex', alignItems: 'center', gap: 1, bgcolor: `${meta.color}dd`, color: 'white' }}><Settings sx={{ fontSize: 19 }} /><Box><Typography variant="caption" sx={{ display: 'block', opacity: .8 }}>卡片功能</Typography><Typography variant="body2" fontWeight={900}>{meta.role}</Typography></Box></Box>
+    <Box sx={{ display: 'grid', placeItems: 'center', minHeight: 105, color: meta.color, background: `linear-gradient(135deg, ${meta.pale} 0%, #ffffff 100%)` }}><Icon sx={{ fontSize: 64, opacity: .9 }} /></Box>
+    <Box sx={{ px: 1.5, py: 1, bgcolor: '#ffffffcc' }}><Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: .35 }}>卡片說明</Typography><Typography variant="body2" sx={{ minHeight: 34 }}>{card.description ?? '創業合夥人提供的特殊能力。'}</Typography><Typography variant="caption" fontWeight={900} color={meta.color}>{card.effect ?? '—'}</Typography></Box>
+    <Stack direction="row" justifyContent="space-between" sx={{ px: 1.5, py: .8, bgcolor: meta.pale }}><Typography variant="caption" color="text.secondary">成本</Typography><Typography variant="body2" fontWeight={900} color={meta.color}>${card.cost?.cash ?? 0} 萬</Typography></Stack>
+  </MuiCard>
+}
+
+const shopMeta: Record<string, { color: string; pale: string; role: string }> = {
+  'starter-songshan': { color: '#2f7f82', pale: '#dff1ef', role: '饕客聚集' },
+  'starter-minsheng': { color: '#3e7896', pale: '#e1eff5', role: '饕客與一般客' },
+  'starter-xinyi': { color: '#8b6a38', pale: '#f3ecd8', role: '分店客群拓展' },
+  'starter-station': { color: '#735b91', pale: '#eee7f5', role: '一般顧客聚集' },
+}
+
+function StarterShopCardTile({ card, selected, onClick }: { card: PlayerCard; selected?: boolean; onClick?: () => void }) {
+  const meta = shopMeta[card.id] ?? { color: '#287477', pale: '#dff0ed', role: '店面顧客來源' }
+  const gourmet = card.demand?.gourmet ?? 0
+  const regular = card.demand?.regular ?? 0
+  return <MuiCard onClick={onClick} variant="outlined" sx={{ height: '100%', minHeight: 290, overflow: 'hidden', cursor: onClick ? 'pointer' : 'default', bgcolor: meta.pale, borderColor: selected ? meta.color : `${meta.color}66`, borderWidth: selected ? 3 : 1, transition: 'transform .15s, box-shadow .15s', '&:hover': onClick ? { transform: 'translateY(-3px)', boxShadow: 4 } : undefined }}>
+    <Box sx={{ px: 1.5, py: .9, bgcolor: meta.color, color: 'white', textAlign: 'center' }}><Typography variant="caption" fontWeight={900} sx={{ letterSpacing: '.08em' }}>{card.name}</Typography></Box>
+    <Box sx={{ px: 1.5, py: .85, display: 'flex', alignItems: 'center', gap: 1, bgcolor: `${meta.color}dd`, color: 'white' }}><Storefront sx={{ fontSize: 20 }} /><Box><Typography variant="caption" sx={{ display: 'block', opacity: .8 }}>店面功能</Typography><Typography variant="body2" fontWeight={900}>{meta.role}</Typography></Box></Box>
+    <Box sx={{ display: 'grid', placeItems: 'center', minHeight: 105, color: meta.color, background: `linear-gradient(135deg, ${meta.pale} 0%, #ffffff 100%)` }}><Storefront sx={{ fontSize: 64, opacity: .9 }} /></Box>
+    <Box sx={{ px: 1.5, py: 1, bgcolor: '#ffffffcc' }}><Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: .35 }}>顧客效果</Typography><Stack direction="row" spacing={1.5} alignItems="center" sx={{ minHeight: 34 }}>{gourmet > 0 && <Typography variant="body2" fontWeight={900} sx={{ color: '#ff7900', textShadow: '0 1px 1px rgba(160, 70, 0, .22)' }}>{'★'.repeat(gourmet)} <Box component="span" sx={{ color: '#6f625a', fontSize: 12 }}>饕客</Box></Typography>}{regular > 0 && <Typography variant="body2" fontWeight={900} sx={{ color: '#e5b832' }}>{'★'.repeat(regular)} <Box component="span" sx={{ color: '#6f625a', fontSize: 12 }}>一般客</Box></Typography>}{gourmet === 0 && regular === 0 && <Typography variant="body2">{card.effect ?? '開店後可獲得對應顧客。'}</Typography>}</Stack><Typography variant="caption" color="text.secondary">{card.description}</Typography></Box>
+    <Stack direction="row" justifyContent="space-between" sx={{ px: 1.5, py: .8, bgcolor: meta.pale }}><Typography variant="caption" color="text.secondary">店面成本</Typography><Typography variant="body2" fontWeight={900} color={meta.color}>${card.cost?.cash ?? 0} 萬</Typography></Stack>
+  </MuiCard>
+}
+
+const managementMeta: Record<string, { color: string; pale: string; label: string; function: string }> = {
+  resource: { color: '#2d6897', pale: '#d5e7ef', label: '資源／營運', function: '取得營運資源' },
+  product: { color: '#c88d28', pale: '#f3dfb7', label: '產品／商品', function: '推出特色產品' },
+  value: { color: '#bd584f', pale: '#f3d9d3', label: '顧客／價值', function: '提升顧客價值' },
+  channel: { color: '#2d6897', pale: '#d5e7ef', label: '資源／營運', function: '拓展銷售通路' },
+  marketing: { color: '#bd584f', pale: '#f3d9d3', label: '顧客／價值', function: '推廣品牌與服務' },
+}
+
+const managementIcons: Record<string, string> = { operations: '⚙', coffee: '☕', value: '♥', channel: '⚑', marketing: '⚑', people: '♟' }
+
+function MarketStars({ marketChange }: { marketChange?: Record<string, number> }) {
+  const entries = Object.entries(marketChange ?? {}).filter(([key, value]) => (key === 'gourmet' || key === 'regular') && value !== 0)
+  if (!entries.length) return <span className="management-market-empty">無市場變動</span>
+  return <span className="management-market-stars">{entries.map(([key, value]) => <span className={key === 'gourmet' ? 'management-stars-gourmet' : 'management-stars-regular'} key={key}>{value > 0 ? '★'.repeat(value) : `−${Math.abs(value)}`}<small>{key === 'gourmet' ? '饕客' : key === 'regular' ? '一般客' : '奧客'}</small></span>)}</span>
+}
+
+function LegacyManagementCardTile({ card, selected, onClick }: { card: PlayerCard; selected?: boolean; onClick?: () => void }) {
+  const meta = managementMeta[card.kind] ?? managementMeta.resource
+  const title = card.name
+  return <article className={`management-card ${selected ? 'is-selected' : ''}`} style={{ '--management-color': meta.color, '--management-pale': meta.pale } as CSSProperties} onClick={onClick} role={onClick ? 'button' : undefined} tabIndex={onClick ? 0 : undefined}>
+    <header className="management-card-title"><strong>{title}</strong><small>第 {card.period} 期</small></header>
+    <div className="management-card-function"><div className="management-icon-row">{card.icons.slice(0, 4).map((icon, index) => <span key={`${icon}-${index}`}>{managementIcons[icon] ?? '◆'}</span>)}</div><strong>{meta.function}</strong></div>
+    <div className="management-card-description"><b>卡片說明</b><p>{card.description ?? '可執行的經營管理行動。'}</p></div>
+    <div className="management-card-art"><span>{managementIcons[card.icons[0]] ?? '◆'}</span></div>
+    <footer className="management-card-footer"><div><b>市場變動</b><MarketStars marketChange={card.marketChange} /></div><div className="management-card-cost"><b>成本</b><strong>{card.cost?.cash ?? 0}</strong></div></footer>
+  </article>
+}
+
+function ManagementCardTile({ card, selected, onClick }: { card: PlayerCard; selected?: boolean; onClick?: () => void }) {
+  const meta = managementMeta[card.kind] ?? managementMeta.resource
+  const marketChange = Object.entries(card.marketChange ?? {}).filter(([, value]) => value !== 0).map(([key, value]) => `${key === 'gourmet' ? '饕客' : key === 'regular' ? '一般客' : '奧客'} ${value > 0 ? '+' : ''}${value}`).join('／') || '無市場變動'
+  return <MuiCard onClick={onClick} variant="outlined" sx={{ height: '100%', minHeight: 290, overflow: 'hidden', cursor: onClick ? 'pointer' : 'default', bgcolor: meta.pale, borderColor: selected ? meta.color : `${meta.color}66`, borderWidth: selected ? 3 : 1, transition: 'transform .15s, box-shadow .15s', '&:hover': onClick ? { transform: 'translateY(-3px)', boxShadow: 4 } : undefined }}>
+    <Box sx={{ px: 1.5, py: .9, bgcolor: meta.color, color: 'white', textAlign: 'center' }}><Typography variant="caption" fontWeight={900}>{card.name}</Typography></Box>
+    <Box sx={{ px: 1.5, py: .85, display: 'flex', alignItems: 'center', gap: 1, bgcolor: `${meta.color}dd`, color: 'white' }}><Box sx={{ display: 'flex', gap: .4 }}>{card.icons.slice(0, 4).map((icon, index) => <Typography key={`${icon}-${index}`} sx={{ fontSize: 18 }}>{managementIcons[icon] ?? '◆'}</Typography>)}</Box><Box><Typography variant="caption" sx={{ display: 'block', opacity: .8 }}>卡片功能</Typography><Typography variant="body2" fontWeight={900}>{meta.function}</Typography></Box></Box>
+    <Box sx={{ display: 'grid', placeItems: 'center', minHeight: 88, color: meta.color, background: 'linear-gradient(145deg, #f0f0ed, #dfe1df)' }}><Typography sx={{ fontSize: 46, opacity: .82 }}>{managementIcons[card.icons[0]] ?? '◆'}</Typography></Box>
+    <Box sx={{ px: 1.5, py: 1, bgcolor: '#ffffffcc' }}><Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: .35 }}>卡片說明</Typography><Typography variant="body2" sx={{ minHeight: 34 }}>{card.description ?? '可執行的經營管理行動。'}</Typography></Box>
+    <Stack direction="row" justifyContent="space-between" sx={{ px: 1.5, py: .8, bgcolor: meta.pale }}><Box><Typography variant="caption" fontWeight={900} color={meta.color}>{marketChange}</Typography><Typography display="block" variant="caption" color="text.secondary">市場變動</Typography></Box><Box><Typography variant="body2" fontWeight={900} color={meta.color}>${card.cost?.cash ?? 0}</Typography><Typography display="block" variant="caption" color="text.secondary">成本・至少 {card.minPlayers ?? 1} 人</Typography></Box></Stack>
+  </MuiCard>
+}
+
 function CardTile({ card, selected, onClick }: { card: PlayerCard; selected?: boolean; onClick?: () => void }) {
+  if (card.kind === 'partner') return <PartnerCardTile card={card} selected={selected} onClick={onClick} />
+  if (card.kind === 'starter_shop') return <StarterShopCardTile card={card} selected={selected} onClick={onClick} />
+  return <LegacyManagementCardTile card={card} selected={selected} onClick={onClick} />
   const meta = kindMeta[card.kind] ?? { label: card.kind, color: '#765341', background: '#f1e8df', icon: Coffee }
   const Icon = meta.icon
   return <MuiCard onClick={onClick} variant="outlined" sx={{ height: '100%', minHeight: 172, cursor: onClick ? 'pointer' : 'default', bgcolor: meta.background, borderColor: selected ? meta.color : `${meta.color}55`, borderWidth: selected ? 2 : 1, transition: 'transform .15s, box-shadow .15s', '&:hover': onClick ? { transform: 'translateY(-3px)', boxShadow: 3 } : undefined }}>
@@ -62,7 +144,7 @@ function GamePanel({ room, market }: { room: DashboardRoom; market: [string, num
       <Grid container spacing={1} sx={{ mt: 1, mb: 2.5 }}>{referenceKpis.map(([label, detail], index) => <Grid key={label} size={{ xs: 6, sm: 4, md: 2.4 }}><Paper sx={{ p: 1.2, minHeight: 68, bgcolor: index < 2 ? '#805b43' : '#604536', color: '#fff8ef', border: '1px solid rgba(255,255,255,.12)', borderRadius: 1.5 }}><Typography variant="caption" sx={{ color: '#f1d8c1', display: 'block' }}>{label}</Typography><Typography variant="body2" fontWeight={800}>{detail}</Typography></Paper></Grid>)}</Grid>
       <Box sx={{ borderRadius: 1.5, overflow: 'hidden', border: '1px solid rgba(255,255,255,.15)' }}>
         <Box sx={{ display: 'grid', gridTemplateColumns: '1.25fr repeat(3, 1fr)', bgcolor: '#765341', color: '#f6dfca' }}><Typography sx={{ p: 1.2 }} variant="caption">需求市場</Typography>{periodNames.map((name, index) => <Box key={name} sx={{ p: 1.2, textAlign: 'center', bgcolor: room.period === index + 1 ? '#9a6847' : 'transparent' }}><Typography variant="caption" fontWeight={800}>第 {index + 1} 期</Typography><Typography display="block" variant="caption" sx={{ opacity: .75 }}>{name}</Typography></Box>)}</Box>
-        {['gourmet', 'regular', 'difficult'].map((kind) => <Box key={kind} sx={{ display: 'grid', gridTemplateColumns: '1.25fr repeat(3, 1fr)', bgcolor: '#5b4335', borderTop: '1px solid rgba(255,255,255,.1)' }}><Typography sx={{ p: 1.2 }} variant="body2">{kind === 'gourmet' ? '精品顧客' : kind === 'regular' ? '一般顧客' : '困難市場'}</Typography>{[1, 2, 3].map((period) => <Typography key={period} sx={{ p: 1.2, textAlign: 'center', bgcolor: room.period === period ? 'rgba(228,178,123,.18)' : 'transparent' }} variant="body2" fontWeight={700}>{market.find(([key]) => key === kind)?.[1] ?? 0}</Typography>)}</Box>)}
+        {['gourmet', 'regular', 'difficult'].map((kind) => <Box key={kind} sx={{ display: 'grid', gridTemplateColumns: '1.25fr repeat(3, 1fr)', bgcolor: '#5b4335', borderTop: '1px solid rgba(255,255,255,.1)' }}><Typography sx={{ p: 1.2 }} variant="body2">{kind === 'gourmet' ? '饕客' : kind === 'regular' ? '一般客' : '奧客'}</Typography>{[1, 2, 3].map((period) => <Typography key={period} sx={{ p: 1.2, textAlign: 'center', bgcolor: room.period === period ? 'rgba(228,178,123,.18)' : 'transparent' }} variant="body2" fontWeight={700}>{market.find(([key]) => key === kind)?.[1] ?? 0}</Typography>)}</Box>)}
       </Box>
       <Stack direction={{ xs: 'column', md: 'row' }} spacing={1.5} sx={{ mt: 2 }}><Paper sx={{ p: 1.5, flex: 1, bgcolor: '#5b4335', color: '#f6dfca' }}><Typography variant="caption">目前現金</Typography><Typography variant="h6" fontWeight={900}>${room.me?.cash ?? 0} 萬</Typography></Paper><Paper sx={{ p: 1.5, flex: 1, bgcolor: '#5b4335', color: '#f6dfca' }}><Typography variant="caption">玩家排名</Typography><Typography variant="h6" fontWeight={900}>{room.players.slice().sort((a, b) => (b.score ?? 0) - (a.score ?? 0)).findIndex((player) => player.id === room.me?.id) + 1 || '—'} / {room.players.length}</Typography></Paper><Paper sx={{ p: 1.5, flex: 1, bgcolor: '#5b4335', color: '#f6dfca' }}><Typography variant="caption">遊戲狀態</Typography><Typography variant="h6" fontWeight={900}>{room.phase === 'finished' ? '已完成' : '進行中'}</Typography></Paper></Stack>
     </Box>

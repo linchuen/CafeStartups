@@ -1,0 +1,32 @@
+{
+  "version": 2,
+  "layout": {
+    "columns": 6,
+    "rows": ["ordinary", "advanced"],
+    "placement": "shuffle-at-game-start",
+    "reveal": "reveal-column-at-round-end",
+    "initialRevealRound": 0
+  },
+  "iconTypes": [
+    { "id": "coffee", "label": "\u5496\u5561", "symbol": "\u2615" },
+    { "id": "dessert", "label": "\u751c\u9ede", "symbol": "\u25c7" },
+    { "id": "beans", "label": "\u5496\u5561\u8c46", "symbol": "\u25c9" },
+    { "id": "taste", "label": "\u53ef\u53e3\u7f8e\u5473", "symbol": "\u2665" },
+    { "id": "service", "label": "\u8cbc\u5fc3\u670d\u52d9", "symbol": "\u2665" },
+    { "id": "price", "label": "\u5408\u7406\u50f9\u683c", "symbol": "$" }
+  ],
+  "cards": [
+    { "id": "ordinary-01", "row": "ordinary", "quantity": 1, "icons": ["coffee"], "source": "mvp-fixture" },
+    { "id": "ordinary-02", "row": "ordinary", "quantity": 1, "icons": ["dessert"], "source": "mvp-fixture" },
+    { "id": "ordinary-03", "row": "ordinary", "quantity": 1, "icons": ["beans"], "source": "mvp-fixture" },
+    { "id": "ordinary-04", "row": "ordinary", "quantity": 1, "icons": ["taste"], "source": "mvp-fixture" },
+    { "id": "ordinary-05", "row": "ordinary", "quantity": 1, "icons": ["service"], "source": "mvp-fixture" },
+    { "id": "ordinary-06", "row": "ordinary", "quantity": 1, "icons": ["price"], "source": "mvp-fixture" },
+    { "id": "advanced-01", "row": "advanced", "quantity": 2, "icons": ["coffee", "dessert"], "source": "mvp-fixture" },
+    { "id": "advanced-02", "row": "advanced", "quantity": 2, "icons": ["dessert", "beans"], "source": "mvp-fixture" },
+    { "id": "advanced-03", "row": "advanced", "quantity": 2, "icons": ["beans", "taste"], "source": "mvp-fixture" },
+    { "id": "advanced-04", "row": "advanced", "quantity": 2, "icons": ["taste", "service"], "source": "mvp-fixture" },
+    { "id": "advanced-05", "row": "advanced", "quantity": 2, "icons": ["service", "price"], "source": "mvp-fixture" },
+    { "id": "advanced-06", "row": "advanced", "quantity": 2, "icons": ["price", "coffee"], "source": "mvp-fixture" }
+  ]
+}
