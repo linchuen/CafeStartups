@@ -9,6 +9,12 @@ const shopMeta: Record<string, { role: string }> = {
   'starter-minsheng': { role: '饕客與一般客' },
   'starter-xinyi': { role: '分店客群拓展' },
   'starter-station': { role: '一般顧客聚集' },
+  'starter-daan': { role: '社區一般客群' },
+  'starter-beitou': { role: '休閒饕客聚集' },
+  'starter-neihu': { role: '辦公商圈客群' },
+  'starter-banqiao': { role: '交通人流客群' },
+  'starter-ximen': { role: '潮流饕客客群' },
+  'starter-gongguan': { role: '學府社群客群' },
 }
 
 export function StarterShopCardTile({ card, selected, onClick }: { card: PlayerCard; selected?: boolean; onClick?: () => void }) {

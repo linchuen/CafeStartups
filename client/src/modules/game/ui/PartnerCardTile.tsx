@@ -2,17 +2,24 @@
 import { Coffee, Groups, Psychology, Settings } from '@mui/icons-material'
 import { Box, Card as MuiCard, Stack, Typography } from '@mui/material'
 import type { PlayerCard } from './gameDashboardCardTypes'
-import { dashboardCardColors } from './gameDashboardCardTheme'
+import { dashboardCardColors, partnerFunctionById } from './gameDashboardCardTheme'
 
 const partnerMeta: Record<string, { icon: typeof Coffee; role: string }> = {
   'partner-barista': { icon: Coffee, role: '咖啡師・營運專業' },
   'partner-roaster': { icon: Coffee, role: '烘豆師・產品專業' },
   'partner-marketer': { icon: Psychology, role: '行銷師・品牌專業' },
   'partner-service': { icon: Groups, role: '服務設計・體驗專業' },
+  'partner-finance': { icon: Groups, role: '財務管理・資金專業' },
+  'partner-pastry': { icon: Coffee, role: '甜點開發・產品專業' },
+  'partner-supply': { icon: Groups, role: '供應鏈管理・採購專業' },
+  'partner-community': { icon: Groups, role: '社區合作・通路專業' },
+  'partner-hr': { icon: Groups, role: '人才培訓・服務專業' },
+  'partner-analytics': { icon: Psychology, role: '數據營運・通路專業' },
 }
 
 export function PartnerCardTile({ card, selected, onClick }: { card: PlayerCard; selected?: boolean; onClick?: () => void }) {
-  const colorTheme = dashboardCardColors.partner[card.id]
+  const functionKey = card.colorKey ?? card.function ?? partnerFunctionById[card.id]
+  const colorTheme = dashboardCardColors.management[functionKey ?? '']
   const meta = { ...(partnerMeta[card.id] ?? { icon: Groups, role: '創業夥伴' }), ...colorTheme }
   if (!colorTheme) return null
   const Icon = meta.icon

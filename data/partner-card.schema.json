@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://cafestartups.local/schemas/partner-card.schema.json",
+  "title": "Cafe Startups Partner Card",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "kind", "function", "colorKey", "description", "effect", "source"],
+  "properties": {
+    "id": { "type": "string" },
+    "name": { "type": "string" },
+    "kind": { "const": "partner" },
+    "function": { "enum": ["resource", "product", "value", "channel", "marketing"] },
+    "colorKey": { "enum": ["resource", "product", "value", "channel", "marketing"] },
+    "description": { "type": "string" },
+    "effect": { "type": "string" },
+    "startingCashBonus": { "type": "integer", "minimum": 0 },
+    "starterShopId": { "type": "string" },
+    "source": { "enum": ["mvp-fixture", "rulebook-verified"] }
+  },
+  "allOf": [
+    { "if": { "properties": { "function": { "const": "resource" } } }, "then": { "properties": { "colorKey": { "const": "resource" } } } },
+    { "if": { "properties": { "function": { "const": "product" } } }, "then": { "properties": { "colorKey": { "const": "product" } } } },
+    { "if": { "properties": { "function": { "const": "value" } } }, "then": { "properties": { "colorKey": { "const": "value" } } } },
+    { "if": { "properties": { "function": { "const": "channel" } } }, "then": { "properties": { "colorKey": { "const": "channel" } } } },
+    { "if": { "properties": { "function": { "const": "marketing" } } }, "then": { "properties": { "colorKey": { "const": "marketing" } } } }
+  ]
+}

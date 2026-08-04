@@ -7,6 +7,10 @@ export type CardFaceData = {
   period: number
   description?: string
   effect?: string
+  function?: string
+  colorKey?: string
+  startingCashBonus?: number
+  starterShopId?: string
   demand?: Record<string, number>
   minPlayers?: number
   cost: { cash: number; icons: string[] }

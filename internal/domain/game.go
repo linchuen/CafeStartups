@@ -50,21 +50,25 @@ type Cost struct {
 	Icons []string `json:"icons"`
 }
 type Card struct {
-	ID             string         `json:"id"`
-	Name           string         `json:"name"`
-	Kind           string         `json:"kind"`
-	Description    string         `json:"description,omitempty"`
-	Effect         string         `json:"effect,omitempty"`
-	Period         Period         `json:"period"`
-	Cost           Cost           `json:"cost"`
-	Icons          []string       `json:"icons"`
-	MarketChange   map[string]int `json:"marketChange"`
-	Source         string         `json:"source"`
-	BrandAwareness int            `json:"brandAwareness,omitempty"`
-	Products       int            `json:"products,omitempty"`
-	Values         int            `json:"values,omitempty"`
-	Resources      int            `json:"resources,omitempty"`
-	Demand         map[string]int `json:"demand,omitempty"`
+	ID                string         `json:"id"`
+	Name              string         `json:"name"`
+	Kind              string         `json:"kind"`
+	Description       string         `json:"description,omitempty"`
+	Effect            string         `json:"effect,omitempty"`
+	Function          string         `json:"function,omitempty"`
+	ColorKey          string         `json:"colorKey,omitempty"`
+	StartingCashBonus int            `json:"startingCashBonus,omitempty"`
+	StarterShopID     string         `json:"starterShopId,omitempty"`
+	Period            Period         `json:"period"`
+	Cost              Cost           `json:"cost"`
+	Icons             []string       `json:"icons"`
+	MarketChange      map[string]int `json:"marketChange"`
+	Source            string         `json:"source"`
+	BrandAwareness    int            `json:"brandAwareness,omitempty"`
+	Products          int            `json:"products,omitempty"`
+	Values            int            `json:"values,omitempty"`
+	Resources         int            `json:"resources,omitempty"`
+	Demand            map[string]int `json:"demand,omitempty"`
 }
 type Player struct {
 	ID, DisplayName        string
