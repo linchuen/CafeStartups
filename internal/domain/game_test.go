@@ -73,8 +73,8 @@ func TestInitialCardsCanBeSelectedInLobby(t *testing.T) {
 	if g.Players[0].Partner.ID != "partner-service" || g.Players[0].StarterShop.ID != "starter-station" {
 		t.Fatalf("selected cards not saved: partner=%s shop=%s", g.Players[0].Partner.ID, g.Players[0].StarterShop.ID)
 	}
-	if err := g.SetInitialCards("b", "partner-service", "starter-songshan"); err == nil {
-		t.Fatal("expected duplicate partner selection to be rejected")
+	if err := g.SetInitialCards("b", "partner-service", "starter-songshan"); err != nil {
+		t.Fatalf("expected duplicate partner selection to be allowed, got %v", err)
 	}
 }
 

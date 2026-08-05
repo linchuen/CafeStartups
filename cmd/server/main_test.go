@@ -56,6 +56,18 @@ func TestLocalGameLifecycleAndVersionConflict(t *testing.T) {
 	var started map[string]any
 	_ = json.NewDecoder(start.Body).Decode(&started)
 	version := int64(started["gameVersion"].(float64))
+	if started["period"].(float64) != 0 {
+		t.Fatalf("start should leave game in period zero: %+v", started)
+	}
+	begin := httptest.NewRecorder()
+	beginBody := `{"token":"` + created.Token + `","gameVersion":` + itoa(version) + `,"commandId":"begin-experiment","type":"BEGIN_EXPERIMENT"}`
+	handler.ServeHTTP(begin, httptest.NewRequest(http.MethodPost, "/api/games/"+created.ID+"/commands", strings.NewReader(beginBody)))
+	if begin.Code != http.StatusOK {
+		t.Fatalf("begin experiment status=%d body=%s", begin.Code, begin.Body.String())
+	}
+	var begun map[string]any
+	_ = json.NewDecoder(begin.Body).Decode(&begun)
+	version = int64(begun["gameVersion"].(float64))
 	state := httptest.NewRecorder()
 	req = httptest.NewRequest(http.MethodGet, "/api/games/"+created.ID+"?token="+created.Token, nil)
 	handler.ServeHTTP(state, req)
@@ -126,6 +138,10 @@ func TestSoloStartAddsRandomBots(t *testing.T) {
 	if start.Code != http.StatusOK {
 		t.Fatalf("start status=%d body=%s", start.Code, start.Body.String())
 	}
+	if err := store.games[room.ID].Domain.BeginExperiment(); err != nil {
+		t.Fatal(err)
+	}
+	runBots(store.games[room.ID])
 	if got := store.games[room.ID].Domain.Players[0].SelectedKPIs; len(got) != 0 {
 		t.Fatalf("KPIs must not be selected before period one ends: %v", got)
 	}
@@ -185,6 +201,8 @@ func TestSoloGameCompletesThroughHTTP(t *testing.T) {
 			t.Fatalf("command %s status=%d body=%s", commandType, recorder.Code, recorder.Body.String())
 		}
 	}
+
+	command("BEGIN_EXPERIMENT", "")
 
 	for period := 1; period <= 3; period++ {
 		for round := domain.InitialRound; round < domain.ExperimentRounds; round++ {

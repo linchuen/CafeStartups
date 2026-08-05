@@ -137,7 +137,8 @@ func (s *gameStore) setupHandler(w http.ResponseWriter, r *http.Request) {
 		writeCode(w, http.StatusNotFound, "GAME_NOT_FOUND")
 		return
 	}
-	if room.Status != "lobby" {
+	initialSetup := room.Status == "playing" && room.Domain.Period == domain.PeriodZero && room.Domain.Phase == domain.PhaseHypothesis
+	if room.Status != "lobby" && !initialSetup {
 		writeCode(w, http.StatusConflict, "GAME_ALREADY_STARTED")
 		return
 	}
@@ -180,13 +181,8 @@ func (s *gameStore) startHandler(w http.ResponseWriter, r *http.Request) {
 		writeDomainError(w, err)
 		return
 	}
-	if err := room.Domain.BeginExperiment(); err != nil {
-		writeDomainError(w, err)
-		return
-	}
 	room.Status = "playing"
 	room.Version++
-	runBots(room)
 	writeJSON(w, http.StatusOK, room.view(token))
 }
 

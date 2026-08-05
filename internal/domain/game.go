@@ -181,11 +181,6 @@ func (g *Game) SetInitialCards(playerID, partnerID, starterShopID string) error 
 	if !ok {
 		return ErrCardNotFound
 	}
-	for _, other := range g.Players {
-		if other.ID != playerID && other.Partner.ID == partner.ID {
-			return ErrInvalidAction
-		}
-	}
 	p.Partner = partner
 	p.StarterShop = starterShop
 	return nil

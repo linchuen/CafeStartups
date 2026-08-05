@@ -46,7 +46,7 @@ function ReferenceBoard(props: { period: number; phase?: string; round?: number;
       </div>
       <div className="reference-rules">
         <div className="reference-brand-lockup"><span className="reference-cup">☕</span><span><strong>CAFÉ STARTUPS</strong><small>BREWING SUCCESSFUL ENTREPRENEURS</small></span></div>
-        <div className="reference-period-head"><span className="reference-customer-spacer">客群需求與來客</span><span className="reference-initial"><strong>0</strong><small>創業</small></span>{REFERENCE_PERIODS.map((item) => <span className={props.period === item.id ? 'is-current' : ''} key={item.id}><strong>{item.id}</strong><small>{item.label}</small></span>)}</div>
+        <div className="reference-period-head"><span className="reference-customer-spacer">客群需求與來客</span><span className={`reference-initial ${props.period === 0 ? 'is-current' : ''}`}><strong>0</strong><small>創業</small></span>{REFERENCE_PERIODS.map((item) => <span className={props.period === item.id ? 'is-current' : ''} key={item.id}><strong>{item.id}</strong><small>{item.label}</small></span>)}</div>
         <div className="reference-demand-and-cards"><div className="reference-demand-table">
         <ReferenceDemandRow type="gourmet" label="饕客" base="$10" additions={REFERENCE_PERIODS.map((item) => item.gourmet)} activePeriod={props.period} revealed={props.phase === 'learning' || props.phase === 'finished'} round={props.round} seed={props.seed} />
         <ReferenceDemandRow type="regular" label="一般客" base="$10" additions={REFERENCE_PERIODS.map((item) => item.regular)} activePeriod={props.period} revealed={props.phase === 'learning' || props.phase === 'finished'} round={props.round} seed={props.seed} />
