@@ -240,3 +240,9 @@ button { border: 0; border-radius: 10px; padding: 12px 17px; font-weight: 700; t
 .demand-card-icons span { width: 34px; height: 34px; font-size: 21px; }
 .demand-card-type-label span { width: 28px; height: 28px; font-size: 18px; }
 .reference-demand-slot > .demand-card .demand-card-icons span { width: 29px; height: 29px; font-size: 18px; }
+.MuiContainer-root > .MuiGrid-root > .MuiGrid-root:nth-child(2) > .MuiStack-root > .MuiPaper-root:nth-child(2) { display: none; }
+.MuiContainer-root > .MuiGrid-root > .MuiGrid-root:first-child > .MuiStack-root > .MuiPaper-root:first-child { display: none; }
+.MuiContainer-root > .MuiGrid-root > .MuiGrid-root:first-child > .MuiStack-root > .MuiButton-root { display: none; }
+.MuiContainer-root > .MuiGrid-root > .MuiGrid-root:nth-child(2) > .MuiStack-root > .MuiStack-root:nth-child(3) { display: none; }
+.MuiContainer-root > .MuiGrid-root > .MuiGrid-root:nth-child(2) > .MuiStack-root > .MuiPaper-root:first-child { display: none; }
+.MuiAlert-standardError { position: fixed; top: 24px; left: 50%; z-index: 1400; min-width: min(420px, calc(100vw - 32px)); transform: translateX(-50%); box-shadow: 0 12px 36px rgba(60, 35, 25, .24); }

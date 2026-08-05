@@ -152,6 +152,7 @@ export function App() {
       setRoom(result.state); if (result.state.phase === 'experiment') setScreen('game')
     } catch (cause) {
       const message = cause as ApiError
+      window.alert(message.code ?? message.message)
       setError(message.code === 'VERSION_CONFLICT' ? '狀態已更新，已重新同步。' : message.message)
       await refresh()
     } finally { setBusy(false) }
