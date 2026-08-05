@@ -64,6 +64,9 @@ func TestInitialCardsCanBeSelectedInLobby(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	if g.Period != PeriodZero {
+		t.Fatalf("new game period=%d, want period zero", g.Period)
+	}
 	if err := g.SetInitialCards("a", "partner-service", "starter-station"); err != nil {
 		t.Fatal(err)
 	}
@@ -72,6 +75,30 @@ func TestInitialCardsCanBeSelectedInLobby(t *testing.T) {
 	}
 	if err := g.SetInitialCards("b", "partner-service", "starter-songshan"); err == nil {
 		t.Fatal("expected duplicate partner selection to be rejected")
+	}
+}
+
+func TestInitialCardsCannotBeChangedAfterPeriodOne(t *testing.T) {
+	g, err := NewGame("setup-period-seed", []string{"a", "b"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	g.Period = PeriodTwo
+	if err := g.SetInitialCards("a", "partner-service", "starter-station"); err != ErrInvalidAction {
+		t.Fatalf("expected initial card selection to be locked after period one, got %v", err)
+	}
+}
+
+func TestBeginExperimentMovesInitialSetupToPeriodOne(t *testing.T) {
+	g, err := NewGame("begin-period-seed", []string{"a", "b"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := g.BeginExperiment(); err != nil {
+		t.Fatal(err)
+	}
+	if g.Period != PeriodOne || g.Phase != PhaseExperiment {
+		t.Fatalf("after initial setup period=%d phase=%s, want period one experiment", g.Period, g.Phase)
 	}
 }
 

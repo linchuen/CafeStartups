@@ -10,6 +10,7 @@ import (
 type Period int
 
 const (
+	PeriodZero  Period = 0
 	PeriodOne   Period = 1
 	PeriodTwo   Period = 2
 	PeriodThree Period = 3
@@ -132,7 +133,7 @@ func (g *Game) SetCatalog(cards []Card) { g.Catalog = append([]Card(nil), cards.
 
 // NewGame creates a deterministic, offline game. Two to four players are required to start.
 func NewGame(seed string, playerIDs []string) (*Game, error) {
-	g := &Game{Seed: seed, Period: PeriodOne, Phase: PhaseHypothesis, PartnerOptions: MVPPartnerCards(), StarterShopOptions: MVPStarterShopCards(), DemandBoard: map[string]int{"gourmet": 0, "regular": 0, "difficult": 0}, selected: map[string]Card{}, acted: map[string]bool{}, rng: rand.New(rand.NewSource(seedValue(seed)))}
+	g := &Game{Seed: seed, Period: PeriodZero, Phase: PhaseHypothesis, PartnerOptions: MVPPartnerCards(), StarterShopOptions: MVPStarterShopCards(), DemandBoard: map[string]int{"gourmet": 0, "regular": 0, "difficult": 0}, selected: map[string]Card{}, acted: map[string]bool{}, rng: rand.New(rand.NewSource(seedValue(seed)))}
 	for _, id := range playerIDs {
 		if err := g.AddPlayer(id, id); err != nil {
 			return nil, err
@@ -165,7 +166,7 @@ func (g *Game) AddPlayer(id, displayName string) error {
 // old clients and deterministic tests compatible while new clients can choose
 // explicit MVP cards before the game starts.
 func (g *Game) SetInitialCards(playerID, partnerID, starterShopID string) error {
-	if g.Phase != PhaseHypothesis || partnerID == "" || starterShopID == "" {
+	if g.Phase != PhaseHypothesis || g.Period != PeriodZero || partnerID == "" || starterShopID == "" {
 		return ErrInvalidAction
 	}
 	p, err := g.player(playerID)
@@ -210,7 +211,7 @@ func (g *Game) Start() error {
 }
 
 func (g *Game) SetKPIs(playerID string, kpis ...string) error {
-	if g.Phase != PhaseHypothesis || g.Period == PeriodOne || len(kpis) != 2 || kpis[0] == kpis[1] {
+	if g.Phase != PhaseHypothesis || g.Period <= PeriodOne || len(kpis) != 2 || kpis[0] == kpis[1] {
 		return ErrInvalidAction
 	}
 	p, err := g.player(playerID)
@@ -228,6 +229,9 @@ func (g *Game) SetKPIs(playerID string, kpis ...string) error {
 func (g *Game) BeginExperiment() error {
 	if g.Phase != PhaseHypothesis || len(g.Players) < 2 {
 		return ErrInvalidPhase
+	}
+	if g.Period == PeriodZero {
+		g.Period = PeriodOne
 	}
 	if g.Period != PeriodOne {
 		for _, p := range g.Players {
