@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react'
-import { GameIcon } from './modules/game/ui/GameIcon'
+import { GameIcon } from '../cards/GameIcon'
 
 export type DemandCardData = { id: string; row: 'ordinary' | 'advanced'; quantity: 1 | 2; icons: string[]; source?: string }
 

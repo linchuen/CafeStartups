@@ -1,0 +1,5 @@
+import type { GameState } from '../../model/gameTypes'
+
+export function Lobby(props: { room: GameState; busy: boolean; startGame: () => void; leave: () => void; error: string }) {
+  return <section className="lobby-page layout-grid"><div className="panel room-card"><p className="eyebrow">LOCAL SETUP</p><h1>單機桌遊</h1><p className="muted">你是一位真人玩家；開始後由本機伺服器自動補足隨機電腦玩家。</p><div className="player-list">{props.room.players.map((player) => <div className="player-row" key={player.id}><span className="avatar">{player.displayName.slice(0, 1)}</span><span><strong>{player.displayName}</strong>{player.bot && <small>電腦玩家</small>}</span><span className="ready">本機</span></div>)}</div><div className="lobby-actions"><button className="secondary" onClick={props.leave}>離開</button><button className="accent" onClick={props.startGame} disabled={props.busy}>進入遊戲</button></div>{props.error && <p className="error">{props.error}</p>}</div><aside className="rules-card"><p className="eyebrow">SINGLE-PLAYER MVP</p><h2>先把玩法煮熟</h2><p>進入遊戲後，再選擇合夥人與初始店面；區域網路與線上模式會在玩法確認後再開發。</p><ol><li>進入遊戲面板</li><li>選擇合夥人與初始店面</li><li>完成三個營運時期</li></ol></aside></section>
+}

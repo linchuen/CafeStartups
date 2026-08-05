@@ -1,5 +1,5 @@
-import placeholder from '../../../assets/card-placeholder.svg'
-import type { PlayerCard } from './gameDashboardCardTypes'
+import placeholder from '../../../../assets/card-placeholder.svg'
+import type { PlayerCard } from '../../model/cardTypes'
 
 // Add artwork here by card name when the final illustrations are available.
 const artworkByName: Record<string, string> = {}

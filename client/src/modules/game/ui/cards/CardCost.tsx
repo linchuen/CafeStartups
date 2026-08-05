@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { Box, Stack, Typography } from '@mui/material'
-import type { PlayerCard } from './gameDashboardCardTypes'
+import type { PlayerCard } from '../../model/cardTypes'
 import { GameIcon } from './GameIcon'
 import { cardColorTokens } from './gameDashboardCardTheme'
 

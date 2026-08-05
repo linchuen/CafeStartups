@@ -3,7 +3,7 @@ import { Box, Grid, Stack, Typography } from '@mui/material'
 import { ManagementCardTile } from './ManagementCardTile'
 import { PartnerCardTile } from './PartnerCardTile'
 import { StarterShopCardTile } from './StarterShopCardTile'
-import type { PlayerCard } from './gameDashboardCardTypes'
+import type { PlayerCard } from '../../model/cardTypes'
 
 function CardTile({ card, selected, onClick }: { card: PlayerCard; selected?: boolean; onClick?: () => void }) {
   if (card.kind === 'partner') return <PartnerCardTile card={card} selected={selected} onClick={onClick} />

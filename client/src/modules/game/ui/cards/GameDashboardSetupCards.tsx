@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Box, Button, Grid, Paper, Stack, Typography } from '@mui/material'
 import { PartnerCardTile } from './PartnerCardTile'
 import { StarterShopCardTile } from './StarterShopCardTile'
-import type { PlayerCard } from './gameDashboardCardTypes'
+import type { PlayerCard } from '../../model/cardTypes'
 
 export function GameDashboardSetupCards({ partners, shops, selectedPartnerId, selectedShopId, busy, onSelect, onBegin }: { partners: PlayerCard[]; shops: PlayerCard[]; selectedPartnerId?: string; selectedShopId?: string; busy: boolean; onSelect: (partnerId: string, shopId: string) => void; onBegin: () => void }) {
   const [hasChosen, setHasChosen] = useState(false)
