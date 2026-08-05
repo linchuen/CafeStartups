@@ -20,6 +20,15 @@
       "required": ["gourmet", "regular", "difficult"],
       "properties": { "gourmet": { "type": "integer" }, "regular": { "type": "integer" }, "difficult": { "type": "integer" } }
     },
+    "customerCount": {
+      "type": "object",
+      "required": ["gourmet", "regular"],
+      "properties": { "gourmet": { "type": "integer", "minimum": 0 }, "regular": { "type": "integer", "minimum": 0 } }
+    },
     "source": { "enum": ["mvp-fixture", "rulebook-verified"] }
-  }
+  },
+  "allOf": [{
+    "if": { "properties": { "kind": { "const": "channel" } } },
+    "then": { "required": ["customerCount"] }
+  }]
 }

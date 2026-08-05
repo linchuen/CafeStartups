@@ -63,6 +63,7 @@ type Card struct {
 	Cost              Cost           `json:"cost"`
 	Icons             []string       `json:"icons"`
 	MarketChange      map[string]int `json:"marketChange"`
+	CustomerCount     map[string]int `json:"customerCount,omitempty"`
 	Source            string         `json:"source"`
 	BrandAwareness    int            `json:"brandAwareness,omitempty"`
 	Products          int            `json:"products,omitempty"`

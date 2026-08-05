@@ -16,6 +16,7 @@ export type CardFaceData = {
   cost: { cash: number; icons: string[] }
   icons: string[]
   marketChange?: Record<string, number>
+  customerCount?: Record<string, number>
 }
 
 const KIND_META: Record<string, { label: string; color: string; icon: string }> = {
