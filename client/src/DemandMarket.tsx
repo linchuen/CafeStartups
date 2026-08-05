@@ -45,7 +45,7 @@ export function DemandCard({ card, revealed }: { card: DemandCardData; revealed:
 }
 
 export function DemandMarket({ period, round, reveal = false, embedded = false, seed = 1 }: { period: number; round: number; reveal?: boolean; embedded?: boolean; seed?: number }) {
-  const revealedColumn = reveal ? 5 : -1
+  const revealedColumn = reveal ? Math.min(5, Math.max(-1, round - 1)) : -1
   const { ordinary, advanced } = arrangeDemandCards(seed)
   return <section className={`demand-market ${embedded ? 'demand-market-embedded' : 'panel'}`} aria-label="\u9700\u6c42\u5361"><div className="demand-market-heading"><div><p className="eyebrow">DEMAND CARDS</p><h2>\u9700\u6c42\u5361</h2></div><span>\u7b2c {period} \u671f\u30fb\u7b2c {round} \u56de\u5408</span></div><div className="demand-card-board"><div className="demand-card-board-labels"><span>\u5361\u80cc</span><span>\u666e\u901a\u9700\u6c42\u5361</span><span>\u9032\u968e\u9700\u6c42\u5361</span></div><div className="demand-card-board-grid">{DEMAND_TYPES.map((type, column) => <div className="demand-card-column" key={type.id}><div className="demand-card-type-label" style={{ color: type.color }}><span><GameIcon name={type.id} fontSize="small" /></span><small>{type.label}</small></div><DemandCard card={ordinary[column]} revealed={column <= revealedColumn} /><DemandCard card={advanced[column]} revealed={column <= revealedColumn} /></div>)}</div></div></section>
 }

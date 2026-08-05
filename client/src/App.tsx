@@ -12,7 +12,7 @@ type Player = { id: string; displayName: string; bot?: boolean; ready?: boolean;
 type CashFlowStatement = { period: number; beginningCash: number; operatingRevenue: number; otherIncome: number; operatingExpenses: number; interestPaid: number; principalRepayment: number; newLoans: number; endingCash: number }
 type GameState = { id: string; status: string; seed: string; gameVersion: number; period: number; phase: string; round: number; demandBoard?: Record<string, number>; partnerOptions?: Card[]; starterShopOptions?: Card[]; players: Player[]; me?: { id: string; hand: Card[]; tableau: Card[]; discardCount: number; partner?: Card; starterShop?: Card; initialCardsSelected?: boolean; cash: number; loans: number; customers?: { kind: string; demand: string; unitPrice: number; count: number }[]; revenue?: number; score?: number; selectedKPIs?: string[]; kpiSelectionPeriod?: number; cashFlow?: CashFlowStatement[]; cashFlowRounds?: CashFlowStatement[]; brandAwareness?: number; products?: number; values?: number; resources?: number } }
 type ApiError = Error & { code?: string }
-const KPI_OPTIONS = [{ id: 'brand_awareness', label: '品牌知名度' }, { id: 'products', label: '特色產品' }, { id: 'values', label: '價值主張' }, { id: 'resources', label: '關鍵資源' }]
+const KPI_OPTIONS = [{ id: 'gourmet_satisfaction', label: '饕客滿意度' }, { id: 'regular_satisfaction', label: '一般客滿意度' }, { id: 'total_satisfaction', label: '總滿意度' }, { id: 'channel', label: '通路' }, { id: 'awareness', label: '品牌知名度' }, { id: 'products', label: '特色產品' }, { id: 'quality', label: '品質' }, { id: 'cost', label: '成本' }, { id: 'surplus', label: '盈餘' }]
 const REFERENCE_KPIS = [
   { label: '饕客滿意度', value: '每張 +5 分', tone: 'gourmet', symbol: '★' },
   { label: '盈餘', value: '每 30 → +1', tone: 'cash', symbol: '30' },
@@ -66,7 +66,8 @@ function ReferenceDemandRow(props: { type: 'gourmet' | 'regular'; label: string;
   const cardAt = (column: number) => cards[column]
   const slot = (column: number, fallback: string) => {
     const card = cardAt(column)
-    return card && props.revealed ? <DemandCard card={card} revealed /> : <><b>{questionMarks(column)}</b><small>{fallback}</small></>
+    const isRevealed = Boolean(card && props.revealed && props.round !== undefined && props.round > column)
+    return isRevealed ? <DemandCard card={card!} revealed /> : <><b>{questionMarks(column)}</b><small>{fallback}</small></>
   }
   return <div className={`reference-demand-row reference-demand-${props.type}`}>
     <div className="reference-customer-label"><span className="reference-customer-figures"><i /><i /></span><strong>{props.label}</strong><small>{props.type === 'gourmet' ? '饕客需求' : '一般客需求'}</small></div>
@@ -180,7 +181,7 @@ export function App() {
     <header className="topbar"><span className="brand-mark">CS</span><span>Café Startups</span>{room && <span className="sync-pill">v{room.gameVersion} · 已同步</span>}</header>
     {screen === 'home' && <Home name={name} setName={setName} seed={seed} setSeed={setSeed} createRoom={createRoom} busy={busy} error={error} />}
     {screen === 'lobby' && room && <Lobby room={room} busy={busy} startGame={startGame} leave={leave} error={error} />}
-    {screen === 'game' && room && <><ReferenceBoard period={room.period} round={room.round} seed={room.seed} /><GameDashboard room={room} selectedCard={selectedCard} setSelectedCard={setSelectedCard} command={command} busy={busy} error={error} leave={leave} setupInitialCards={setupInitialCards} /><CashFlowTable room={room} /></>}
+    {screen === 'game' && room && <><ReferenceBoard period={room.period} phase={room.phase} round={room.round} seed={room.seed} /><GameDashboard room={room} selectedCard={selectedCard} setSelectedCard={setSelectedCard} command={command} busy={busy} error={error} leave={leave} setupInitialCards={setupInitialCards} /><CashFlowTable room={room} /></>}
   </main>
 }
 

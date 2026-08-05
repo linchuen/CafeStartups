@@ -83,9 +83,30 @@ func (g *Game) Start() error {
 	return nil
 }
 
+var validKPI = map[string]bool{
+	"gourmet_satisfaction": true,
+	"regular_satisfaction": true,
+	"total_satisfaction":   true,
+	"channel":              true,
+	"awareness":            true,
+	"products":             true,
+	"quality":              true,
+	"cost":                 true,
+	"surplus":              true,
+	// Keep the previous IDs readable for existing saved games.
+	"brand_awareness": true,
+	"values":          true,
+	"resources":       true,
+}
+
 func (g *Game) SetKPIs(playerID string, kpis ...string) error {
 	if g.Phase != PhaseHypothesis || g.Period <= PeriodOne || len(kpis) != 2 || kpis[0] == kpis[1] {
 		return ErrInvalidAction
+	}
+	for _, kpi := range kpis {
+		if !validKPI[kpi] {
+			return ErrInvalidAction
+		}
 	}
 	p, err := g.player(playerID)
 	if err != nil {
@@ -597,17 +618,43 @@ func (p *Player) metricScore() int {
 	s := 0
 	for _, k := range p.SelectedKPIs {
 		switch k {
+		case "gourmet_satisfaction":
+			s += p.satisfiedCustomerCount("gourmet")
+		case "regular_satisfaction":
+			s += p.satisfiedCustomerCount("regular")
+		case "total_satisfaction":
+			s += p.satisfiedCustomerCount("gourmet") + p.satisfiedCustomerCount("regular")
+		case "channel":
+			s += p.Resources
+		case "awareness":
+			s += p.BrandAwareness
 		case "brand_awareness":
 			s += p.BrandAwareness
 		case "products":
 			s += p.Products
+		case "quality":
+			s += p.Values
 		case "values":
 			s += p.Values
+		case "cost":
+			s += p.cashFlowExpenses
+		case "surplus":
+			s += p.Cash
 		case "resources":
 			s += p.Resources
 		}
 	}
 	return s
+}
+
+func (p *Player) satisfiedCustomerCount(kind string) int {
+	count := 0
+	for _, customer := range p.Customers {
+		if customer.Kind == kind && customer.UnitPrice > 0 {
+			count += customer.Count
+		}
+	}
+	return count
 }
 func less(a, b *Player) bool {
 	for _, v := range [5]func(*Player) int{func(p *Player) int { return p.BrandAwareness }, func(p *Player) int { return p.Products }, func(p *Player) int { return p.Values }, func(p *Player) int { return p.Resources }, func(p *Player) int { return p.Cash }} {

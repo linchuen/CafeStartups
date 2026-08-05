@@ -170,14 +170,19 @@ function MarketRankingPanel({ room, command, busy }: { room: DashboardRoom; comm
 }
 
 const KPI_OPTIONS = [
-  ['brand_awareness', '品牌知名度'],
-  ['products', '產品能力'],
-  ['values', '價值主張'],
-  ['resources', '資源能力'],
+  ['gourmet_satisfaction', '饕客滿意度'],
+  ['regular_satisfaction', '一般客滿意度'],
+  ['total_satisfaction', '總滿意度'],
+  ['channel', '通路'],
+  ['awareness', '品牌知名度'],
+  ['products', '特色產品'],
+  ['quality', '品質'],
+  ['cost', '成本'],
+  ['surplus', '盈餘'],
 ]
 
 function KPISelectionPanel({ room, command, busy }: { room: DashboardRoom; command: (type: string, extra?: Record<string, unknown>) => void; busy: boolean }) {
-  const saved = room.me?.selectedKPIs?.length === 2 ? room.me.selectedKPIs : ['brand_awareness', 'products']
+  const saved = room.me?.selectedKPIs?.length === 2 ? room.me.selectedKPIs : ['awareness', 'products']
   const [first, setFirst] = useState(saved[0])
   const [second, setSecond] = useState(saved[1])
   if (room.phase !== 'hypothesis' || room.period <= 1) return null

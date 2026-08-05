@@ -325,7 +325,7 @@ func allKPIsSelected(room *gameRoom) bool {
 }
 
 func setRandomBotKPIs(room *gameRoom, player *domain.Player) error {
-	kpis := []string{"brand_awareness", "products", "values", "resources"}
+	kpis := []string{"gourmet_satisfaction", "regular_satisfaction", "total_satisfaction", "channel", "awareness", "products", "quality", "cost", "surplus"}
 	i := botChoice(room, player.ID+"-kpi", len(kpis))
 	j := botChoice(room, player.ID+"-kpi-second", len(kpis)-1)
 	if j >= i {
@@ -354,7 +354,7 @@ func runBots(room *gameRoom) {
 	if room.Domain.Phase == domain.PhaseHypothesis {
 		for _, player := range room.Domain.Players {
 			if player.IsBot && player.KPISelectionPeriod != room.Domain.Period {
-				kpis := []string{"brand_awareness", "products", "values", "resources"}
+			kpis := []string{"gourmet_satisfaction", "regular_satisfaction", "total_satisfaction", "channel", "awareness", "products", "quality", "cost", "surplus"}
 				i := botChoice(room, player.ID, len(kpis))
 				j := botChoice(room, player.ID+"-second", len(kpis)-1)
 				if j >= i {
