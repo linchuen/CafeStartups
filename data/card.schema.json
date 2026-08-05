@@ -8,6 +8,7 @@
     "id": { "type": "string" },
     "name": { "type": "string" },
     "kind": { "enum": ["resource", "product", "value", "channel", "marketing", "partner", "starter_shop"] },
+    "function": { "enum": ["resource", "product", "value", "channel", "marketing"] },
     "period": { "enum": [1, 2, 3, null] },
     "cost": {
       "type": "object",
@@ -27,8 +28,18 @@
     },
     "source": { "enum": ["mvp-fixture", "rulebook-verified"] }
   },
-  "allOf": [{
-    "if": { "properties": { "kind": { "const": "channel" } } },
-    "then": { "required": ["customerCount"] }
-  }]
+  "allOf": [
+    {
+      "if": { "properties": { "kind": { "const": "channel" } } },
+      "then": { "required": ["customerCount", "function"] }
+    },
+    {
+      "if": { "properties": { "kind": { "enum": ["resource", "product", "value", "marketing"] } } },
+      "then": { "required": ["function"] }
+    },
+    {
+      "if": { "properties": { "kind": { "const": "partner" } } },
+      "then": { "required": ["function"] }
+    }
+  ]
 }

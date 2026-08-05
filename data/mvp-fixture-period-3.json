@@ -22,7 +22,8 @@
                                            "regular":  0,
                                            "difficult":  0
                                        },
-                      "source":  "mvp-fixture"
+                      "source":  "mvp-fixture",
+                      "function":  "resource"
                   },
                   {
                       "id":  "mvp-p3-002",
@@ -43,7 +44,8 @@
                                            "regular":  1,
                                            "difficult":  0
                                        },
-                      "source":  "mvp-fixture"
+                      "source":  "mvp-fixture",
+                      "function":  "resource"
                   },
                   {
                       "id":  "mvp-p3-003",
@@ -64,7 +66,8 @@
                                            "regular":  1,
                                            "difficult":  0
                                        },
-                      "source":  "mvp-fixture"
+                      "source":  "mvp-fixture",
+                      "function":  "resource"
                   },
                   {
                       "id":  "mvp-p3-004",
@@ -85,7 +88,8 @@
                                            "regular":  0,
                                            "difficult":  0
                                        },
-                      "source":  "mvp-fixture"
+                      "source":  "mvp-fixture",
+                      "function":  "resource"
                   },
                   {
                       "id":  "mvp-p3-005",
@@ -106,7 +110,8 @@
                                            "regular":  1,
                                            "difficult":  0
                                        },
-                      "source":  "mvp-fixture"
+                      "source":  "mvp-fixture",
+                      "function":  "resource"
                   },
                   {
                       "id":  "mvp-p3-006",
@@ -127,7 +132,8 @@
                                            "regular":  1,
                                            "difficult":  0
                                        },
-                      "source":  "mvp-fixture"
+                      "source":  "mvp-fixture",
+                      "function":  "resource"
                   },
                   {
                       "id":  "mvp-p3-007",
@@ -148,7 +154,8 @@
                                            "regular":  0,
                                            "difficult":  0
                                        },
-                      "source":  "mvp-fixture"
+                      "source":  "mvp-fixture",
+                      "function":  "product"
                   },
                   {
                       "id":  "mvp-p3-008",
@@ -169,7 +176,8 @@
                                            "regular":  1,
                                            "difficult":  0
                                        },
-                      "source":  "mvp-fixture"
+                      "source":  "mvp-fixture",
+                      "function":  "product"
                   },
                   {
                       "id":  "mvp-p3-009",
@@ -190,7 +198,8 @@
                                            "regular":  1,
                                            "difficult":  0
                                        },
-                      "source":  "mvp-fixture"
+                      "source":  "mvp-fixture",
+                      "function":  "product"
                   },
                   {
                       "id":  "mvp-p3-010",
@@ -211,7 +220,8 @@
                                            "regular":  0,
                                            "difficult":  0
                                        },
-                      "source":  "mvp-fixture"
+                      "source":  "mvp-fixture",
+                      "function":  "product"
                   },
                   {
                       "id":  "mvp-p3-011",
@@ -232,7 +242,8 @@
                                            "regular":  1,
                                            "difficult":  0
                                        },
-                      "source":  "mvp-fixture"
+                      "source":  "mvp-fixture",
+                      "function":  "product"
                   },
                   {
                       "id":  "mvp-p3-012",
@@ -253,7 +264,8 @@
                                            "regular":  1,
                                            "difficult":  0
                                        },
-                      "source":  "mvp-fixture"
+                      "source":  "mvp-fixture",
+                      "function":  "product"
                   },
                   {
                       "id":  "mvp-p3-013",
@@ -274,7 +286,8 @@
                                            "regular":  0,
                                            "difficult":  0
                                        },
-                      "source":  "mvp-fixture"
+                      "source":  "mvp-fixture",
+                      "function":  "value"
                   },
                   {
                       "id":  "mvp-p3-014",
@@ -295,7 +308,8 @@
                                            "regular":  1,
                                            "difficult":  0
                                        },
-                      "source":  "mvp-fixture"
+                      "source":  "mvp-fixture",
+                      "function":  "value"
                   },
                   {
                       "id":  "mvp-p3-015",
@@ -316,7 +330,8 @@
                                            "regular":  1,
                                            "difficult":  0
                                        },
-                      "source":  "mvp-fixture"
+                      "source":  "mvp-fixture",
+                      "function":  "value"
                   },
                   {
                       "id":  "mvp-p3-016",
@@ -337,7 +352,8 @@
                                            "regular":  0,
                                            "difficult":  0
                                        },
-                      "source":  "mvp-fixture"
+                      "source":  "mvp-fixture",
+                      "function":  "value"
                   },
                   {
                       "id":  "mvp-p3-017",
@@ -358,7 +374,8 @@
                                            "regular":  1,
                                            "difficult":  0
                                        },
-                      "source":  "mvp-fixture"
+                      "source":  "mvp-fixture",
+                      "function":  "value"
                   },
                   {
                       "id":  "mvp-p3-018",
@@ -379,7 +396,8 @@
                                            "regular":  1,
                                            "difficult":  0
                                        },
-                      "source":  "mvp-fixture"
+                      "source":  "mvp-fixture",
+                      "function":  "value"
                   },
                   {
                       "id":  "mvp-p3-019",
@@ -404,7 +422,8 @@
                       "customerCount":  {
                                             "gourmet":  1,
                                             "regular":  0
-                                        }
+                                        },
+                      "function":  "channel"
                   },
                   {
                       "id":  "mvp-p3-020",
@@ -429,7 +448,8 @@
                       "customerCount":  {
                                             "gourmet":  0,
                                             "regular":  1
-                                        }
+                                        },
+                      "function":  "channel"
                   },
                   {
                       "id":  "mvp-p3-021",
@@ -454,7 +474,8 @@
                       "customerCount":  {
                                             "gourmet":  0,
                                             "regular":  1
-                                        }
+                                        },
+                      "function":  "channel"
                   },
                   {
                       "id":  "mvp-p3-022",
@@ -479,7 +500,8 @@
                       "customerCount":  {
                                             "gourmet":  1,
                                             "regular":  0
-                                        }
+                                        },
+                      "function":  "channel"
                   },
                   {
                       "id":  "mvp-p3-023",
@@ -504,7 +526,8 @@
                       "customerCount":  {
                                             "gourmet":  0,
                                             "regular":  1
-                                        }
+                                        },
+                      "function":  "channel"
                   },
                   {
                       "id":  "mvp-p3-024",
@@ -525,7 +548,8 @@
                                            "regular":  0,
                                            "difficult":  0
                                        },
-                      "source":  "mvp-fixture"
+                      "source":  "mvp-fixture",
+                      "function":  "marketing"
                   },
                   {
                       "id":  "mvp-p3-025",
@@ -546,7 +570,8 @@
                                            "regular":  2,
                                            "difficult":  0
                                        },
-                      "source":  "mvp-fixture"
+                      "source":  "mvp-fixture",
+                      "function":  "marketing"
                   },
                   {
                       "id":  "mvp-p3-026",
@@ -567,7 +592,8 @@
                                            "regular":  2,
                                            "difficult":  0
                                        },
-                      "source":  "mvp-fixture"
+                      "source":  "mvp-fixture",
+                      "function":  "marketing"
                   },
                   {
                       "id":  "mvp-p3-027",
@@ -588,7 +614,8 @@
                                            "regular":  0,
                                            "difficult":  0
                                        },
-                      "source":  "mvp-fixture"
+                      "source":  "mvp-fixture",
+                      "function":  "marketing"
                   },
                   {
                       "id":  "mvp-p3-028",
@@ -609,7 +636,8 @@
                                            "regular":  2,
                                            "difficult":  0
                                        },
-                      "source":  "mvp-fixture"
+                      "source":  "mvp-fixture",
+                      "function":  "marketing"
                   }
               ]
 }
