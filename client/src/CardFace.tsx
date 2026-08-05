@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react'
+import { CardCost } from './modules/game/ui/CardCost'
 
 export type CardFaceData = {
   id: string
@@ -55,10 +56,7 @@ export function CardFace({ card, selected = false }: { card: CardFaceData; selec
     <div className="game-card-art" style={style}><span>{meta.icon}</span></div>
     <h3>{card.name}</h3>
     <p className="game-card-description">{card.description || effect || '打出此卡以發展咖啡館。'}</p>
-    <div className="game-card-footer">
-      <span className="game-card-cost">成本 <b>${card.cost.cash}</b></span>
-      {card.cost.icons.length > 0 && <span className="game-card-requirements">{card.cost.icons.join(' · ')}</span>}
-    </div>
+    <div className="game-card-footer"><CardCost card={card} color={meta.color} /></div>
     {effect && card.description && <div className="game-card-market">{effect}</div>}
     {selected && <span className="game-card-selected">已選取</span>}
   </>

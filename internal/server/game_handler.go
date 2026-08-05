@@ -89,6 +89,17 @@ func runBots(room *gameRoom) {
 	application.RunBots(room.Domain, room.Seed, &room.Version)
 }
 
+func passHandsIfReady(room *gameRoom) error {
+	if room.Domain.Phase != domain.PhaseExperiment {
+		return nil
+	}
+	passed, err := room.Domain.PassHandsIfReady()
+	if passed {
+		room.Version++
+	}
+	return err
+}
+
 func (s *gameStore) gamesHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
 		var input struct {
@@ -242,6 +253,10 @@ func (s *gameStore) commandHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	room.Version++
 	runBots(room)
+	if err := passHandsIfReady(room); err != nil {
+		writeDomainError(w, err)
+		return
+	}
 	if allKPIsSelected(room) {
 		if err := beginNextPeriod(room); err != nil {
 			writeDomainError(w, err)

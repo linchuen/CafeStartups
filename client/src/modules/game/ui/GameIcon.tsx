@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react'
 import type { SvgIconProps } from '@mui/material/SvgIcon'
-import { Assignment, AttachMoney, Cake, Campaign, Coffee, Favorite, Groups, HelpOutlined, LocalShipping, Restaurant, Settings, Spa, Star, Storefront, VolunteerActivism } from '@mui/icons-material'
+import { Assignment, AttachMoney, Cake, Campaign, Coffee, Favorite, Groups, HelpOutlined, LocalShipping, Restaurant, Settings, Spa, Storefront, VolunteerActivism } from '@mui/icons-material'
 
 const iconMap: Record<string, ComponentType<SvgIconProps>> = {
   assignment: Assignment,
@@ -9,7 +9,7 @@ const iconMap: Record<string, ComponentType<SvgIconProps>> = {
   coffee: Coffee,
   data: Assignment,
   dessert: Cake,
-  marketing: Star,
+  marketing: Campaign,
   marketing_resource: Campaign,
   operations: Settings,
   people: Groups,

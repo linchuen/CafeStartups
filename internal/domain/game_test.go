@@ -34,6 +34,45 @@ func TestCatalogDealsPeriodCards(t *testing.T) {
 	}
 }
 
+func TestCatalogUsesSchemaIconsAsCostIcons(t *testing.T) {
+	catalog, err := LoadCatalog(fixturedata.MVPFixture)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	for _, card := range catalog {
+		if len(card.Icons) == 0 {
+			continue
+		}
+		if len(card.Cost.Icons) != len(card.Icons) {
+			t.Fatalf("card %q cost icons=%v, want schema icons=%v", card.ID, card.Cost.Icons, card.Icons)
+		}
+		for index, icon := range card.Cost.Icons {
+			if icon != card.Icons[index] {
+				t.Fatalf("card %q cost icon[%d]=%q, want %q", card.ID, index, icon, card.Icons[index])
+			}
+		}
+	}
+}
+
+func TestCatalogKeepsSchemaCostIconOrderAndCount(t *testing.T) {
+	catalog, err := LoadCatalog([]byte(`{"cards":[{"id":"multi-icon","name":"Multi icon","kind":"product","period":3,"cost":{"cash":35,"icons":[]},"icons":["coffee","operations"],"marketChange":{},"source":"mvp-fixture"}]}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	want := []string{"coffee", "operations"}
+	got := catalog[0].Cost.Icons
+	if len(got) != len(want) {
+		t.Fatalf("cost icons=%v, want %v", got, want)
+	}
+	for index, icon := range got {
+		if icon != want[index] {
+			t.Fatalf("cost icon[%d]=%q, want %q", index, icon, want[index])
+		}
+	}
+}
+
 func gameForTest(t *testing.T) *Game {
 	t.Helper()
 	g, err := NewGame("fixed-seed", []string{"a", "b", "c", "d"})
@@ -171,6 +210,41 @@ func TestCostAndMissingIcons(t *testing.T) {
 	}
 	if p.Cash != 30 {
 		t.Fatalf("cash=%d, want 30", p.Cash)
+	}
+}
+
+func TestDiscardedCardIsNotPassedToNextPlayer(t *testing.T) {
+	g, err := NewGame("discard-pass", []string{"a", "b"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	g.Phase = PhaseExperiment
+	g.Players[0].Hand = []Card{{ID: "a-selected"}, {ID: "a-kept"}}
+	g.Players[1].Hand = []Card{{ID: "b-selected"}, {ID: "b-kept"}}
+
+	for _, p := range g.Players {
+		if err := g.SelectCard(p.ID, p.Hand[0].ID); err != nil {
+			t.Fatal(err)
+		}
+		if err := g.DiscardSelectedCard(p.ID); err != nil {
+			t.Fatal(err)
+		}
+	}
+	passed, err := g.PassHandsIfReady()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !passed || g.Round != 1 {
+		t.Fatalf("round was not passed automatically: passed=%v round=%d", passed, g.Round)
+	}
+	wantHands := map[string]string{"a": "b-kept", "b": "a-kept"}
+	for _, p := range g.Players {
+		if len(p.Hand) != 1 || p.Hand[0].ID != wantHands[p.ID] {
+			t.Fatalf("player %s received discarded card or wrong hand: %+v", p.ID, p.Hand)
+		}
+		if len(p.Discard) != 1 || p.Discard[0].ID != p.ID+"-selected" {
+			t.Fatalf("player %s discard pile=%+v", p.ID, p.Discard)
+		}
 	}
 }
 

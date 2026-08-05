@@ -219,7 +219,6 @@ func TestSoloGameCompletesThroughHTTP(t *testing.T) {
 			}
 			command("SELECT_CARD", player.Hand[0].ID)
 			command("DISCARD_SELECTED_CARD", "")
-			command("PASS_HAND", "")
 		}
 		if store.games[room.ID].Domain.Phase != domain.PhaseLearning {
 			t.Fatalf("period %d did not reach learning: %s", period, store.games[room.ID].Domain.Phase)

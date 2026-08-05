@@ -196,6 +196,27 @@ func (g *Game) HasSelected(playerID string) bool {
 
 func (g *Game) HasActed(playerID string) bool { return g.acted[playerID] }
 
+// PassHandsIfReady resolves the current drafting round once every player has
+// selected and completed an action. It is intentionally a no-op while other
+// players are still deciding.
+func (g *Game) PassHandsIfReady() (bool, error) {
+	if g.Phase != PhaseExperiment {
+		return false, ErrInvalidPhase
+	}
+	if len(g.selected) != len(g.Players) {
+		return false, nil
+	}
+	for _, p := range g.Players {
+		if !g.acted[p.ID] {
+			return false, nil
+		}
+	}
+	if err := g.PassHands(); err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
 // PassHands resolves one simultaneous drafting round. The selected card is played or
 // discarded first, then the remaining six cards move to the next player.
 func (g *Game) PassHands() error {

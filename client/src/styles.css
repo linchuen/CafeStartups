@@ -31,6 +31,12 @@ button { border: 0; border-radius: 10px; padding: 12px 17px; font-weight: 700; t
 .kpi-selection-panel { display: flex; align-items: end; justify-content: space-between; gap: 24px; width: min(1380px, 100%); margin: 0 auto 22px; padding: 20px 24px; border-color: #d7c1ad; background: #fffaf4; }
 .kpi-selection-panel h2 { margin: 0 0 5px; font-size: 24px; color: #4d382d; }
 .kpi-selection-panel .muted { margin: 0; font-size: 13px; }
+.reference-customer-figures { align-items: center; gap: 4px; }
+.reference-customer-figures i, .reference-customer-figures i:last-child { width: 24px !important; height: 24px !important; border-radius: 4px !important; }
+.reference-kpi-gourmet .reference-kpi-icon, .reference-kpi-regular .reference-kpi-icon { font-size: 0; }
+.reference-kpi-gourmet .reference-kpi-icon::before, .reference-kpi-regular .reference-kpi-icon::before { content: ''; display: inline-block; width: 18px; height: 18px; border: 1px solid rgba(80, 50, 20, .2); border-radius: 3px; box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .2); }
+.reference-kpi-gourmet .reference-kpi-icon::before { background: #ff7900; }
+.reference-kpi-regular .reference-kpi-icon::before { background: #e5b832; }
 .kpi-selection-controls { display: flex; align-items: end; gap: 10px; min-width: min(100%, 540px); }
 .kpi-selection-controls label { flex: 1; margin: 0; }
 .kpi-selection-controls select { display: block; width: 100%; margin-top: 7px; padding: 12px 13px; border: 1px solid #ddcec0; border-radius: 10px; color: #5b4438; background: #fff; }
@@ -246,3 +252,5 @@ button { border: 0; border-radius: 10px; padding: 12px 17px; font-weight: 700; t
 .MuiContainer-root > .MuiGrid-root > .MuiGrid-root:nth-child(2) > .MuiStack-root > .MuiStack-root:nth-child(3) { display: none; }
 .MuiContainer-root > .MuiGrid-root > .MuiGrid-root:nth-child(2) > .MuiStack-root > .MuiPaper-root:first-child { display: none; }
 .MuiAlert-standardError { position: fixed; top: 24px; left: 50%; z-index: 1400; min-width: min(420px, calc(100vw - 32px)); transform: translateX(-50%); box-shadow: 0 12px 36px rgba(60, 35, 25, .24); }
+.MuiButton-containedSecondary { display: none !important; }
+.pass-button { display: none; }

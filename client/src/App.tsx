@@ -14,10 +14,10 @@ type GameState = { id: string; status: string; seed: string; gameVersion: number
 type ApiError = Error & { code?: string }
 const KPI_OPTIONS = [{ id: 'gourmet_satisfaction', label: '饕客滿意度' }, { id: 'regular_satisfaction', label: '一般客滿意度' }, { id: 'total_satisfaction', label: '總滿意度' }, { id: 'channel', label: '通路' }, { id: 'awareness', label: '品牌知名度' }, { id: 'products', label: '特色產品' }, { id: 'quality', label: '品質' }, { id: 'cost', label: '成本' }, { id: 'surplus', label: '盈餘' }]
 const REFERENCE_KPIS = [
-  { label: '饕客滿意度', value: '每張 +5 分', tone: 'gourmet', symbol: '★' },
+  { label: '饕客滿意度', value: '每張 +5 分', tone: 'gourmet', symbol: '' },
   { label: '盈餘', value: '每 30 → +1', tone: 'cash', symbol: '30' },
   { label: '通路', value: '每張 +4 分', tone: 'channel', symbol: '▰' },
-  { label: '一般客滿意度', value: '每張 +4 分', tone: 'regular', symbol: '★' },
+  { label: '一般客滿意度', value: '每張 +4 分', tone: 'regular', symbol: '' },
   { label: '知名度', value: '每 1 點 +1', tone: 'awareness', symbol: '✦' },
   { label: '品質', value: '每張 +3 分', tone: 'quality', symbol: '■' },
   { label: '全面顧客滿意度', value: '每張 +2 分', tone: 'total', symbol: '▣' },
