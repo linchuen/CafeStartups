@@ -36,8 +36,8 @@
       ],
       "marketChange": {
         "gourmet": 0,
-        "regular": 0,
-        "difficult": 1
+        "regular": 1,
+        "difficult": 0
       },
       "source": "mvp-fixture"
     },
@@ -93,8 +93,8 @@
       ],
       "marketChange": {
         "gourmet": 0,
-        "regular": 0,
-        "difficult": 1
+        "regular": 1,
+        "difficult": 0
       },
       "source": "mvp-fixture"
     },
@@ -150,8 +150,8 @@
       ],
       "marketChange": {
         "gourmet": 0,
-        "regular": 0,
-        "difficult": 1
+        "regular": 1,
+        "difficult": 0
       },
       "source": "mvp-fixture"
     },
@@ -207,8 +207,8 @@
       ],
       "marketChange": {
         "gourmet": 0,
-        "regular": 0,
-        "difficult": 1
+        "regular": 1,
+        "difficult": 0
       },
       "source": "mvp-fixture"
     },
@@ -264,8 +264,8 @@
       ],
       "marketChange": {
         "gourmet": 0,
-        "regular": 0,
-        "difficult": 1
+        "regular": 1,
+        "difficult": 0
       },
       "source": "mvp-fixture"
     },
@@ -321,8 +321,8 @@
       ],
       "marketChange": {
         "gourmet": 0,
-        "regular": 0,
-        "difficult": 1
+        "regular": 1,
+        "difficult": 0
       },
       "source": "mvp-fixture"
     },
@@ -378,8 +378,8 @@
       ],
       "marketChange": {
         "gourmet": 0,
-        "regular": 0,
-        "difficult": 1
+        "regular": 1,
+        "difficult": 0
       },
       "source": "mvp-fixture"
     },
@@ -435,8 +435,8 @@
       ],
       "marketChange": {
         "gourmet": 0,
-        "regular": 0,
-        "difficult": 1
+        "regular": 1,
+        "difficult": 0
       },
       "source": "mvp-fixture"
     },
@@ -473,8 +473,8 @@
       ],
       "marketChange": {
         "gourmet": 0,
-        "regular": 0,
-        "difficult": 2
+        "regular": 2,
+        "difficult": 0
       },
       "source": "mvp-fixture"
     },
@@ -530,8 +530,8 @@
       ],
       "marketChange": {
         "gourmet": 0,
-        "regular": 0,
-        "difficult": 2
+        "regular": 2,
+        "difficult": 0
       },
       "source": "mvp-fixture"
     },
@@ -549,8 +549,8 @@
       ],
       "marketChange": {
         "gourmet": 0,
-        "regular": 0,
-        "difficult": 1
+        "regular": 1,
+        "difficult": 0
       },
       "source": "mvp-fixture"
     },
@@ -606,8 +606,8 @@
       ],
       "marketChange": {
         "gourmet": 0,
-        "regular": 0,
-        "difficult": 1
+        "regular": 1,
+        "difficult": 0
       },
       "source": "mvp-fixture"
     },
@@ -663,8 +663,8 @@
       ],
       "marketChange": {
         "gourmet": 0,
-        "regular": 0,
-        "difficult": 1
+        "regular": 1,
+        "difficult": 0
       },
       "source": "mvp-fixture"
     },
@@ -720,8 +720,8 @@
       ],
       "marketChange": {
         "gourmet": 0,
-        "regular": 0,
-        "difficult": 1
+        "regular": 1,
+        "difficult": 0
       },
       "source": "mvp-fixture"
     },
@@ -777,8 +777,8 @@
       ],
       "marketChange": {
         "gourmet": 0,
-        "regular": 0,
-        "difficult": 1
+        "regular": 1,
+        "difficult": 0
       },
       "source": "mvp-fixture"
     },
@@ -834,8 +834,8 @@
       ],
       "marketChange": {
         "gourmet": 0,
-        "regular": 0,
-        "difficult": 1
+        "regular": 1,
+        "difficult": 0
       },
       "source": "mvp-fixture"
     },
@@ -891,8 +891,8 @@
       ],
       "marketChange": {
         "gourmet": 0,
-        "regular": 0,
-        "difficult": 1
+        "regular": 1,
+        "difficult": 0
       },
       "source": "mvp-fixture"
     },
@@ -948,8 +948,8 @@
       ],
       "marketChange": {
         "gourmet": 0,
-        "regular": 0,
-        "difficult": 1
+        "regular": 1,
+        "difficult": 0
       },
       "source": "mvp-fixture"
     },
@@ -986,8 +986,8 @@
       ],
       "marketChange": {
         "gourmet": 0,
-        "regular": 0,
-        "difficult": 2
+        "regular": 2,
+        "difficult": 0
       },
       "source": "mvp-fixture"
     },
@@ -1043,8 +1043,8 @@
       ],
       "marketChange": {
         "gourmet": 0,
-        "regular": 0,
-        "difficult": 2
+        "regular": 2,
+        "difficult": 0
       },
       "source": "mvp-fixture"
     },
@@ -1119,8 +1119,8 @@
       ],
       "marketChange": {
         "gourmet": 0,
-        "regular": 0,
-        "difficult": 1
+        "regular": 1,
+        "difficult": 0
       },
       "source": "mvp-fixture"
     },
@@ -1176,8 +1176,8 @@
       ],
       "marketChange": {
         "gourmet": 0,
-        "regular": 0,
-        "difficult": 1
+        "regular": 1,
+        "difficult": 0
       },
       "source": "mvp-fixture"
     },
@@ -1233,8 +1233,8 @@
       ],
       "marketChange": {
         "gourmet": 0,
-        "regular": 0,
-        "difficult": 1
+        "regular": 1,
+        "difficult": 0
       },
       "source": "mvp-fixture"
     },
@@ -1290,8 +1290,8 @@
       ],
       "marketChange": {
         "gourmet": 0,
-        "regular": 0,
-        "difficult": 1
+        "regular": 1,
+        "difficult": 0
       },
       "source": "mvp-fixture"
     },
@@ -1347,8 +1347,8 @@
       ],
       "marketChange": {
         "gourmet": 0,
-        "regular": 0,
-        "difficult": 1
+        "regular": 1,
+        "difficult": 0
       },
       "source": "mvp-fixture"
     },
@@ -1404,8 +1404,8 @@
       ],
       "marketChange": {
         "gourmet": 0,
-        "regular": 0,
-        "difficult": 1
+        "regular": 1,
+        "difficult": 0
       },
       "source": "mvp-fixture"
     },
@@ -1461,8 +1461,8 @@
       ],
       "marketChange": {
         "gourmet": 0,
-        "regular": 0,
-        "difficult": 1
+        "regular": 1,
+        "difficult": 0
       },
       "source": "mvp-fixture"
     },
@@ -1556,8 +1556,8 @@
       ],
       "marketChange": {
         "gourmet": 0,
-        "regular": 0,
-        "difficult": 2
+        "regular": 2,
+        "difficult": 0
       },
       "source": "mvp-fixture"
     },
