@@ -639,7 +639,11 @@ func (g *Game) deal() {
 	}
 	cards := make([]Card, 0, len(g.Players)*7)
 	for i := 0; i < len(g.Players)*7; i++ {
-		cards = append(cards, Card{ID: fmt.Sprintf("p%d-r%d-c%d", i/7, g.Round, i%7), Name: "Management Card", Kind: "resource", Period: g.Period, Cost: Cost{Cash: 10}})
+		marketChange := map[string]int{"gourmet": 1}
+		if i%2 == 1 {
+			marketChange = map[string]int{"regular": 1}
+		}
+		cards = append(cards, Card{ID: fmt.Sprintf("p%d-r%d-c%d", i/7, g.Round, i%7), Name: "Management Card", Kind: "resource", Period: g.Period, Cost: Cost{Cash: 10}, MarketChange: marketChange})
 	}
 	g.rng.Shuffle(len(cards), func(i, j int) { cards[i], cards[j] = cards[j], cards[i] })
 	for i, p := range g.Players {
