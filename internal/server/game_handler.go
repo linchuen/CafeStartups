@@ -76,7 +76,7 @@ func setRandomBotKPIs(room *gameRoom, player *domain.Player) error {
 func addBots(room *gameRoom) error {
 	for len(room.Domain.Players) < 4 {
 		index := len(room.Domain.Players) + 1
-		if err := room.Domain.AddPlayer("bot-"+itoa(int64(index)), "?擗?? "+itoa(int64(index))); err != nil {
+		if err := room.Domain.AddPlayer("bot-"+itoa(int64(index)), "MVP 隨機電腦玩家 "+itoa(int64(index))); err != nil {
 			return err
 		}
 		room.Domain.Players[len(room.Domain.Players)-1].IsBot = true
