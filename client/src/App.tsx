@@ -66,7 +66,7 @@ function ReferenceDemandRow(props: { type: 'gourmet' | 'regular'; label: string;
   const cardAt = (column: number) => cards[column]
   const slot = (column: number, fallback: string) => {
     const card = cardAt(column)
-    const isRevealed = Boolean(card && props.revealed && props.round !== undefined && props.round > column)
+    const isRevealed = Boolean(card && props.revealed && props.round !== undefined && props.round >= column)
     return isRevealed ? <DemandCard card={card!} revealed /> : <><b>{questionMarks(column)}</b><small>{fallback}</small></>
   }
   return <div className={`reference-demand-row reference-demand-${props.type}`}>
