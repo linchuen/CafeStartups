@@ -1,4 +1,4 @@
-package main
+package server
 
 func (room *gameRoom) view(token string) map[string]any {
 	players := make([]map[string]any, 0, len(room.Domain.Players))

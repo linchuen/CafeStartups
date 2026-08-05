@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"crypto/rand"
@@ -10,6 +10,26 @@ import (
 
 	"cafestartups/internal/domain"
 )
+
+func NewHandler() http.Handler {
+	store := &gameStore{games: make(map[string]*gameRoom)}
+	return newHandler(store)
+}
+
+func newHandler(store *gameStore) http.Handler {
+	mux := http.NewServeMux()
+	mux.HandleFunc("GET /health", healthHandler)
+	mux.HandleFunc("/api/games", store.gamesHandler)
+	mux.HandleFunc("POST /api/games/{id}/setup", store.setupHandler)
+	mux.HandleFunc("POST /api/games/{id}/start", store.startHandler)
+	mux.HandleFunc("GET /api/games/{id}", store.stateHandler)
+	mux.HandleFunc("POST /api/games/{id}/commands", store.commandHandler)
+	return withCORS(mux)
+}
+
+func healthHandler(w http.ResponseWriter, _ *http.Request) {
+	writeJSON(w, http.StatusOK, map[string]string{"status": "ok"})
+}
 
 func tokenFrom(r *http.Request) string {
 	if t := r.Header.Get("X-Session-Token"); t != "" {

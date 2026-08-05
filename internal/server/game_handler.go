@@ -1,12 +1,93 @@
-package main
+package server
 
 import (
 	"encoding/json"
 	"net/http"
+	"sync"
 
 	fixturedata "cafestartups/data"
+	"cafestartups/internal/application"
+	"cafestartups/internal/catalog"
 	"cafestartups/internal/domain"
 )
+
+type game struct {
+	ID     string `json:"id"`
+	Status string `json:"status"`
+}
+
+type gameRoom struct {
+	game
+	Seed      string
+	Token     string
+	PlayerID  string
+	Domain    *domain.Game
+	Version   int64
+	Processed map[string]commandResult
+}
+
+type commandResult struct {
+	Status int
+	Body   []byte
+}
+
+type gameStore struct {
+	sync.RWMutex
+	games map[string]*gameRoom
+}
+
+func (s *gameStore) gameLocked(id string) (*gameRoom, bool) {
+	game, ok := s.games[id]
+	return game, ok
+}
+
+type setupRequest struct {
+	Token         string `json:"token"`
+	PartnerID     string `json:"partnerId"`
+	StarterShopID string `json:"starterShopId"`
+}
+
+type commandRequest struct {
+	Token       string   `json:"token"`
+	GameVersion int64    `json:"gameVersion"`
+	Type        string   `json:"type"`
+	CardID      string   `json:"cardId"`
+	KPIs        []string `json:"kpis"`
+	Count       int      `json:"count"`
+	CommandID   string   `json:"commandId"`
+}
+
+func applyCommand(room *gameRoom, playerID string, input commandRequest) error {
+	return application.ExecuteCommand(room.Domain, playerID, application.Command{Type: input.Type, Card: input.CardID, KPIs: input.KPIs, Count: input.Count})
+}
+
+func beginNextPeriod(room *gameRoom) error {
+	return application.BeginNextPeriod(room.Domain, room.Seed, &room.Version)
+}
+
+func allKPIsSelected(room *gameRoom) bool {
+	return application.AllKPIsSelected(room.Domain)
+}
+
+func setRandomBotKPIs(room *gameRoom, player *domain.Player) error {
+	return application.BeginNextPeriodForBot(room.Domain, room.Seed, room.Version, player)
+}
+
+func addBots(room *gameRoom) error {
+	for len(room.Domain.Players) < 4 {
+		index := len(room.Domain.Players) + 1
+		if err := room.Domain.AddPlayer("bot-"+itoa(int64(index)), "?擗?? "+itoa(int64(index))); err != nil {
+			return err
+		}
+		room.Domain.Players[len(room.Domain.Players)-1].IsBot = true
+		room.Version++
+	}
+	return nil
+}
+
+func runBots(room *gameRoom) {
+	application.RunBots(room.Domain, room.Seed, &room.Version)
+}
 
 func (s *gameStore) gamesHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == http.MethodPost {
@@ -26,12 +107,12 @@ func (s *gameStore) gamesHandler(w http.ResponseWriter, r *http.Request) {
 			writeDomainError(w, err)
 			return
 		}
-		catalog, err := domain.LoadCatalog(fixturedata.MVPFixture)
+		cards, err := catalog.Load(fixturedata.MVPFixture)
 		if err != nil {
 			writeCode(w, http.StatusInternalServerError, "INVALID_CARD_CATALOG")
 			return
 		}
-		g.SetCatalog(catalog)
+		g.SetCatalog(cards)
 		if input.DisplayName != "" {
 			g.Players[0].DisplayName = input.DisplayName
 		}

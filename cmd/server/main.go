@@ -3,11 +3,13 @@ package main
 import (
 	"log"
 	"net/http"
+
+	"cafestartups/internal/server"
 )
 
 func main() {
-	store := &gameStore{games: make(map[string]*gameRoom)}
-	server := &http.Server{Addr: ":8080", Handler: newHandler(store)}
-	log.Printf("Cafe Startups API listening on %s", server.Addr)
-	log.Fatal(server.ListenAndServe())
+	handler := server.NewHandler()
+	httpServer := &http.Server{Addr: ":8080", Handler: handler}
+	log.Printf("Cafe Startups API listening on %s", httpServer.Addr)
+	log.Fatal(httpServer.ListenAndServe())
 }
