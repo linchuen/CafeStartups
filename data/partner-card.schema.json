@@ -4,7 +4,7 @@
   "title": "Cafe Startups Partner Card",
   "type": "object",
   "additionalProperties": false,
-  "required": ["id", "name", "kind", "function", "colorKey", "description", "effect", "source"],
+  "required": ["id", "name", "kind", "function", "colorKey", "description", "source"],
   "properties": {
     "id": { "type": "string" },
     "name": { "type": "string" },
@@ -12,7 +12,6 @@
     "function": { "enum": ["resource", "product", "value", "channel", "marketing"] },
     "colorKey": { "enum": ["resource", "product", "value", "channel", "marketing"] },
     "description": { "type": "string" },
-    "effect": { "type": "string" },
     "startingCashBonus": { "type": "integer", "minimum": 0 },
     "starterShopId": { "type": "string" },
     "source": { "enum": ["mvp-fixture", "rulebook-verified"] }

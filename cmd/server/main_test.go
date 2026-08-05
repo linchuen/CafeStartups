@@ -224,6 +224,7 @@ func TestSoloGameCompletesThroughHTTP(t *testing.T) {
 		if store.games[room.ID].Domain.Phase != domain.PhaseLearning {
 			t.Fatalf("period %d did not reach learning: %s", period, store.games[room.ID].Domain.Phase)
 		}
+		command("DRAW_MARKET", "")
 		command("RESOLVE_LEARNING", "")
 		if got := len(store.games[room.ID].Domain.Players[0].CashFlow); got != period {
 			t.Fatalf("period %d cash-flow statements=%d", period, got)

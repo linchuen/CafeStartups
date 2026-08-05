@@ -81,6 +81,7 @@ type Player struct {
 	Values                 int
 	Resources              int
 	Partner, StarterShop   Card
+	InitialCardsSelected   bool
 	Hand, Tableau, Discard []Card
 	SelectedKPIs           []string
 	Customers              []Customer
@@ -124,6 +125,8 @@ type Game struct {
 	Catalog                            []Card
 	PartnerOptions, StarterShopOptions []Card
 	DemandBoard                        map[string]int
+	MarketRanking                      []int `json:"marketRanking,omitempty"`
+	marketDrawn                        bool
 	selected                           map[string]Card
 	acted                              map[string]bool
 	rng                                *rand.Rand
@@ -183,6 +186,7 @@ func (g *Game) SetInitialCards(playerID, partnerID, starterShopID string) error 
 	}
 	p.Partner = partner
 	p.StarterShop = starterShop
+	p.InitialCardsSelected = true
 	return nil
 }
 
@@ -225,7 +229,8 @@ func (g *Game) BeginExperiment() error {
 	if g.Phase != PhaseHypothesis || len(g.Players) < 2 {
 		return ErrInvalidPhase
 	}
-	if g.Period == PeriodZero {
+	initialSetup := g.Period == PeriodZero
+	if initialSetup {
 		g.Period = PeriodOne
 	}
 	if g.Period != PeriodOne {
@@ -238,6 +243,16 @@ func (g *Game) BeginExperiment() error {
 	for _, p := range g.Players {
 		if g.Period == PeriodOne && len(p.SelectedKPIs) != 0 {
 			return ErrInvalidAction
+		}
+	}
+	if initialSetup {
+		for _, p := range g.Players {
+			if p.Cash < p.StarterShop.Cost.Cash {
+				return ErrInsufficientCash
+			}
+		}
+		for _, p := range g.Players {
+			p.Cash -= p.StarterShop.Cost.Cash
 		}
 	}
 	// Round 0 is the initial experiment state: cards are dealt, but no
@@ -533,12 +548,26 @@ func (g *Game) recordCashFlowRound() {
 	}
 }
 
-// ResolveLearning applies the MVP learning phase in one server-side step.
-// Customer generation is intentionally simple and deterministic; the full
-// market/customer workshop can be added without changing the phase contract.
+// DrawMarket draws the customer-count tokens used by the market ranking.
+func (g *Game) DrawMarket() error {
+	if g.Phase != PhaseLearning || g.marketDrawn {
+		return ErrInvalidAction
+	}
+	bag := []int{1, 2, 3, 4}
+	g.rng.Shuffle(len(bag), func(i, j int) { bag[i], bag[j] = bag[j], bag[i] })
+	g.MarketRanking = append([]int(nil), bag[:len(g.Players)]...)
+	sort.Sort(sort.Reverse(sort.IntSlice(g.MarketRanking)))
+	g.marketDrawn = true
+	return nil
+}
+
+// ResolveLearning settles the period after the market ranking has been drawn.
 func (g *Game) ResolveLearning() error {
 	if g.Phase != PhaseLearning {
 		return ErrInvalidPhase
+	}
+	if !g.marketDrawn || len(g.MarketRanking) != len(g.Players) {
+		return ErrInvalidAction
 	}
 	if err := g.SettleInterest(); err != nil {
 		return err
@@ -561,7 +590,7 @@ func (g *Game) ResolveLearning() error {
 		if kind != "difficult" {
 			demand = kind
 		}
-		customers = append(customers, Customer{Kind: kind, Demand: demand, Count: 1})
+		customers = append(customers, Customer{Kind: kind, Demand: demand, Count: g.MarketRanking[i]})
 	}
 	g.DistributeCustomers(customers)
 	g.SettleRevenue()
@@ -577,6 +606,8 @@ func (g *Game) ResolveLearning() error {
 	g.Period++
 	g.Round = 0
 	g.Phase = PhaseHypothesis
+	g.MarketRanking = nil
+	g.marketDrawn = false
 	g.selected = map[string]Card{}
 	g.acted = map[string]bool{}
 	return nil

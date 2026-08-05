@@ -100,6 +100,9 @@ func TestBeginExperimentMovesInitialSetupToPeriodOne(t *testing.T) {
 	if g.Period != PeriodOne || g.Phase != PhaseExperiment {
 		t.Fatalf("after initial setup period=%d phase=%s, want period one experiment", g.Period, g.Phase)
 	}
+	if g.Players[0].Cash != InitialCash-g.Players[0].StarterShop.Cost.Cash {
+		t.Fatalf("starter shop cost was not deducted: cash=%d shop cost=%d", g.Players[0].Cash, g.Players[0].StarterShop.Cost.Cash)
+	}
 }
 
 func TestDraftEndsWithOneCardAndPeriodDirection(t *testing.T) {
@@ -218,7 +221,7 @@ func TestSeedAndRevenueAreDeterministic(t *testing.T) {
 	a.Players[0].Tableau = []Card{{Demand: map[string]int{"gourmet": 1}}}
 	a.DistributeCustomers([]Customer{{Kind: "gourmet", Demand: "gourmet", Count: 2}, {Kind: "regular", Demand: "gourmet", Count: 1}})
 	a.SettleRevenue()
-	if a.Players[0].Revenue != 20 || a.Players[0].Cash != 170 {
+	if a.Players[0].Revenue != 20 || a.Players[0].Cash != InitialCash-a.Players[0].StarterShop.Cost.Cash+20 {
 		t.Fatalf("revenue=%d cash=%d", a.Players[0].Revenue, a.Players[0].Cash)
 	}
 }
@@ -269,6 +272,9 @@ func TestResolveLearningCompletesThreePeriods(t *testing.T) {
 			if err := g.PassHands(); err != nil {
 				t.Fatal(err)
 			}
+		}
+		if err := g.DrawMarket(); err != nil {
+			t.Fatal(err)
 		}
 		if err := g.ResolveLearning(); err != nil {
 			t.Fatal(err)

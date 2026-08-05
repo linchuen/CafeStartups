@@ -5,16 +5,16 @@ package domain
 // before the complete official card set is enabled.
 func MVPPartnerCards() []Card {
 	return []Card{
-		{ID: "partner-barista", Name: "國際認證咖啡師", Kind: "partner", Function: "resource", ColorKey: "resource", Description: "熟悉咖啡館營運，協助降低營運成本。", Effect: "營運成本 -10", Source: "mvp-fixture"},
-		{ID: "partner-roaster", Name: "精品烘豆顧問", Kind: "partner", Function: "product", ColorKey: "product", Description: "協助挑選咖啡豆，建立特色產品方向。", Effect: "產品能力 +1", Source: "mvp-fixture"},
-		{ID: "partner-marketer", Name: "品牌行銷顧問", Kind: "partner", Function: "marketing", ColorKey: "marketing", Description: "協助規劃行銷活動，建立品牌知名度。", Effect: "品牌知名度 +1", Source: "mvp-fixture"},
-		{ID: "partner-service", Name: "服務設計顧問", Kind: "partner", Function: "value", ColorKey: "value", Description: "協助改善服務流程，提升顧客體驗。", Effect: "價值主張 +1", Source: "mvp-fixture"},
-		{ID: "partner-finance", Name: "財務管理顧問", Kind: "partner", Function: "resource", ColorKey: "resource", Description: "協助規劃資金運用，控制貸款與利息成本。", Effect: "貸款利息 -1", Source: "mvp-fixture"},
-		{ID: "partner-pastry", Name: "甜點開發師", Kind: "partner", Function: "product", ColorKey: "product", Description: "開發搭配甜點，豐富咖啡館的產品品項。", Effect: "產品能力 +1", Source: "mvp-fixture"},
-		{ID: "partner-supply", Name: "供應鏈管理師", Kind: "partner", Function: "resource", ColorKey: "resource", Description: "整合原料供應與採購，降低營運浪費。", Effect: "採購成本 -10", Source: "mvp-fixture"},
-		{ID: "partner-community", Name: "社區合作顧問", Kind: "partner", Function: "channel", ColorKey: "channel", Description: "經營社區關係，為開局提供額外預算。", Effect: "初始預算 +10 萬", StartingCashBonus: 10, Source: "mvp-fixture"},
-		{ID: "partner-hr", Name: "人才培訓顧問", Kind: "partner", Function: "value", ColorKey: "value", Description: "培育團隊服務能力，穩定顧客體驗。", Effect: "價值主張 +1", Source: "mvp-fixture"},
-		{ID: "partner-analytics", Name: "數據營運顧問", Kind: "partner", Function: "channel", ColorKey: "channel", Description: "分析商圈資料，開局提供一間大安巷口店。", Effect: "提供初始店面：大安巷口店", StarterShopID: "starter-daan", Source: "mvp-fixture"},
+		{ID: "partner-barista", Name: "國際認證咖啡師", Kind: "partner", Function: "resource", ColorKey: "resource", Description: "熟悉咖啡館營運，協助降低營運成本。", Source: "mvp-fixture"},
+		{ID: "partner-roaster", Name: "精品烘豆顧問", Kind: "partner", Function: "product", ColorKey: "product", Description: "協助挑選咖啡豆，建立特色產品方向。", Source: "mvp-fixture"},
+		{ID: "partner-marketer", Name: "品牌行銷顧問", Kind: "partner", Function: "marketing", ColorKey: "marketing", Description: "協助規劃行銷活動，建立品牌知名度。", Source: "mvp-fixture"},
+		{ID: "partner-service", Name: "服務設計顧問", Kind: "partner", Function: "value", ColorKey: "value", Description: "協助改善服務流程，提升顧客體驗。", Source: "mvp-fixture"},
+		{ID: "partner-finance", Name: "財務管理顧問", Kind: "partner", Function: "resource", ColorKey: "resource", Description: "協助規劃資金運用，控制貸款與利息成本。", Source: "mvp-fixture"},
+		{ID: "partner-pastry", Name: "甜點開發師", Kind: "partner", Function: "product", ColorKey: "product", Description: "開發搭配甜點，豐富咖啡館的產品品項。", Source: "mvp-fixture"},
+		{ID: "partner-supply", Name: "供應鏈管理師", Kind: "partner", Function: "resource", ColorKey: "resource", Description: "整合原料供應與採購，降低營運浪費。", Source: "mvp-fixture"},
+		{ID: "partner-community", Name: "社區合作顧問", Kind: "partner", Function: "channel", ColorKey: "channel", Description: "經營社區關係，為開局提供額外預算。", StartingCashBonus: 10, Source: "mvp-fixture"},
+		{ID: "partner-hr", Name: "人才培訓顧問", Kind: "partner", Function: "value", ColorKey: "value", Description: "培育團隊服務能力，穩定顧客體驗。", Source: "mvp-fixture"},
+		{ID: "partner-analytics", Name: "數據營運顧問", Kind: "partner", Function: "channel", ColorKey: "channel", Description: "分析商圈資料，開局提供一間大安巷口店。", StarterShopID: "starter-daan", Source: "mvp-fixture"},
 	}
 }
 
