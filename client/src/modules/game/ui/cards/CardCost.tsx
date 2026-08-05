@@ -22,10 +22,12 @@ const costIconColors: Record<string, { color: string; background: string }> = {
 export function CardCost({ card, color }: { card: PlayerCard; color?: string }) {
   const icons = card.cost?.icons ?? []
   const accent = color ?? '#b36f42'
+  const isPartnerInitialCashBonus = card.kind === 'partner' && card.function === 'channel' && (card.cost?.cash ?? 0) > 0
+  const cashLabel = `${isPartnerInitialCashBonus ? '+' : ''}$${card.cost?.cash ?? 0} 萬`
 
   return <Stack direction="row" spacing={.55} alignItems="center" sx={{ minWidth: 0 }}>
     <Typography variant="caption" color="text.secondary">成本</Typography>
-    <Typography variant="body2" fontWeight={900} sx={{ color: accent }}>${card.cost?.cash ?? 0} 萬</Typography>
+    <Typography variant="body2" fontWeight={900} sx={{ color: accent }}>{cashLabel}</Typography>
     {icons.length > 0 && <Box component="span" role="img" aria-label={`資源需求 ${icons.length} 個`} sx={{ display: 'inline-flex', alignItems: 'center', gap: .3, ml: .25 }}>
       {icons.map((icon, index) => {
         const iconColor = costIconColors[icon] ?? { color: accent, background: `${accent}22` }

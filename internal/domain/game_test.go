@@ -144,6 +144,38 @@ func TestBeginExperimentMovesInitialSetupToPeriodOne(t *testing.T) {
 	}
 }
 
+func TestChannelPartnerAddsInitialCash(t *testing.T) {
+	g, err := NewGame("partner-cash-seed", []string{"a", "b"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if err := g.SetInitialCards("a", "partner-community", "starter-station"); err != nil {
+		t.Fatal(err)
+	}
+	if err := g.SetInitialCards("b", "partner-service", "starter-songshan"); err != nil {
+		t.Fatal(err)
+	}
+	if err := g.BeginExperiment(); err != nil {
+		t.Fatal(err)
+	}
+	want := InitialCash + 30 - g.Players[0].StarterShop.Cost.Cash
+	if g.Players[0].Cash != want {
+		t.Fatalf("cash=%d, want %d after initial cash bonus and shop cost", g.Players[0].Cash, want)
+	}
+}
+
+func TestChannelPartnerAddsConfiguredCustomers(t *testing.T) {
+	p := &Player{
+		Partner: Card{Kind: "partner", Function: "channel", CustomerCount: map[string]int{"gourmet": 0, "regular": 1}},
+		Tableau: []Card{{Demand: map[string]int{"regular": 1}}},
+	}
+	g := &Game{Players: []*Player{p}}
+	g.DistributeCustomers(nil)
+	if len(p.Customers) != 1 || p.Customers[0].Kind != "regular" || p.Customers[0].Count != 1 {
+		t.Fatalf("partner customers=%+v, want one regular customer", p.Customers)
+	}
+}
+
 func TestDraftEndsWithOneCardAndPeriodDirection(t *testing.T) {
 	g := gameForTest(t)
 	for round := InitialRound; round < ExperimentRounds; round++ {

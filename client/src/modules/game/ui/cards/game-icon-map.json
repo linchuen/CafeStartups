@@ -5,7 +5,7 @@
   "coffee": { "component": "Coffee", "label": "咖啡", "category": "product" },
   "data": { "component": "Assignment", "label": "規劃", "category": "resource" },
   "dessert": { "component": "Cake", "label": "甜點", "category": "product" },
-  "marketing": { "component": "Campaign", "label": "行銷活動", "category": "marketing" },
+  "marketing": { "component": "Star", "label": "行銷活動", "category": "marketing" },
   "marketing_resource": { "component": "Campaign", "label": "行銷", "category": "resource" },
   "operations": { "component": "Settings", "label": "營運", "category": "resource" },
   "people": { "component": "Groups", "label": "人員" },

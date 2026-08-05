@@ -17,19 +17,6 @@ export const costStructureIcons = [
   { id: 'procurement', label: '採購資源', icon: LocalShipping },
 ] as const
 
-export const partnerFunctionById = {
-  'partner-barista': 'resource',
-  'partner-roaster': 'product',
-  'partner-marketer': 'marketing',
-  'partner-service': 'value',
-  'partner-finance': 'resource',
-  'partner-pastry': 'product',
-  'partner-supply': 'resource',
-  'partner-community': 'channel',
-  'partner-hr': 'value',
-  'partner-analytics': 'channel',
-} as const
-
 export const dashboardCardColors = {
   starterShop: {
     'starter-songshan': { color: '#3f7d66', pale: '#e2f0e8' },

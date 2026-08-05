@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react'
 import type { SvgIconProps } from '@mui/material/SvgIcon'
-import { Assignment, AttachMoney, Cake, Campaign, Coffee, Favorite, Groups, HelpOutlined, LocalShipping, Restaurant, Settings, Spa, Storefront, VolunteerActivism } from '@mui/icons-material'
+import { Assignment, AttachMoney, Cake, Campaign, Coffee, Favorite, Groups, HelpOutlined, LocalShipping, Restaurant, Settings, Spa, Star, Storefront, VolunteerActivism } from '@mui/icons-material'
 import iconDefinitions from './game-icon-map.json'
 
 const iconComponents: Record<string, ComponentType<SvgIconProps>> = {
@@ -15,6 +15,7 @@ const iconComponents: Record<string, ComponentType<SvgIconProps>> = {
   Restaurant,
   Settings,
   Spa,
+  Star,
   Storefront,
   VolunteerActivism,
 }

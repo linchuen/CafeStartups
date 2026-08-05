@@ -1,21 +1,61 @@
 package domain
 
+import (
+	"encoding/json"
+	"fmt"
+
+	fixturedata "cafestartups/data"
+)
+
 // MVPPartnerCards returns the selectable founder cards used during lobby setup.
 // The card text is an MVP fixture and must be checked against the physical cards
 // before the complete official card set is enabled.
 func MVPPartnerCards() []Card {
-	return []Card{
-		{ID: "partner-barista", Name: "國際認證咖啡師", Kind: "partner", Function: "resource", ColorKey: "resource", Description: "熟悉咖啡館營運，協助降低營運成本。", Source: "mvp-fixture"},
-		{ID: "partner-roaster", Name: "精品烘豆顧問", Kind: "partner", Function: "product", ColorKey: "product", Description: "協助挑選咖啡豆，建立特色產品方向。", Source: "mvp-fixture"},
-		{ID: "partner-marketer", Name: "品牌行銷顧問", Kind: "partner", Function: "marketing", ColorKey: "marketing", Description: "協助規劃行銷活動，建立品牌知名度。", Source: "mvp-fixture"},
-		{ID: "partner-service", Name: "服務設計顧問", Kind: "partner", Function: "value", ColorKey: "value", Description: "協助改善服務流程，提升顧客體驗。", Source: "mvp-fixture"},
-		{ID: "partner-finance", Name: "財務管理顧問", Kind: "partner", Function: "resource", ColorKey: "resource", Description: "協助規劃資金運用，控制貸款與利息成本。", Source: "mvp-fixture"},
-		{ID: "partner-pastry", Name: "甜點開發師", Kind: "partner", Function: "product", ColorKey: "product", Description: "開發搭配甜點，豐富咖啡館的產品品項。", Source: "mvp-fixture"},
-		{ID: "partner-supply", Name: "供應鏈管理師", Kind: "partner", Function: "resource", ColorKey: "resource", Description: "整合原料供應與採購，降低營運浪費。", Source: "mvp-fixture"},
-		{ID: "partner-community", Name: "社區合作顧問", Kind: "partner", Function: "channel", ColorKey: "channel", Description: "經營社區關係，為開局提供額外預算。", StartingCashBonus: 10, Source: "mvp-fixture"},
-		{ID: "partner-hr", Name: "人才培訓顧問", Kind: "partner", Function: "value", ColorKey: "value", Description: "培育團隊服務能力，穩定顧客體驗。", Source: "mvp-fixture"},
-		{ID: "partner-analytics", Name: "數據營運顧問", Kind: "partner", Function: "channel", ColorKey: "channel", Description: "分析商圈資料，開局提供一間大安巷口店。", StarterShopID: "starter-daan", Source: "mvp-fixture"},
+	cards, err := LoadPartnerCards(fixturedata.MVPPartnerFixture)
+	if err != nil {
+		panic(fmt.Sprintf("invalid partner card fixture: %v", err))
 	}
+	return cards
+}
+
+// LoadPartnerCards loads partner cards using the same card-shaped fixture
+// contract as the regular card catalog.
+func LoadPartnerCards(data []byte) ([]Card, error) {
+	var file fixtureFile
+	if err := json.Unmarshal(data, &file); err != nil {
+		return nil, fmt.Errorf("decode partner card fixture: %w", err)
+	}
+	if len(file.Cards) == 0 {
+		return nil, fmt.Errorf("partner card fixture is empty")
+	}
+
+	seen := make(map[string]bool, len(file.Cards))
+	for index, card := range file.Cards {
+		if card.ID == "" || seen[card.ID] {
+			return nil, fmt.Errorf("invalid or duplicate partner card id: %q", card.ID)
+		}
+		if card.Kind != "partner" || card.Function == "" || card.ColorKey != card.Function {
+			return nil, fmt.Errorf("invalid partner card classification for %q", card.ID)
+		}
+		if len(card.Icons) == 0 || card.Cost.Cash < 0 {
+			return nil, fmt.Errorf("invalid partner card schema fields for %q", card.ID)
+		}
+		for kind, count := range card.CustomerCount {
+			if (kind != "gourmet" && kind != "regular") || count < 0 {
+				return nil, fmt.Errorf("invalid partner customer count for %q", card.ID)
+			}
+		}
+		if card.Function == "channel" {
+			hasInitialCashBonus := card.Cost.Cash > 0
+			hasCustomerCount := card.CustomerCount["gourmet"] > 0 || card.CustomerCount["regular"] > 0
+			if hasInitialCashBonus == hasCustomerCount {
+				return nil, fmt.Errorf("channel partner %q must have exactly one effect", card.ID)
+			}
+		}
+		file.Cards[index] = card
+		seen[card.ID] = true
+	}
+	return file.Cards, nil
 }
 
 // MVPStarterShopCards returns the selectable founding shop cards used during

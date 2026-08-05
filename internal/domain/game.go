@@ -142,11 +142,12 @@ func (g *Game) BeginExperiment() error {
 	}
 	if initialSetup {
 		for _, p := range g.Players {
-			if p.Cash < p.StarterShop.Cost.Cash {
+			if p.Cash+partnerInitialCashBonus(p) < p.StarterShop.Cost.Cash {
 				return ErrInsufficientCash
 			}
 		}
 		for _, p := range g.Players {
+			p.Cash += partnerInitialCashBonus(p)
 			p.Cash -= p.StarterShop.Cost.Cash
 		}
 	}
@@ -366,6 +367,23 @@ func (g *Game) DistributeCustomers(customers []Customer) {
 			customer.UnitPrice = basePrice(customer.Kind)
 		}
 		if !g.satisfies(p, customer.Demand) {
+			customer.UnitPrice = 0
+		}
+		p.Customers = append(p.Customers, customer)
+	}
+	for _, p := range g.Players {
+		g.appendPartnerCustomers(p)
+	}
+}
+
+func (g *Game) appendPartnerCustomers(p *Player) {
+	for kind, count := range p.Partner.CustomerCount {
+		if count <= 0 {
+			continue
+		}
+		demand := kind
+		customer := Customer{Kind: kind, Demand: demand, Count: count, UnitPrice: basePrice(kind)}
+		if !g.satisfies(p, demand) {
 			customer.UnitPrice = 0
 		}
 		p.Customers = append(p.Customers, customer)
@@ -617,6 +635,13 @@ func (g *Game) pay(p *Player, c Card) error {
 	p.Cash -= cost
 	p.cashFlowExpenses += cost
 	return nil
+}
+
+func partnerInitialCashBonus(p *Player) int {
+	if p.Partner.Function == "channel" && len(p.Partner.CustomerCount) == 0 {
+		return p.Partner.Cost.Cash
+	}
+	return 0
 }
 func (g *Game) player(id string) (*Player, error) {
 	for _, p := range g.Players {
