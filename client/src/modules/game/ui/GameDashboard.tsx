@@ -70,7 +70,7 @@ const managementMeta: Record<string, { color: string; pale: string; label: strin
   marketing: { color: '#bd584f', pale: '#f3d9d3', label: '顧客／價值', function: '推廣品牌與服務' },
 }
 
-const managementIcons: Record<string, string> = { operations: '⚙', coffee: '☕', value: '♥', channel: '⚑', marketing: '⚑', people: '♟' }
+const managementIcons: Record<string, string> = { operations: '⚙', coffee: '☕', value: '♥', channel: '⌂', marketing: '✦', people: '♟' }
 
 function MarketStars({ marketChange }: { marketChange?: Record<string, number> }) {
   const entries = Object.entries(marketChange ?? {}).filter(([key, value]) => (key === 'gourmet' || key === 'regular') && value !== 0)
