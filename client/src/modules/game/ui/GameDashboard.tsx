@@ -8,6 +8,7 @@ import type { CardFaceData } from '../../../CardFace'
 import { GameDashboardCardGroup } from './GameDashboardCardGroup'
 import { GameDashboardSetupCards } from './GameDashboardSetupCards'
 import { GameIcon } from './GameIcon'
+import { cardColorTokens } from './gameDashboardCardTheme'
 
 type PlayerCard = CardFaceData
 type DashboardPlayer = { id: string; displayName: string; bot?: boolean; handCount: number; cash: number; loans: number; revenue?: number; score?: number; brandAwareness?: number; products?: number; values?: number; resources?: number }
@@ -17,11 +18,11 @@ type DashboardRoom = { period: number; round: number; phase: string; players: Da
 const kindMeta: Record<string, { label: string; color: string; background: string; icon: typeof Coffee }> = {
   partner: { label: '合夥人卡', color: '#714b38', background: '#f3e5d8', icon: Groups },
   starter_shop: { label: '創始店卡', color: '#287477', background: '#dff0ed', icon: Storefront },
-  resource: { label: '資源', color: '#3976a6', background: '#e4eff7', icon: Coffee },
-  product: { label: '產品', color: '#b98a25', background: '#f8efd1', icon: Coffee },
-  value: { label: '價值', color: '#b44f52', background: '#f6e3e4', icon: Psychology },
-  channel: { label: '通路', color: '#3f7d66', background: '#e2f0e8', icon: Storefront },
-  marketing: { label: '行銷', color: '#7a5ba5', background: '#eee7f7', icon: Psychology },
+  resource: { label: '資源', color: cardColorTokens.resource.color, background: cardColorTokens.resource.pale, icon: Coffee },
+  product: { label: '產品', color: cardColorTokens.product.color, background: cardColorTokens.product.pale, icon: Coffee },
+  value: { label: '價值', color: cardColorTokens.value.color, background: cardColorTokens.value.pale, icon: Psychology },
+  channel: { label: '通路', color: cardColorTokens.channel.color, background: cardColorTokens.channel.pale, icon: Storefront },
+  marketing: { label: '行銷', color: cardColorTokens.marketing.color, background: cardColorTokens.marketing.pale, icon: Psychology },
 }
 
 const partnerMeta: Record<string, { color: string; pale: string; icon: typeof Coffee; role: string }> = {
@@ -64,11 +65,11 @@ function StarterShopCardTile({ card, selected, onClick }: { card: PlayerCard; se
 }
 
 const managementMeta: Record<string, { color: string; pale: string; label: string; function: string }> = {
-  resource: { color: '#2d6897', pale: '#d5e7ef', label: '資源／營運', function: '取得營運資源' },
-  product: { color: '#c88d28', pale: '#f3dfb7', label: '產品／商品', function: '推出特色產品' },
-  value: { color: '#bd584f', pale: '#f3d9d3', label: '顧客／價值', function: '提升顧客價值' },
-  channel: { color: '#2d6897', pale: '#d5e7ef', label: '資源／營運', function: '拓展銷售通路' },
-  marketing: { color: '#bd584f', pale: '#f3d9d3', label: '顧客／價值', function: '推廣品牌與服務' },
+  resource: { ...cardColorTokens.resource, label: '資源／營運', function: '取得營運資源' },
+  product: { ...cardColorTokens.product, label: '產品／商品', function: '推出特色產品' },
+  value: { ...cardColorTokens.value, label: '顧客／價值', function: '提升顧客價值' },
+  channel: { ...cardColorTokens.channel, label: '門市通路', function: '拓展銷售通路' },
+  marketing: { ...cardColorTokens.marketing, label: '行銷活動', function: '推廣品牌與服務' },
 }
 
 const managementIcons: Record<string, string> = { operations: '⚙', coffee: '☕', value: '♥', channel: '⌂', marketing: '✦', people: '♟' }

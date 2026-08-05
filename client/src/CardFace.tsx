@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react'
 import { CardCost } from './modules/game/ui/CardCost'
+import { cardColorTokens } from './modules/game/ui/gameDashboardCardTheme'
 
 export type CardFaceData = {
   id: string
@@ -21,11 +22,11 @@ export type CardFaceData = {
 }
 
 const KIND_META: Record<string, { label: string; color: string; icon: string }> = {
-  resource: { label: '關鍵資源', color: '#3976a6', icon: '◆' },
-  product: { label: '特色產品', color: '#b98a25', icon: '●' },
-  value: { label: '價值主張', color: '#b44f52', icon: '♥' },
-  channel: { label: '門市通路', color: '#3f7d66', icon: '⌂' },
-  marketing: { label: '行銷活動', color: '#7a5ba5', icon: '✦' },
+  resource: { label: '關鍵資源', color: cardColorTokens.resource.color, icon: '◆' },
+  product: { label: '特色產品', color: cardColorTokens.product.color, icon: '●' },
+  value: { label: '價值主張', color: cardColorTokens.value.color, icon: '♥' },
+  channel: { label: '門市通路', color: cardColorTokens.channel.color, icon: '⌂' },
+  marketing: { label: '行銷活動', color: cardColorTokens.marketing.color, icon: '✦' },
   partner: { label: '合夥人', color: '#765341', icon: '♟' },
   starter_shop: { label: '創始店', color: '#3f7478', icon: '⌂' },
 }

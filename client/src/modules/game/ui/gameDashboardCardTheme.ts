@@ -2,6 +2,14 @@ import { Assignment, Campaign, LocalShipping, Settings } from '@mui/icons-materi
 
 export type CardColorTheme = { color: string; pale: string }
 
+export const cardColorTokens = {
+  resource: { color: '#2d6897', pale: '#d5e7ef' },
+  product: { color: '#c88d28', pale: '#f3dfb7' },
+  value: { color: '#b44f52', pale: '#f3d9d3' },
+  channel: { color: '#3f7d66', pale: '#e2f0e8' },
+  marketing: { color: '#7a5ba5', pale: '#eee7f7' },
+} as const
+
 export const costStructureIcons = [
   { id: 'data', label: '資料資源', icon: Assignment },
   { id: 'marketing', label: '行銷資源', icon: Campaign },
@@ -35,11 +43,5 @@ export const dashboardCardColors = {
     'starter-ximen': { color: '#3f7d66', pale: '#e2f0e8' },
     'starter-gongguan': { color: '#3f7d66', pale: '#e2f0e8' },
   } satisfies Record<string, CardColorTheme>,
-  management: {
-    resource: { color: '#2d6897', pale: '#d5e7ef' },
-    product: { color: '#c88d28', pale: '#f3dfb7' },
-    value: { color: '#bd584f', pale: '#f3d9d3' },
-    channel: { color: '#3f7d66', pale: '#e2f0e8' },
-    marketing: { color: '#7a5ba5', pale: '#eee7f7' },
-  } satisfies Record<string, CardColorTheme>,
+  management: cardColorTokens satisfies Record<string, CardColorTheme>,
 } as const

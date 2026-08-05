@@ -2,15 +2,21 @@
 import { Box, Stack, Typography } from '@mui/material'
 import type { PlayerCard } from './gameDashboardCardTypes'
 import { GameIcon } from './GameIcon'
+import { cardColorTokens } from './gameDashboardCardTheme'
 
 const costIconColors: Record<string, { color: string; background: string }> = {
+  data: { color: '#2d6897', background: '#d5e7ef' },
+  marketing_resource: { color: '#2d6897', background: '#d5e7ef' },
   operations: { color: '#2d6897', background: '#d5e7ef' },
-  coffee: { color: '#8b5a3c', background: '#f0dfd2' },
-  value: { color: '#bd584f', background: '#f3d9d3' },
+  beans: { color: '#c88d28', background: '#f3dfb7' },
+  coffee: { color: '#c88d28', background: '#f3dfb7' },
+  dessert: { color: '#c88d28', background: '#f3dfb7' },
+  service: { color: cardColorTokens.value.color, background: cardColorTokens.value.pale },
+  taste: { color: cardColorTokens.value.color, background: cardColorTokens.value.pale },
+  value: { color: cardColorTokens.value.color, background: cardColorTokens.value.pale },
   channel: { color: '#3f7d66', background: '#e2f0e8' },
   marketing: { color: '#7a5ba5', background: '#eee7f7' },
-  data: { color: '#2d6897', background: '#d5e7ef' },
-  procurement: { color: '#9b7320', background: '#f3e8bd' },
+  procurement: { color: '#2d6897', background: '#d5e7ef' },
 }
 
 export function CardCost({ card, color }: { card: PlayerCard; color?: string }) {

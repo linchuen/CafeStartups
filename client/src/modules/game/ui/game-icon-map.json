@@ -1,0 +1,17 @@
+{
+  "assignment": { "component": "Assignment", "label": "任務" },
+  "beans": { "component": "Spa", "label": "咖啡豆", "category": "product" },
+  "channel": { "component": "Storefront", "label": "銷售管道", "category": "channel" },
+  "coffee": { "component": "Coffee", "label": "咖啡", "category": "product" },
+  "data": { "component": "Assignment", "label": "規劃", "category": "resource" },
+  "dessert": { "component": "Cake", "label": "甜點", "category": "product" },
+  "marketing": { "component": "Campaign", "label": "行銷活動", "category": "marketing" },
+  "marketing_resource": { "component": "Campaign", "label": "行銷", "category": "resource" },
+  "operations": { "component": "Settings", "label": "營運", "category": "resource" },
+  "people": { "component": "Groups", "label": "人員" },
+  "price": { "component": "AttachMoney", "label": "價格" },
+  "procurement": { "component": "LocalShipping", "label": "採購", "category": "resource" },
+  "service": { "component": "VolunteerActivism", "label": "貼心服務", "category": "value" },
+  "taste": { "component": "Restaurant", "label": "可口美味", "category": "value" },
+  "value": { "component": "Favorite", "label": "合理價格", "category": "value" }
+}
