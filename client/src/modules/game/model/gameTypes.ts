@@ -24,6 +24,10 @@ export type CashFlowStatement = {
   period: number
   beginningCash: number
   operatingRevenue: number
+  gourmetRevenue: number
+  regularRevenue: number
+  gourmetCustomerCount: number
+  regularCustomerCount: number
   otherIncome: number
   operatingExpenses: number
   interestPaid: number

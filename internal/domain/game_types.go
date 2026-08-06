@@ -92,6 +92,8 @@ type Player struct {
 	CashFlowRounds         []CashFlowStatement
 	cashFlowBeginning      int
 	cashFlowRevenue        int
+	cashFlowGourmetCount   int
+	cashFlowRegularCount   int
 	cashFlowOtherIncome    int
 	cashFlowExpenses       int
 	cashFlowInterest       int
@@ -111,16 +113,20 @@ type MarketDraw struct {
 }
 
 type CashFlowStatement struct {
-	Period             Period `json:"period"`
-	Round              int    `json:"round,omitempty"`
-	BeginningCash      int    `json:"beginningCash"`
-	OperatingRevenue   int    `json:"operatingRevenue"`
-	OtherIncome        int    `json:"otherIncome"`
-	OperatingExpenses  int    `json:"operatingExpenses"`
-	InterestPaid       int    `json:"interestPaid"`
-	PrincipalRepayment int    `json:"principalRepayment"`
-	NewLoans           int    `json:"newLoans"`
-	EndingCash         int    `json:"endingCash"`
+	Period               Period `json:"period"`
+	Round                int    `json:"round,omitempty"`
+	BeginningCash        int    `json:"beginningCash"`
+	OperatingRevenue     int    `json:"operatingRevenue"`
+	GourmetRevenue       int    `json:"gourmetRevenue"`
+	RegularRevenue       int    `json:"regularRevenue"`
+	GourmetCustomerCount int    `json:"gourmetCustomerCount"`
+	RegularCustomerCount int    `json:"regularCustomerCount"`
+	OtherIncome          int    `json:"otherIncome"`
+	OperatingExpenses    int    `json:"operatingExpenses"`
+	InterestPaid         int    `json:"interestPaid"`
+	PrincipalRepayment   int    `json:"principalRepayment"`
+	NewLoans             int    `json:"newLoans"`
+	EndingCash           int    `json:"endingCash"`
 }
 
 type Game struct {

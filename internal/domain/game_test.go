@@ -513,3 +513,20 @@ func TestResolveLearningCompletesThreePeriods(t *testing.T) {
 		}
 	}
 }
+
+func TestDrawMarketUsesReferencePeriodRules(t *testing.T) {
+	want := map[Period][]int{PeriodOne: {3, 2, 1, 1}, PeriodTwo: {4, 3, 2, 1}, PeriodThree: {5, 3, 2, 1}}
+	for period, expected := range want {
+		g := gameForTest(t)
+		g.Period = period
+		g.Phase = PhaseLearning
+		if err := g.DrawMarket(); err != nil {
+			t.Fatal(err)
+		}
+		for index, count := range expected {
+			if g.MarketRanking[index] != count {
+				t.Fatalf("period %d rank %d=%d, want %d", period, index+1, g.MarketRanking[index], count)
+			}
+		}
+	}
+}

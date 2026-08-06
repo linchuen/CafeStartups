@@ -156,6 +156,8 @@ func (g *Game) BeginExperiment() error {
 	for _, p := range g.Players {
 		p.cashFlowBeginning = p.Cash
 		p.cashFlowRevenue = 0
+		p.cashFlowGourmetCount = 0
+		p.cashFlowRegularCount = 0
 		p.cashFlowOtherIncome = 0
 		p.cashFlowExpenses = 0
 		p.cashFlowInterest = 0
@@ -447,7 +449,17 @@ func (g *Game) SettleRevenue() {
 	for _, p := range g.Players {
 		revenue := 0
 		for _, c := range p.Customers {
-			revenue += c.Count * c.UnitPrice
+			amount := c.Count * c.UnitPrice
+			revenue += amount
+			if c.UnitPrice <= 0 {
+				continue
+			}
+			switch c.Kind {
+			case "gourmet":
+				p.cashFlowGourmetCount += c.Count
+			case "regular":
+				p.cashFlowRegularCount += c.Count
+			}
 		}
 		p.Revenue = revenue
 		p.Cash += revenue
@@ -458,16 +470,20 @@ func (g *Game) SettleRevenue() {
 func (g *Game) recordCashFlow() {
 	for _, p := range g.Players {
 		p.CashFlow = append(p.CashFlow, CashFlowStatement{
-			Period:             g.Period,
-			Round:              g.Round,
-			BeginningCash:      p.cashFlowBeginning,
-			OperatingRevenue:   p.cashFlowRevenue,
-			OtherIncome:        p.cashFlowOtherIncome,
-			OperatingExpenses:  p.cashFlowExpenses,
-			InterestPaid:       p.cashFlowInterest,
-			PrincipalRepayment: p.cashFlowPrincipal,
-			NewLoans:           p.cashFlowNewLoans,
-			EndingCash:         p.Cash,
+			Period:               g.Period,
+			Round:                g.Round,
+			BeginningCash:        p.cashFlowBeginning,
+			OperatingRevenue:     p.cashFlowRevenue,
+			GourmetRevenue:       p.cashFlowGourmetCount * basePrice("gourmet"),
+			RegularRevenue:       p.cashFlowRegularCount * basePrice("regular"),
+			GourmetCustomerCount: p.cashFlowGourmetCount,
+			RegularCustomerCount: p.cashFlowRegularCount,
+			OtherIncome:          p.cashFlowOtherIncome,
+			OperatingExpenses:    p.cashFlowExpenses,
+			InterestPaid:         p.cashFlowInterest,
+			PrincipalRepayment:   p.cashFlowPrincipal,
+			NewLoans:             p.cashFlowNewLoans,
+			EndingCash:           p.Cash,
 		})
 	}
 }
@@ -475,16 +491,20 @@ func (g *Game) recordCashFlow() {
 func (g *Game) recordCashFlowRound() {
 	for _, p := range g.Players {
 		statement := CashFlowStatement{
-			Period:             g.Period,
-			Round:              g.Round,
-			BeginningCash:      p.cashFlowBeginning,
-			OperatingRevenue:   p.cashFlowRevenue,
-			OtherIncome:        p.cashFlowOtherIncome,
-			OperatingExpenses:  p.cashFlowExpenses,
-			InterestPaid:       p.cashFlowInterest,
-			PrincipalRepayment: p.cashFlowPrincipal,
-			NewLoans:           p.cashFlowNewLoans,
-			EndingCash:         p.Cash,
+			Period:               g.Period,
+			Round:                g.Round,
+			BeginningCash:        p.cashFlowBeginning,
+			OperatingRevenue:     p.cashFlowRevenue,
+			GourmetRevenue:       p.cashFlowGourmetCount * basePrice("gourmet"),
+			RegularRevenue:       p.cashFlowRegularCount * basePrice("regular"),
+			GourmetCustomerCount: p.cashFlowGourmetCount,
+			RegularCustomerCount: p.cashFlowRegularCount,
+			OtherIncome:          p.cashFlowOtherIncome,
+			OperatingExpenses:    p.cashFlowExpenses,
+			InterestPaid:         p.cashFlowInterest,
+			PrincipalRepayment:   p.cashFlowPrincipal,
+			NewLoans:             p.cashFlowNewLoans,
+			EndingCash:           p.Cash,
 		}
 		if len(p.CashFlowRounds) > 0 {
 			last := &p.CashFlowRounds[len(p.CashFlowRounds)-1]
@@ -497,15 +517,22 @@ func (g *Game) recordCashFlowRound() {
 	}
 }
 
-// DrawMarket draws the customer-count tokens used by the market ranking.
+var marketCustomersByPeriod = map[Period][]int{
+	PeriodOne:   {3, 2, 1, 1},
+	PeriodTwo:   {4, 3, 2, 1},
+	PeriodThree: {5, 3, 2, 1},
+}
+
+// DrawMarket assigns the customer-count tokens defined by the reference board.
 func (g *Game) DrawMarket() error {
 	if g.Phase != PhaseLearning || g.marketDrawn {
 		return ErrInvalidAction
 	}
-	bag := []int{1, 2, 3, 4}
-	g.rng.Shuffle(len(bag), func(i, j int) { bag[i], bag[j] = bag[j], bag[i] })
-	g.MarketRanking = append([]int(nil), bag[:len(g.Players)]...)
-	sort.Sort(sort.Reverse(sort.IntSlice(g.MarketRanking)))
+	counts := marketCustomersByPeriod[g.Period]
+	if len(counts) < len(g.Players) {
+		return fmt.Errorf("%w: market customer rule", ErrInvalidAction)
+	}
+	g.MarketRanking = append([]int(nil), counts[:len(g.Players)]...)
 	market := make([]string, 0)
 	for _, kind := range []string{"gourmet", "regular", "difficult"} {
 		count := g.DemandBoard[kind]

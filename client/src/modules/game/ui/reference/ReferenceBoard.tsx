@@ -57,7 +57,7 @@ function ReferenceDemandRow(props: { type: 'gourmet' | 'regular'; label: string;
     return isRevealed ? <DemandCard card={card!} revealed quantity={demandQuantityForPosition(props.type, column)} /> : <><b>{questionMarks(column)}</b><small>{fallback}</small></>
   }
   return <div className={`reference-demand-row reference-demand-${props.type}`}>
-    <div className="reference-customer-label"><span className="reference-customer-figures"><i /><i /></span><strong>{props.label}</strong><small>{props.type === 'gourmet' ? '饕客需求' : '一般客需求'}</small></div>
+    <div className="reference-customer-label"><span className="reference-customer-figures"><i /><i /></span><strong>{props.label}</strong><small>{props.type === 'gourmet' ? '饕客需求 +10' : '一般客需求 +10'}</small></div>
     <div className="reference-demand-slot reference-demand-base">{slot(0, props.base)}</div>
     {props.additions.map((addition, index) => <div className={`reference-demand-slot ${props.activePeriod === index + 1 ? 'is-current' : ''}`} key={`${props.type}-${index}`}>{slot(index + 1, addition)}</div>)}
   </div>
