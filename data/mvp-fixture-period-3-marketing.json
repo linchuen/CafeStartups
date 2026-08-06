@@ -1,113 +1,153 @@
 {
-  "source": "mvp-fixture",
-  "version": 2,
-  "seed": "phase-1-mvp-84",
-  "function": "marketing",
-  "cards": [
-    {
-      "id": "mvp-p3-024",
-      "name": "社群經營",
-      "kind": "marketing",
-      "period": 3,
-      "cost": {
-        "cash": 25,
-        "icons": []
-      },
-      "icons": [
-        "marketing"
-      ],
-      "marketChange": {
-        "gourmet": 2,
-        "regular": 0,
-        "difficult": 0
-      },
-      "source": "mvp-fixture",
-      "function": "marketing",
-      "brandAwareness": 1
-    },
-    {
-      "id": "mvp-p3-025",
-      "name": "會員制度",
-      "kind": "marketing",
-      "period": 3,
-      "cost": {
-        "cash": 25,
-        "icons": []
-      },
-      "icons": [
-        "marketing"
-      ],
-      "marketChange": {
-        "gourmet": 0,
-        "regular": 2,
-        "difficult": 0
-      },
-      "source": "mvp-fixture",
-      "function": "marketing",
-      "brandAwareness": 1
-    },
-    {
-      "id": "mvp-p3-026",
-      "name": "開幕活動",
-      "kind": "marketing",
-      "period": 3,
-      "cost": {
-        "cash": 25,
-        "icons": []
-      },
-      "icons": [
-        "marketing"
-      ],
-      "marketChange": {
-        "gourmet": 0,
-        "regular": 2,
-        "difficult": 0
-      },
-      "source": "mvp-fixture",
-      "function": "marketing",
-      "brandAwareness": 1
-    },
-    {
-      "id": "mvp-p3-027",
-      "name": "口碑推薦",
-      "kind": "marketing",
-      "period": 3,
-      "cost": {
-        "cash": 25,
-        "icons": []
-      },
-      "icons": [
-        "marketing"
-      ],
-      "marketChange": {
-        "gourmet": 2,
-        "regular": 0,
-        "difficult": 0
-      },
-      "source": "mvp-fixture",
-      "function": "marketing",
-      "brandAwareness": 1
-    },
-    {
-      "id": "mvp-p3-028",
-      "name": "品牌故事",
-      "kind": "marketing",
-      "period": 3,
-      "cost": {
-        "cash": 25,
-        "icons": []
-      },
-      "icons": [
-        "marketing"
-      ],
-      "marketChange": {
-        "gourmet": 0,
-        "regular": 2,
-        "difficult": 0
-      },
-      "source": "mvp-fixture",
-      "function": "marketing",
-      "brandAwareness": 1
-    }
-  ]
+    "source":  "mvp-fixture",
+    "version":  2,
+    "seed":  "phase-1-mvp-84",
+    "function":  "marketing",
+    "cards":  [
+                  {
+                      "id":  "mvp-p3-024",
+                      "name":  "社群經營",
+                      "kind":  "marketing",
+                      "period":  3,
+                      "cost":  {
+                                   "cash":  20,
+                                   "icons":  [
+                                                 "marketing",
+                                                 "marketing",
+                                                 "marketing",
+                                                 "marketing",
+                                                 "marketing",
+                                                 "marketing",
+                                                 "marketing"
+                                             ]
+                               },
+                      "icons":  [
+                                    "marketing"
+                                ],
+                      "marketChange":  {
+                                           "gourmet":  2,
+                                           "regular":  0,
+                                           "difficult":  0
+                                       },
+                      "source":  "mvp-fixture",
+                      "function":  "marketing",
+                      "brandAwareness":  3
+                  },
+                  {
+                      "id":  "mvp-p3-025",
+                      "name":  "會員制度",
+                      "kind":  "marketing",
+                      "period":  3,
+                      "cost":  {
+                                   "cash":  20,
+                                   "icons":  [
+                                                 "marketing",
+                                                 "marketing",
+                                                 "marketing",
+                                                 "marketing",
+                                                 "marketing",
+                                                 "marketing",
+                                                 "marketing"
+                                             ]
+                               },
+                      "icons":  [
+                                    "marketing"
+                                ],
+                      "marketChange":  {
+                                           "gourmet":  0,
+                                           "regular":  2,
+                                           "difficult":  0
+                                       },
+                      "source":  "mvp-fixture",
+                      "function":  "marketing",
+                      "brandAwareness":  3
+                  },
+                  {
+                      "id":  "mvp-p3-026",
+                      "name":  "開幕活動",
+                      "kind":  "marketing",
+                      "period":  3,
+                      "cost":  {
+                                   "cash":  20,
+                                   "icons":  [
+                                                 "marketing",
+                                                 "marketing",
+                                                 "marketing",
+                                                 "marketing",
+                                                 "marketing",
+                                                 "marketing",
+                                                 "marketing"
+                                             ]
+                               },
+                      "icons":  [
+                                    "marketing"
+                                ],
+                      "marketChange":  {
+                                           "gourmet":  0,
+                                           "regular":  2,
+                                           "difficult":  0
+                                       },
+                      "source":  "mvp-fixture",
+                      "function":  "marketing",
+                      "brandAwareness":  3
+                  },
+                  {
+                      "id":  "mvp-p3-027",
+                      "name":  "口碑推薦",
+                      "kind":  "marketing",
+                      "period":  3,
+                      "cost":  {
+                                   "cash":  20,
+                                   "icons":  [
+                                                 "marketing",
+                                                 "marketing",
+                                                 "marketing",
+                                                 "marketing",
+                                                 "marketing",
+                                                 "marketing",
+                                                 "marketing"
+                                             ]
+                               },
+                      "icons":  [
+                                    "marketing"
+                                ],
+                      "marketChange":  {
+                                           "gourmet":  2,
+                                           "regular":  0,
+                                           "difficult":  0
+                                       },
+                      "source":  "mvp-fixture",
+                      "function":  "marketing",
+                      "brandAwareness":  3
+                  },
+                  {
+                      "id":  "mvp-p3-028",
+                      "name":  "品牌故事",
+                      "kind":  "marketing",
+                      "period":  3,
+                      "cost":  {
+                                   "cash":  20,
+                                   "icons":  [
+                                                 "marketing",
+                                                 "marketing",
+                                                 "marketing",
+                                                 "marketing",
+                                                 "marketing",
+                                                 "marketing",
+                                                 "marketing"
+                                             ]
+                               },
+                      "icons":  [
+                                    "marketing"
+                                ],
+                      "marketChange":  {
+                                           "gourmet":  0,
+                                           "regular":  2,
+                                           "difficult":  0
+                                       },
+                      "source":  "mvp-fixture",
+                      "function":  "marketing",
+                      "brandAwareness":  3
+                  }
+              ]
 }

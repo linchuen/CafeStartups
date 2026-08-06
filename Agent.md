@@ -151,3 +151,6 @@ npm run build
 - 不建立與 `docs/Agent-可執行規則.md` 平行且互相矛盾的規則來源。
 - 不為了通過單一測試而繞過 domain 合法性檢查。
 - 不把 MVP fixture 未驗證的內容宣稱為正式規則。
+## 卡片資料生成規範
+
+生成或調整卡片資料時，必須依照 [docs/卡片資料生成準則.md](docs/卡片資料生成準則.md) 與 `data/card-distribution.json`；不得自行建立另一套卡片分布、icon、成本或行銷星數規則。

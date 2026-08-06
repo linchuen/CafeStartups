@@ -34,22 +34,19 @@ func TestCatalogDealsPeriodCards(t *testing.T) {
 	}
 }
 
-func TestCatalogUsesSchemaIconsAsCostIcons(t *testing.T) {
+func TestCatalogPreservesExplicitCostIcons(t *testing.T) {
 	catalog, err := LoadCatalog(fixturedata.MVPFixture)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	for _, card := range catalog {
-		if len(card.Icons) == 0 {
+		if len(card.Cost.Icons) == 0 {
 			continue
 		}
-		if len(card.Cost.Icons) != len(card.Icons) {
-			t.Fatalf("card %q cost icons=%v, want schema icons=%v", card.ID, card.Cost.Icons, card.Icons)
-		}
 		for index, icon := range card.Cost.Icons {
-			if icon != card.Icons[index] {
-				t.Fatalf("card %q cost icon[%d]=%q, want %q", card.ID, index, icon, card.Icons[index])
+			if icon == "" {
+				t.Fatalf("card %q cost icon[%d] is empty", card.ID, index)
 			}
 		}
 	}
