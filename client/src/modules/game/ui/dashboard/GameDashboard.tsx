@@ -8,6 +8,7 @@ import type { CardFaceData } from '../../model/cardTypes'
 import type { CashFlowStatement, GameState } from '../../model/gameTypes'
 import { GameDashboardCardGroup } from '../cards/GameDashboardCardGroup'
 import { GameDashboardSetupCards } from '../cards/GameDashboardSetupCards'
+import { CustomerTypeTokens } from '../cards/CustomerTypeTokens'
 import { GameIcon } from '../cards/GameIcon'
 
 type PlayerCard = CardFaceData
@@ -45,6 +46,10 @@ function PlayerSummaryBar({ room }: { room: DashboardRoom }) {
   return <Paper elevation={0} sx={{ p: 1.1, mb: 1.5, border: '1px solid', borderColor: 'divider', borderRadius: 2.5, bgcolor: '#fffaf4' }}><Stack direction="row" spacing={1} sx={{ overflowX: 'auto' }}>{metrics.map(([label, value]) => <Box key={label} sx={{ minWidth: { xs: 74, sm: 88 }, px: 1, py: .55, borderRight: '1px solid', borderColor: 'divider', '&:last-child': { borderRight: 0 } }}><Typography variant="caption" color="text.secondary" noWrap>{label}</Typography><Typography variant="body2" fontWeight={900} noWrap>{value}</Typography></Box>)}</Stack></Paper>
 }
 
+function CustomerCountsPanel({ counts, arrivals }: { counts: Record<string, number>; arrivals: Record<string, number> }) {
+  return <Stack direction="row" flexWrap="wrap" spacing={1} sx={{ mb: 1.5 }}><Paper variant="outlined" sx={{ flex: '1 1 140px', p: 1, bgcolor: '#fff7ed' }}><CustomerTypeTokens type="gourmet" count={counts.gourmet ?? 0} size={18} /><Typography variant="caption" display="block">卡牌饕客數</Typography></Paper><Paper variant="outlined" sx={{ flex: '1 1 140px', p: 1, bgcolor: '#fffbea' }}><CustomerTypeTokens type="regular" count={counts.regular ?? 0} size={18} /><Typography variant="caption" display="block">卡牌一般客數</Typography></Paper><Paper variant="outlined" sx={{ flex: '1 1 140px', p: 1, bgcolor: '#fff7ed' }}><CustomerTypeTokens type="gourmet" count={arrivals.gourmet ?? 0} size={18} /><Typography variant="caption" display="block">本期饕客來客數</Typography></Paper><Paper variant="outlined" sx={{ flex: '1 1 140px', p: 1, bgcolor: '#fffbea' }}><CustomerTypeTokens type="regular" count={arrivals.regular ?? 0} size={18} /><Typography variant="caption" display="block">本期一般客來客數</Typography></Paper></Stack>
+}
+
 function HandActionBar({ room, selected, command, busy }: { room: DashboardRoom; selected?: PlayerCard; command: (type: string, extra?: Record<string, unknown>) => void; busy: boolean }) {
   return <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ mb: 1.5 }}><Button size="small" variant="outlined" onClick={() => command('TAKE_LOAN')} disabled={busy}>＋ 取得貸款</Button>{room.phase === 'experiment' && <><Button size="small" variant="outlined" onClick={() => command('DISCARD_SELECTED_CARD')} disabled={busy || !selected}>棄牌並傳牌 +20</Button><Button size="small" variant="contained" onClick={() => command('PLAY_SELECTED_CARD')} disabled={busy || !selected}>打出並傳牌 {selected ? `$${selected.cost.cash} 萬` : '選擇一張牌'}</Button></>}</Stack>
 }
@@ -55,7 +60,16 @@ export function GameDashboard({ room, selectedCard, setSelectedCard, command, bu
   const hand = me?.hand ?? []
   const tableau = me?.tableau ?? []
   const acquiredCards = [...startingCards, ...tableau]
-  const iconCounts = acquiredCards.flatMap((card) => card.icons ?? []).reduce<Record<string, number>>((counts, icon) => ({ ...counts, [icon]: (counts[icon] ?? 0) + 1 }), {})
+  const iconCounts = acquiredCards.flatMap((card) => [...(card.icons ?? []), ...(card.kind === 'starter_shop' ? ['channel'] : [])]).reduce<Record<string, number>>((counts, icon) => ({ ...counts, [icon]: (counts[icon] ?? 0) + 1 }), {})
+  const customerCounts = acquiredCards.reduce<Record<string, number>>((counts, card) => {
+    const source = card.kind === 'starter_shop' ? card.demand : card.customerCount
+    for (const type of ['gourmet', 'regular']) counts[type] = (counts[type] ?? 0) + (source?.[type] ?? 0)
+    return counts
+  }, {})
+  const arrivals = (me?.customers ?? []).reduce<Record<string, number>>((counts, customer) => {
+    counts[customer.kind] = (counts[customer.kind] ?? 0) + customer.count
+    return counts
+  }, {})
   const selected = hand.find((card) => card.id === selectedCard)
   const phaseLabel: Record<string, string> = { hypothesis: '設定關鍵指標', experiment: '選擇實驗策略', learning: '結算本期市場', finished: '遊戲完成' }
   const totalCards = startingCards.length + hand.length + tableau.length
@@ -67,6 +81,7 @@ export function GameDashboard({ room, selectedCard, setSelectedCard, command, bu
       <Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" alignItems={{ xs: 'start', md: 'center' }} spacing={1} sx={{ mb: 2.5 }}><Box><Typography variant="overline" color="text.secondary">PERIOD {room.period} · ROUND {room.round}/6</Typography><Typography variant="h4" fontWeight={900}>{phaseLabel[room.phase] ?? room.phase}</Typography></Box><Chip icon={<Coffee />} label={`${totalCards} 張卡牌`} color="primary" variant="outlined" /></Stack>
       {room.phase === 'hypothesis' && room.period === 0 && <GameDashboardSetupCards partners={room.partnerOptions ?? []} shops={room.starterShopOptions ?? []} selectedPartnerId={me?.initialCardsSelected ? me?.partner?.id : undefined} selectedShopId={me?.initialCardsSelected ? me?.starterShop?.id : undefined} busy={busy} onSelect={setupInitialCards} onBegin={() => command('BEGIN_EXPERIMENT')} />}
       <KPISelectionPanel key={room.period} room={room} command={command} busy={busy} />
+      <CustomerCountsPanel counts={customerCounts} arrivals={arrivals} />
       <PlayerSummaryBar room={room} />
       <HandActionBar room={room} selected={selected} command={command} busy={busy} />
       <MarketRankingPanel room={room} command={command} busy={busy} />
