@@ -90,6 +90,6 @@ export function App() {
     <header className="topbar"><span className="brand-mark">CS</span><span>Café Startups</span>{room && <span className="sync-pill">v{room.gameVersion} · 已同步</span>}</header>
     {screen === 'home' && <Home name={name} setName={setName} seed={seed} setSeed={setSeed} createRoom={createRoom} busy={busy} error={error} />}
     {screen === 'lobby' && room && <Lobby room={room} busy={busy} startGame={startGame} leave={leave} error={error} />}
-    {screen === 'game' && room && <><ReferenceBoard period={room.period} phase={room.phase} round={room.round} seed={room.seed} /><GameDashboard room={room} selectedCard={selectedCard} setSelectedCard={setSelectedCard} command={command} busy={busy} error={error} leave={leave} setupInitialCards={setupInitialCards} /><CashFlowTable room={room} /></>}
+    {screen === 'game' && room && <><ReferenceBoard period={room.period} phase={room.phase} round={room.round} seed={room.seed} demandCards={room.demandCards} /><GameDashboard room={room} selectedCard={selectedCard} setSelectedCard={setSelectedCard} command={command} busy={busy} error={error} leave={leave} setupInitialCards={setupInitialCards} /><CashFlowTable room={room} /></>}
   </main>
 }
