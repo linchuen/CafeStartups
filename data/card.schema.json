@@ -3,11 +3,11 @@
   "$id": "https://cafestartups.local/schemas/card.schema.json",
   "title": "Café Startups Card",
   "type": "object",
-  "required": ["id", "name", "kind", "period", "cost", "icons", "marketChange", "source"],
+  "required": ["id", "kind", "icons", "source"],
   "properties": {
     "id": { "type": "string" },
     "name": { "type": "string" },
-    "kind": { "enum": ["resource", "product", "value", "channel", "marketing", "partner", "starter_shop"] },
+    "kind": { "enum": ["resource", "product", "value", "channel", "marketing", "partner", "starter_shop", "demand"] },
     "function": { "enum": ["resource", "product", "value", "channel", "marketing"] },
     "period": { "enum": [1, 2, 3, null] },
     "cost": {
@@ -29,6 +29,22 @@
     "source": { "enum": ["mvp-fixture", "rulebook-verified"] }
   },
   "allOf": [
+    {
+      "if": { "properties": { "kind": { "const": "demand" } } },
+      "then": {
+        "properties": {
+          "icons": {
+            "minItems": 1,
+            "items": { "enum": ["coffee", "dessert", "beans", "taste", "service", "price"] }
+          }
+        },
+        "not": { "anyOf": [{ "required": ["row"] }, { "required": ["quantity"] }] }
+      }
+    },
+    {
+      "if": { "properties": { "kind": { "enum": ["resource", "product", "value", "channel", "marketing", "partner", "starter_shop"] } } },
+      "then": { "required": ["name", "cost", "marketChange"] }
+    },
     {
       "if": { "properties": { "kind": { "const": "channel" } } },
       "then": { "required": ["customerCount", "function"] }

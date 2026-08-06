@@ -1,7 +1,17 @@
 import type { CSSProperties } from 'react'
 import { GameIcon } from '../cards/GameIcon'
 
-export type DemandCardData = { id: string; row: 'ordinary' | 'advanced'; quantity: 1 | 2; icons: string[]; source?: string }
+export type DemandCustomerType = 'gourmet' | 'regular'
+export type DemandCardData = { id: string; kind: 'demand'; icons: string[]; source?: string }
+
+export const DEMAND_QUANTITIES: Record<DemandCustomerType, readonly number[]> = {
+  gourmet: [1, 2, 2, 2],
+  regular: [1, 1, 1, 2],
+}
+
+export function demandQuantityForPosition(customerType: DemandCustomerType, round: number) {
+  return DEMAND_QUANTITIES[customerType][round] ?? DEMAND_QUANTITIES[customerType][DEMAND_QUANTITIES[customerType].length - 1]
+}
 
 const DEMAND_TYPES = [
   { id: 'coffee', label: '咖啡', color: '#b87932', pale: '#f4e4ce' },
@@ -12,10 +22,10 @@ const DEMAND_TYPES = [
   { id: 'price', label: '合理價格', color: '#ad4e4b', pale: '#f1d9d4' },
 ] as const
 
-export const DEMAND_CARDS: DemandCardData[] = [
-  ...DEMAND_TYPES.map((type, index) => ({ id: `ordinary-${String(index + 1).padStart(2, '0')}`, row: 'ordinary' as const, quantity: 1 as const, icons: [type.id], source: 'mvp-fixture' })),
-  ...DEMAND_TYPES.map((type, index) => ({ id: `advanced-${String(index + 1).padStart(2, '0')}`, row: 'advanced' as const, quantity: 2 as const, icons: [type.id, DEMAND_TYPES[(index + 1) % DEMAND_TYPES.length].id], source: 'mvp-fixture' })),
-]
+export const DEMAND_CARDS: DemandCardData[] = DEMAND_TYPES.flatMap((type, index) => [
+  { id: `demand-${String(index + 1).padStart(2, '0')}`, kind: 'demand' as const, icons: [type.id], source: 'mvp-fixture' },
+  { id: `demand-${String(index + 7).padStart(2, '0')}`, kind: 'demand' as const, icons: [type.id, DEMAND_TYPES[(index + 1) % DEMAND_TYPES.length].id], source: 'mvp-fixture' },
+])
 
 const iconOf = (id: string) => DEMAND_TYPES.find((type) => type.id === id) ?? DEMAND_TYPES[0]
 
@@ -33,19 +43,20 @@ const shuffle = <T,>(items: T[], seed: number) => {
 }
 
 export const arrangeDemandCards = (seed = 1) => ({
-  ordinary: shuffle(DEMAND_CARDS.filter((card) => card.row === 'ordinary'), seed),
-  advanced: shuffle(DEMAND_CARDS.filter((card) => card.row === 'advanced'), seed + 97),
+  first: shuffle(DEMAND_CARDS.slice(0, DEMAND_TYPES.length), seed),
+  second: shuffle(DEMAND_CARDS.slice(DEMAND_TYPES.length), seed + 97),
 })
 
-export function DemandCard({ card, revealed }: { card: DemandCardData; revealed: boolean }) {
+export function DemandCard({ card, revealed, quantity = card.icons.length }: { card: DemandCardData; revealed: boolean; quantity?: number }) {
   const firstType = iconOf(card.icons[0])
   const style = { '--demand-accent': firstType.color, '--demand-pale': firstType.pale } as CSSProperties
-  if (!revealed) return <div className="demand-card demand-card-back" style={style} aria-label="\u5c1a\u672a\u63ed\u793a\u9700\u6c42\u5361"><span>{card.row === 'ordinary' ? '?' : '??'}</span></div>
-  return <div className={`demand-card demand-card-face ${card.row}`} style={style}><div className="demand-card-heading"><span>{card.row === 'ordinary' ? '\u666e\u901a\u9700\u6c42' : '\u9032\u968e\u9700\u6c42'}</span></div><div className="demand-card-icons">{card.icons.map((icon) => <span key={icon} title={iconOf(icon).label}><GameIcon name={icon} fontSize="inherit" /></span>)}</div><div className="demand-card-labels">{card.icons.map((icon) => <small key={icon}>{iconOf(icon).label}</small>)}</div></div>
+  const visibleIcons = Array.from({ length: quantity }, (_, index) => card.icons[index % card.icons.length])
+  if (!revealed) return <div className="demand-card demand-card-back" style={style} aria-label="\u5c1a\u672a\u63ed\u793a\u9700\u6c42\u5361"><span>?</span></div>
+  return <div className="demand-card demand-card-face" style={style}><div className="demand-card-heading"><span>需求卡</span></div><div className="demand-card-icons">{visibleIcons.map((icon, index) => <span key={`${icon}-${index}`} title={iconOf(icon).label}><GameIcon name={icon} fontSize="inherit" /></span>)}</div><div className="demand-card-labels">{visibleIcons.map((icon, index) => <small key={`${icon}-${index}`}>{iconOf(icon).label}</small>)}</div></div>
 }
 
 export function DemandMarket({ period, round, reveal = false, embedded = false, seed = 1 }: { period: number; round: number; reveal?: boolean; embedded?: boolean; seed?: number }) {
   const revealedColumn = reveal ? Math.min(5, Math.max(-1, round)) : -1
-  const { ordinary, advanced } = arrangeDemandCards(seed)
-  return <section className={`demand-market ${embedded ? 'demand-market-embedded' : 'panel'}`} aria-label="\u9700\u6c42\u5361"><div className="demand-market-heading"><div><p className="eyebrow">DEMAND CARDS</p><h2>\u9700\u6c42\u5361</h2></div><span>\u7b2c {period} \u671f\u30fb\u7b2c {round} \u56de\u5408</span></div><div className="demand-card-board"><div className="demand-card-board-labels"><span>\u5361\u80cc</span><span>\u666e\u901a\u9700\u6c42\u5361</span><span>\u9032\u968e\u9700\u6c42\u5361</span></div><div className="demand-card-board-grid">{DEMAND_TYPES.map((type, column) => <div className="demand-card-column" key={type.id}><div className="demand-card-type-label" style={{ color: type.color }}><span><GameIcon name={type.id} fontSize="small" /></span><small>{type.label}</small></div><DemandCard card={ordinary[column]} revealed={column <= revealedColumn} /><DemandCard card={advanced[column]} revealed={column <= revealedColumn} /></div>)}</div></div></section>
+  const { first, second } = arrangeDemandCards(seed)
+  return <section className={`demand-market ${embedded ? 'demand-market-embedded' : 'panel'}`} aria-label="\u9700\u6c42\u5361"><div className="demand-market-heading"><div><p className="eyebrow">DEMAND CARDS</p><h2>\u9700\u6c42\u5361</h2></div><span>\u7b2c {period} \u671f\u30fb\u7b2c {round} \u56de\u5408</span></div><div className="demand-card-board"><div className="demand-card-board-labels"><span>\u5361\u80cc</span><span>\u9700\u6c42\u4f4d\u7f6e 1</span><span>\u9700\u6c42\u4f4d\u7f6e 2</span></div><div className="demand-card-board-grid">{DEMAND_TYPES.map((type, column) => <div className="demand-card-column" key={type.id}><div className="demand-card-type-label" style={{ color: type.color }}><span><GameIcon name={type.id} fontSize="small" /></span><small>{type.label}</small></div><DemandCard card={first[column]} revealed={column <= revealedColumn} /><DemandCard card={second[column]} revealed={column <= revealedColumn} /></div>)}</div></div></section>
 }

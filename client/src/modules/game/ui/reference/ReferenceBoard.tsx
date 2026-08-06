@@ -1,4 +1,4 @@
-import { arrangeDemandCards, DemandCard } from '../market/DemandMarket'
+import { arrangeDemandCards, demandQuantityForPosition, DemandCard } from '../market/DemandMarket'
 
 const REFERENCE_KPIS = [
   { label: '饕客滿意度', value: '每張 +5 分', tone: 'gourmet', symbol: '' },
@@ -48,13 +48,13 @@ export function ReferenceBoard(props: { period: number; phase?: string; round?: 
 }
 
 function ReferenceDemandRow(props: { type: 'gourmet' | 'regular'; label: string; base: string; additions: string[]; activePeriod: number; revealed?: boolean; round?: number; seed?: string }) {
-  const questionMarks = (period: number) => props.type === 'gourmet' ? (period === 0 ? '?' : '??') : (period <= 2 ? '?' : '??')
+  const questionMarks = (period: number) => '?'.repeat(demandQuantityForPosition(props.type, period))
   const numericSeed = [...(props.seed ?? 'local-game')].reduce((value, character) => ((value * 31) + character.charCodeAt(0)) >>> 0, 1)
-  const cards = arrangeDemandCards(numericSeed)[props.type === 'gourmet' ? 'ordinary' : 'advanced']
+  const cards = arrangeDemandCards(numericSeed)[props.type === 'gourmet' ? 'first' : 'second']
   const slot = (column: number, fallback: string) => {
     const card = cards[column]
     const isRevealed = Boolean(card && props.revealed && props.round !== undefined && props.round >= column)
-    return isRevealed ? <DemandCard card={card!} revealed /> : <><b>{questionMarks(column)}</b><small>{fallback}</small></>
+    return isRevealed ? <DemandCard card={card!} revealed quantity={demandQuantityForPosition(props.type, column)} /> : <><b>{questionMarks(column)}</b><small>{fallback}</small></>
   }
   return <div className={`reference-demand-row reference-demand-${props.type}`}>
     <div className="reference-customer-label"><span className="reference-customer-figures"><i /><i /></span><strong>{props.label}</strong><small>{props.type === 'gourmet' ? '饕客需求' : '一般客需求'}</small></div>

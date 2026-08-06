@@ -2,7 +2,7 @@
   "version": 2,
   "layout": {
     "columns": 6,
-    "rows": ["ordinary", "advanced"],
+    "rows": ["gourmet", "regular"],
     "placement": "shuffle-at-game-start",
     "reveal": "reveal-column-at-round-end",
     "initialRevealRound": 0
@@ -16,17 +16,17 @@
     { "id": "price", "label": "\u5408\u7406\u50f9\u683c", "symbol": "$" }
   ],
   "cards": [
-    { "id": "ordinary-01", "row": "ordinary", "quantity": 1, "icons": ["coffee"], "source": "mvp-fixture" },
-    { "id": "ordinary-02", "row": "ordinary", "quantity": 1, "icons": ["dessert"], "source": "mvp-fixture" },
-    { "id": "ordinary-03", "row": "ordinary", "quantity": 1, "icons": ["beans"], "source": "mvp-fixture" },
-    { "id": "ordinary-04", "row": "ordinary", "quantity": 1, "icons": ["taste"], "source": "mvp-fixture" },
-    { "id": "ordinary-05", "row": "ordinary", "quantity": 1, "icons": ["service"], "source": "mvp-fixture" },
-    { "id": "ordinary-06", "row": "ordinary", "quantity": 1, "icons": ["price"], "source": "mvp-fixture" },
-    { "id": "advanced-01", "row": "advanced", "quantity": 2, "icons": ["coffee", "dessert"], "source": "mvp-fixture" },
-    { "id": "advanced-02", "row": "advanced", "quantity": 2, "icons": ["dessert", "beans"], "source": "mvp-fixture" },
-    { "id": "advanced-03", "row": "advanced", "quantity": 2, "icons": ["beans", "taste"], "source": "mvp-fixture" },
-    { "id": "advanced-04", "row": "advanced", "quantity": 2, "icons": ["taste", "service"], "source": "mvp-fixture" },
-    { "id": "advanced-05", "row": "advanced", "quantity": 2, "icons": ["service", "price"], "source": "mvp-fixture" },
-    { "id": "advanced-06", "row": "advanced", "quantity": 2, "icons": ["price", "coffee"], "source": "mvp-fixture" }
+    { "id": "demand-01", "kind": "demand", "icons": ["coffee"], "source": "mvp-fixture" },
+    { "id": "demand-02", "kind": "demand", "icons": ["dessert"], "source": "mvp-fixture" },
+    { "id": "demand-03", "kind": "demand", "icons": ["beans"], "source": "mvp-fixture" },
+    { "id": "demand-04", "kind": "demand", "icons": ["taste"], "source": "mvp-fixture" },
+    { "id": "demand-05", "kind": "demand", "icons": ["service"], "source": "mvp-fixture" },
+    { "id": "demand-06", "kind": "demand", "icons": ["price"], "source": "mvp-fixture" },
+    { "id": "demand-07", "kind": "demand", "icons": ["coffee", "dessert"], "source": "mvp-fixture" },
+    { "id": "demand-08", "kind": "demand", "icons": ["dessert", "beans"], "source": "mvp-fixture" },
+    { "id": "demand-09", "kind": "demand", "icons": ["beans", "taste"], "source": "mvp-fixture" },
+    { "id": "demand-10", "kind": "demand", "icons": ["taste", "service"], "source": "mvp-fixture" },
+    { "id": "demand-11", "kind": "demand", "icons": ["service", "price"], "source": "mvp-fixture" },
+    { "id": "demand-12", "kind": "demand", "icons": ["price", "coffee"], "source": "mvp-fixture" }
   ]
 }
