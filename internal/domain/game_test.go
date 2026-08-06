@@ -224,9 +224,37 @@ func TestPlayingCardAppliesMetricAndMarketEffects(t *testing.T) {
 	}
 }
 
+func TestPlayingCardCostUsesInitialCardsAndCountsDuplicateIcons(t *testing.T) {
+	g, err := NewGame("cost-icons", []string{"a", "b"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	g.Phase = PhaseExperiment
+	p := g.Players[0]
+	p.Cash = 100
+	p.Partner = Card{Icons: []string{"coffee"}}
+	p.StarterShop = Card{Icons: []string{"coffee"}}
+	p.Tableau = []Card{{Icons: []string{"operations"}}}
+
+	card := Card{ID: "cost-card", Kind: "resource", Cost: Cost{Cash: 10, Icons: []string{"coffee", "coffee", "beans"}}}
+	p.Hand = []Card{card}
+	if err := g.SelectCard(p.ID, card.ID); err != nil {
+		t.Fatal(err)
+	}
+	if err := g.PlaySelectedCard(p.ID); err != nil {
+		t.Fatal(err)
+	}
+	// Two coffee icons are covered by the partner and starter shop; beans is missing.
+	if p.Cash != 70 {
+		t.Fatalf("cash=%d, want 70 after $10 base cost and one $20 missing icon", p.Cash)
+	}
+}
+
 func TestCostAndMissingIcons(t *testing.T) {
 	g, _ := NewGame("x", []string{"a", "b"})
 	p := g.Players[0]
+	p.Partner = Card{}
+	p.StarterShop = Card{}
 	p.Cash = 60
 	c := Card{ID: "c", Cost: Cost{Cash: 30, Icons: []string{"coffee", "operations"}}}
 	g.selected[p.ID] = c

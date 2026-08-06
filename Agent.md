@@ -1,87 +1,153 @@
-# Café Startups Web Agent Guide
+# Café Startups 技術架構與開發規範
 
-## 1. 專案目標
+## 文件職責
 
-使用 Go + React 將《Café Startups》製作成可在本機瀏覽器進行的單機桌遊 MVP。MVP 只允許 1 位真人玩家；其餘席位由固定 seed 的簡易電腦玩家補足至 2–4 位。先確認核心玩法、回合、卡牌、結算與 UI 都正確，再開發區域網路模式，最後才開發線上模式。
+- `Agent.md`：本專案的技術架構、程式分層與開發規範。
+- `docs/Agent-可執行規則.md`：遊戲規則、狀態條件、公式與驗收基準的唯一來源。
+- `docs/後端分層設計.md`：後端分層與責任邊界的補充說明。
+- `docs/後端時序圖.md`：主要遊戲流程與服務互動時序。
 
-規則來源：工作區根目錄的 `Cafe Startups 規則書_2025.pdf`；Agent 實作時必須同時閱讀 `docs/Agent-可執行規則.md`。若文件與規則書衝突，以規則書為準；若 MVP 為了可玩性採用簡化規則，必須在需求文件與 UI 中標示為「MVP 簡化」。
+實作遊戲功能時，先依 `docs/Agent-可執行規則.md` 判定規則，再依本文件決定程式放置位置。若程式、測試與規則文件不一致，應標記 `RULE_REVIEW_REQUIRED`，不得自行猜測規則。
 
-## 2. Agent 工作原則
+## 專案目標
 
-1. 先讀 `Agent.md`、`docs/Agent-可執行規則.md` 與 `docs/MVP-階段式需求.md`，再修改程式。
-2. 先確認目前階段的驗收條件，只實作該階段必要範圍。
-3. 遊戲規則集中在 Go domain/service 層，不在 React 元件中自行計算。
-4. 所有會改變遊戲狀態的操作都必須經過伺服器驗證；前端只是顯示與送出意圖。
-5. 不以玩家端輸入的金額、成本、排名或分數作為可信資料；伺服器重新計算。
-6. 牌堆洗牌、抽牌、抽顧客標記等隨機行為由伺服器負責，並保存足以重播/除錯的 seed 或事件紀錄。
-7. 每次完成一個需求後，至少執行格式化、單元測試與建置檢查，並在交付訊息列出結果。
-8. 不為了 MVP 預先加入登入、支付、社交、原生 App、策略型 AI 對手、區網同步或線上服務；MVP 僅加入可讓單人遊玩的隨機電腦玩家。
-9. 避免修改規則書與既有使用者檔案；新增程式與文件要保持小而可審查。
+使用 Go、React 與 TypeScript 建立可在本機瀏覽器執行的單機版 Café Startups。
 
-## 3. 技術基線
+目前 MVP 範圍：
 
-### Backend
+- 1 位真人玩家。
+- 由固定 seed 的 Bot 補足至 2–4 位玩家。
+- 本機 HTTP/JSON 通訊。
+- 先完成核心遊戲流程、結算、卡牌與 UI，再擴充區域網路與線上模式。
 
-- Go 1.22+。
-- MVP 先使用 localhost HTTP/JSON 完成單機流程；房間同步、WebSocket 與跨裝置連線延後至區網／線上階段。
-- 建議分層：`internal/domain`（規則與狀態）、`internal/application`（用例）、`internal/transport/http`、`internal/transport/ws`、`cmd/server`。
-- MVP 優先使用記憶體儲存；若需要持久化，使用 SQLite，並以 repository 介面隔離。
-- API 錯誤使用穩定的 error code，例如 `INVALID_ACTION`、`NOT_YOUR_TURN`、`INSUFFICIENT_CASH`。
+## 技術堆疊
 
-### Frontend
+- Backend：Go 1.22+。
+- Frontend：React、TypeScript、Vite、MUI。
+- 通訊：本機 HTTP/JSON。
+- 測試：Go unit test、server lifecycle test、TypeScript typecheck、production build。
+- 遊戲資料：JSON fixture 與 schema；正式規則以規則文件為準。
 
-- React + TypeScript + Vite。
-- 狀態分為 server state 與 view state；遊戲真實狀態以伺服器推送為準。
-- 建議頁面：建立單機桌遊、遊戲桌、規則說明、結算頁；加入房間頁面延後至區網階段。
-- UI 先採 responsive desktop/tablet 版面；手機版只需不破壞主要操作。
+## 後端分層
 
-### 開發品質
+### `cmd/server`
 
-- Go：`gofmt`、`go vet`、`go test ./...`。
-- Frontend：ESLint、TypeScript typecheck、測試與 production build。
-- Domain 測試需覆蓋：階段轉移、傳牌、成本、貸款上限、收入、利息、排名、結算。
-- 使用固定 seed 的測試 fixture，避免隨機造成不穩定測試。
+應用程式入口，只負責組合依賴與啟動 HTTP server。不可在此放遊戲規則。
 
-## 4. 遊戲規則實作基線
+### `internal/server`
 
-- 遊戲有 3 個時期：第 1 期試營運、第 2 期正式營運、第 3 期擴大營運；每期有假設、實驗、學習三階段。
-- 創業設定階段，玩家可在大廳選擇 1 張創辦人卡與 1 張創業店卡；目前卡面為 `mvp-fixture` 示意資料，選擇由後端保存。
-- 玩家取得 150 萬元；正式創始店卡的成本與效果仍須依實體卡面校對後啟用。
-- 每期發 7 張經營管理卡；實驗階段的回合計數從第 0 回合開始。第 0 回合代表已發牌但尚未完成任何選牌/傳牌/同步行動，之後依序完成第 1 至第 6 回合，最後 1 張進入中央覆蓋區。
-- 第 1、3 時期順時鐘傳牌，第 2 時期逆時鐘傳牌。
-- 單機 MVP 預設補足電腦玩家至 4 個席位；電腦玩家的選牌、打牌/棄牌、傳牌與其他需要等待的行動由本機伺服器以固定 seed 的可重現隨機流程完成。
-- 電腦玩家只從當下合法選項中隨機選擇，不評估策略、分數、對手或最佳解；其行為需標示為「MVP 隨機電腦玩家」。
-- 行動可打出選定卡片或棄牌；棄牌在 MVP 先固定獲得 20 萬元。
-- 貸款每張取得 50 萬元，每期利息 10 萬元，同時持有上限 6 張；不足支付利息時允許為付息增貸。
-- 學習階段需處理市場變動、顧客需求、來客數、平均客單價/營收與利息/還款。
-- 市佔率排名依序比較：品牌知名度、特色產品數、價值主張數、關鍵資源數、現金；同分時由伺服器以穩定順序決定。
-- 基本客單價：饕客與一般客各 10 萬元；奧客為 0。需求滿足後依版面增額。
-- 第 1 期（試營運）結束後，玩家才選擇 2 個關鍵指標；第 2 期結束後可重選一次，之後不可再改。
-- 結算為現金得分加 2 個關鍵指標得分；同分比較現金，現金也相同則並列。
+負責 HTTP 邊界：
 
-若完整卡牌資料尚未建檔，允許先使用「MVP 卡牌資料集」；資料格式與正式卡牌資料要相同，並標註 `source: mvp-fixture`，不可把 fixture 視為正式規則。
+- route 與 request parsing。
+- session、room token、game version 的傳遞。
+- application command 的 DTO 轉換。
+- domain error 對應 HTTP status 與 error code。
+- domain state 轉換為前端可讀的 view。
 
-## 5. 建議資料邊界
+HTTP handler 不直接實作遊戲規則，也不直接修改 domain 欄位。
 
-主要 aggregate：`Game`、`Player`、`Card`、`DemandCard`、`MarketBag`、`Round`、`Score`。
+### `internal/application`
 
-每個 state mutation 建議產生事件：`GAME_CREATED`、`PHASE_STARTED`、`CARD_SELECTED`、`CARDS_PASSED`、`CARD_PLAYED`、`CARD_DISCARDED`、`CUSTOMERS_DISTRIBUTED`、`REVENUE_SETTLED`、`GAME_FINISHED`。單機 MVP 不產生玩家加入、準備或房間同步事件。
+負責應用流程協調：
 
-前端不要直接依賴 Go struct 的內部欄位；以 versioned DTO 回傳 `gameVersion`，避免未來規則調整破壞 UI。
+- 建立與管理遊戲 room。
+- 將 command 分派給 domain。
+- 協調期與 phase 的推進。
+- 執行 Bot 行動。
+- 組合 catalog 與遊戲初始化資料。
 
-## 6. 完成定義（Definition of Done）
+Application layer 不應重新實作 domain 的成本、顧客、結算或合法性判斷。
 
-- 需求文件中的驗收條件可逐項驗證。
-- 伺服器拒絕非法或非當前玩家操作，且前端顯示可理解的錯誤。
-- 重整頁面後可從本機伺服器恢復單機遊戲狀態；多人房間恢復屬於後續區網／線上階段。
-- 至少有一條從建房、加入、完成 3 時期到結算的 E2E happy path。
-- README 或啟動說明包含 Go server、React client、測試與 seed/fixture 的執行方式。
-- 文件中的「不在本階段」項目不得被誤宣稱已完成。
+### `internal/domain`
 
-## 7. 變更流程
+唯一負責遊戲狀態與規則執行的層級，包括：
 
-1. 在對應需求階段更新狀態與技術決策。
-2. 先補 domain 測試，再實作規則。
-3. 先接 localhost API 與單機 UI；WebSocket、區網同步與線上服務依產品模式路線延後。
-4. 對規則有歧義時，在 PR/變更說明留下「規則書頁碼、採用解讀、未來調整方式」。
-5. 若需求超出 MVP，先更新需求文件並取得產品方向確認，不直接擴張範圍。
+- Game、Player、Card 等核心狀態。
+- phase、period、round 的合法轉移。
+- 選牌、打牌、棄牌、傳牌。
+- 卡片效果與成本判斷。
+- 顧客分配、需求滿足、營收與現金流。
+- 貸款、利息、還款與排名。
+- KPI 與最終分數。
+
+所有可由玩家行動觸發的狀態變更，都必須經過 domain method 的合法性檢查。
+
+### `internal/catalog`
+
+負責載入與轉換 JSON fixture，將資料交給 domain 驗證。不得在 loader 內加入遊戲流程或結算邏輯。
+
+## 前端分層
+
+### `client/src/modules/game/model`
+
+放置 API view、卡牌資料與遊戲狀態的 TypeScript 型別。
+
+### `client/src/modules/game/api`
+
+負責 HTTP request、command、錯誤處理與 server state 更新。
+
+### `client/src/modules/game/ui`
+
+負責頁面與元件呈現：
+
+- lobby：建立遊戲與初始設定。
+- dashboard：遊戲狀態、玩家資源、手牌與行動。
+- cards：卡牌面板、成本、圖示與卡片分類。
+- market：需求市場與市場資訊。
+- reference：規則參考板。
+
+前端只呈現 server state，不自行決定遊戲結果。涉及成本、顧客、營收、分數或 phase 的判斷，必須以後端結果為準。
+
+## 資料與卡牌規範
+
+- 卡牌共用格式以 `data/card.schema.json` 為準。
+- 需求卡使用 `kind: "demand"`，不另維護第二套卡片 schema。
+- 卡片資料的 fixture 必須標示 `source`。
+- 需要新增或變更卡片欄位時，先同步 schema、domain 型別、前端型別與測試。
+- 卡片的資料描述與實際效果必須分開驗證；文字描述不能取代 domain 規則。
+
+## 狀態與通訊規範
+
+- server 是遊戲狀態的唯一來源。
+- command 必須包含必要的 game version，避免舊狀態覆寫新狀態。
+- command 失敗時不得部分套用狀態變更。
+- domain 錯誤使用穩定 error code，例如 `INVALID_ACTION`、`INVALID_PHASE`、`CARD_NOT_FOUND`、`INSUFFICIENT_CASH`、`LOAN_LIMIT`。
+- 前端遇到未知錯誤碼時，仍需保留可讀的錯誤訊息。
+- 同一 command 的重送不得造成重複扣款、重複結算或重複推進回合。
+
+## 開發流程
+
+1. 先閱讀 `docs/Agent-可執行規則.md` 的相關章節。
+2. 確認變更屬於 domain、application、server、catalog 或 frontend 哪一層。
+3. 先補 domain 規則與測試，再接 application、API 與 UI。
+4. 不在 UI 複製後端公式。
+5. 若需求與現有規則衝突，停止猜測並標記 `RULE_REVIEW_REQUIRED`。
+6. 完成後更新必要的測試與文件。
+
+## 驗證要求
+
+後端變更至少執行：
+
+```text
+gofmt
+go test ./...
+```
+
+前端變更至少執行：
+
+```text
+npm run typecheck
+npm run build
+```
+
+涉及遊戲流程的修改，必須涵蓋至少一條完整流程測試：建立遊戲、初始設定、進入實驗、完成選牌、學習結算與進入下一期。
+
+涉及金額、卡牌成本、顧客或分數的修改，必須補上邊界條件測試，包括零值、資料不足、重複圖示、現金不足與非法 phase。
+
+## 不可違反的架構原則
+
+- 不將遊戲規則散落在 HTTP handler、React component 或 CSS。
+- 不在前端自行扣現金、判定顧客滿意或計算最終分數。
+- 不建立與 `docs/Agent-可執行規則.md` 平行且互相矛盾的規則來源。
+- 不為了通過單一測試而繞過 domain 合法性檢查。
+- 不把 MVP fixture 未驗證的內容宣稱為正式規則。

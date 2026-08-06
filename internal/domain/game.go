@@ -616,15 +616,22 @@ func (g *Game) deal() {
 	}
 }
 func (g *Game) pay(p *Player, c Card) error {
-	missing := 0
-	owned := map[string]bool{}
-	for _, x := range p.Tableau {
-		for _, i := range x.Icons {
-			owned[i] = true
+	owned := map[string]int{}
+	addOwnedIcons := func(card Card) {
+		for _, icon := range card.Icons {
+			owned[icon]++
 		}
 	}
+	addOwnedIcons(p.Partner)
+	addOwnedIcons(p.StarterShop)
+	for _, x := range p.Tableau {
+		addOwnedIcons(x)
+	}
+	missing := 0
 	for _, i := range c.Cost.Icons {
-		if !owned[i] {
+		if owned[i] > 0 {
+			owned[i]--
+		} else {
 			missing++
 		}
 	}

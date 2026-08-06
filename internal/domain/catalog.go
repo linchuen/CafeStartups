@@ -41,7 +41,7 @@ func LoadCatalog(data []byte) ([]Card, error) {
 // withSchemaCostIcons uses the card's schema icons as the resources required
 // to obtain the card. Explicit cost icons remain a fallback for older data.
 func withSchemaCostIcons(card Card) Card {
-	if len(card.Icons) == 0 {
+	if len(card.Cost.Icons) > 0 || len(card.Icons) == 0 {
 		return card
 	}
 
