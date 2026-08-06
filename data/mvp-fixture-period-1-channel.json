@@ -12,7 +12,7 @@
                       "cost":  {
                                    "cash":  20,
                                    "icons":  [
-                                                 "channel"
+                                                 "operations"
                                              ]
                                },
                       "icons":  [
@@ -38,7 +38,7 @@
                       "cost":  {
                                    "cash":  20,
                                    "icons":  [
-                                                 "channel"
+                                                 "coffee"
                                              ]
                                },
                       "icons":  [
@@ -64,7 +64,7 @@
                       "cost":  {
                                    "cash":  20,
                                    "icons":  [
-                                                 "channel"
+                                                 "value"
                                              ]
                                },
                       "icons":  [
@@ -90,7 +90,7 @@
                       "cost":  {
                                    "cash":  20,
                                    "icons":  [
-                                                 "channel"
+                                                 "data"
                                              ]
                                },
                       "icons":  [
@@ -116,7 +116,7 @@
                       "cost":  {
                                    "cash":  20,
                                    "icons":  [
-                                                 "channel"
+                                                 "procurement"
                                              ]
                                },
                       "icons":  [

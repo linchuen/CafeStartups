@@ -12,6 +12,12 @@ type fixtureFile struct {
 	Cards   []Card `json:"cards"`
 }
 
+var allowedCostIcons = map[string]bool{
+	"data": true, "procurement": true, "operations": true, "marketing_resource": true,
+	"coffee": true, "dessert": true, "beans": true,
+	"value": true, "taste": true, "service": true,
+}
+
 // LoadCatalog validates and loads a data-driven MVP card fixture.
 func LoadCatalog(data []byte) ([]Card, error) {
 	var file fixtureFile
@@ -32,7 +38,13 @@ func LoadCatalog(data []byte) ([]Card, error) {
 		if card.Cost.Cash < 0 {
 			return nil, fmt.Errorf("negative cost for card %q", card.ID)
 		}
-		file.Cards[i] = withSchemaCostIcons(card)
+		card = withSchemaCostIcons(card)
+		for _, icon := range card.Cost.Icons {
+			if !allowedCostIcons[icon] {
+				return nil, fmt.Errorf("invalid cost icon %q for card %q", icon, card.ID)
+			}
+		}
+		file.Cards[i] = card
 		seen[card.ID] = true
 	}
 	return file.Cards, nil

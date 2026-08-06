@@ -10,15 +10,13 @@
                       "kind":  "marketing",
                       "period":  3,
                       "cost":  {
-                                   "cash":  20,
+                                   "cash":  30,
                                    "icons":  [
-                                                 "marketing",
-                                                 "marketing",
-                                                 "marketing",
-                                                 "marketing",
-                                                 "marketing",
-                                                 "marketing",
-                                                 "marketing"
+                                                 "operations",
+                                                 "coffee",
+                                                 "value",
+                                                 "data",
+                                                 "procurement"
                                              ]
                                },
                       "icons":  [
@@ -31,7 +29,7 @@
                                        },
                       "source":  "mvp-fixture",
                       "function":  "marketing",
-                      "brandAwareness":  3
+                      "brandAwareness":  4
                   },
                   {
                       "id":  "mvp-p3-025",
@@ -39,15 +37,14 @@
                       "kind":  "marketing",
                       "period":  3,
                       "cost":  {
-                                   "cash":  20,
+                                   "cash":  40,
                                    "icons":  [
-                                                 "marketing",
-                                                 "marketing",
-                                                 "marketing",
-                                                 "marketing",
-                                                 "marketing",
-                                                 "marketing",
-                                                 "marketing"
+                                                 "coffee",
+                                                 "value",
+                                                 "data",
+                                                 "procurement",
+                                                 "dessert",
+                                                 "beans"
                                              ]
                                },
                       "icons":  [
@@ -60,7 +57,7 @@
                                        },
                       "source":  "mvp-fixture",
                       "function":  "marketing",
-                      "brandAwareness":  3
+                      "brandAwareness":  5
                   },
                   {
                       "id":  "mvp-p3-026",
@@ -68,15 +65,15 @@
                       "kind":  "marketing",
                       "period":  3,
                       "cost":  {
-                                   "cash":  20,
+                                   "cash":  50,
                                    "icons":  [
-                                                 "marketing",
-                                                 "marketing",
-                                                 "marketing",
-                                                 "marketing",
-                                                 "marketing",
-                                                 "marketing",
-                                                 "marketing"
+                                                 "value",
+                                                 "data",
+                                                 "procurement",
+                                                 "dessert",
+                                                 "beans",
+                                                 "taste",
+                                                 "service"
                                              ]
                                },
                       "icons":  [
@@ -89,7 +86,7 @@
                                        },
                       "source":  "mvp-fixture",
                       "function":  "marketing",
-                      "brandAwareness":  3
+                      "brandAwareness":  6
                   },
                   {
                       "id":  "mvp-p3-027",
@@ -97,15 +94,14 @@
                       "kind":  "marketing",
                       "period":  3,
                       "cost":  {
-                                   "cash":  20,
+                                   "cash":  40,
                                    "icons":  [
-                                                 "marketing",
-                                                 "marketing",
-                                                 "marketing",
-                                                 "marketing",
-                                                 "marketing",
-                                                 "marketing",
-                                                 "marketing"
+                                                 "data",
+                                                 "procurement",
+                                                 "dessert",
+                                                 "beans",
+                                                 "taste",
+                                                 "service"
                                              ]
                                },
                       "icons":  [
@@ -118,7 +114,7 @@
                                        },
                       "source":  "mvp-fixture",
                       "function":  "marketing",
-                      "brandAwareness":  3
+                      "brandAwareness":  5
                   },
                   {
                       "id":  "mvp-p3-028",
@@ -126,15 +122,15 @@
                       "kind":  "marketing",
                       "period":  3,
                       "cost":  {
-                                   "cash":  20,
+                                   "cash":  50,
                                    "icons":  [
-                                                 "marketing",
-                                                 "marketing",
-                                                 "marketing",
-                                                 "marketing",
-                                                 "marketing",
-                                                 "marketing",
-                                                 "marketing"
+                                                 "procurement",
+                                                 "dessert",
+                                                 "beans",
+                                                 "taste",
+                                                 "service",
+                                                 "marketing_resource",
+                                                 "operations"
                                              ]
                                },
                       "icons":  [
@@ -147,7 +143,7 @@
                                        },
                       "source":  "mvp-fixture",
                       "function":  "marketing",
-                      "brandAwareness":  3
+                      "brandAwareness":  6
                   }
               ]
 }

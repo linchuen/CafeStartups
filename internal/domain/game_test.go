@@ -70,6 +70,15 @@ func TestCatalogKeepsSchemaCostIconOrderAndCount(t *testing.T) {
 	}
 }
 
+func TestCatalogRejectsMarketingAndChannelCostIcons(t *testing.T) {
+	for _, icon := range []string{"marketing", "channel"} {
+		fixture := []byte(`{"cards":[{"id":"invalid-cost","name":"Invalid cost","kind":"resource","period":1,"cost":{"cash":10,"icons":["` + icon + `"]},"icons":["operations"],"marketChange":{},"source":"mvp-fixture"}]}`)
+		if _, err := LoadCatalog(fixture); err == nil {
+			t.Fatalf("expected %q cost icon to be rejected", icon)
+		}
+	}
+}
+
 func gameForTest(t *testing.T) *Game {
 	t.Helper()
 	g, err := NewGame("fixed-seed", []string{"a", "b", "c", "d"})

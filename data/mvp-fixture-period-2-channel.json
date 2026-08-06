@@ -12,9 +12,9 @@
                       "cost":  {
                                    "cash":  30,
                                    "icons":  [
-                                                 "channel",
-                                                 "channel",
-                                                 "channel"
+                                                 "operations",
+                                                 "coffee",
+                                                 "value"
                                              ]
                                },
                       "icons":  [
@@ -41,10 +41,10 @@
                       "cost":  {
                                    "cash":  30,
                                    "icons":  [
-                                                 "channel",
-                                                 "channel",
-                                                 "channel",
-                                                 "channel"
+                                                 "coffee",
+                                                 "value",
+                                                 "data",
+                                                 "procurement"
                                              ]
                                },
                       "icons":  [
@@ -71,9 +71,9 @@
                       "cost":  {
                                    "cash":  30,
                                    "icons":  [
-                                                 "channel",
-                                                 "channel",
-                                                 "channel"
+                                                 "value",
+                                                 "data",
+                                                 "procurement"
                                              ]
                                },
                       "icons":  [
@@ -100,10 +100,10 @@
                       "cost":  {
                                    "cash":  30,
                                    "icons":  [
-                                                 "channel",
-                                                 "channel",
-                                                 "channel",
-                                                 "channel"
+                                                 "data",
+                                                 "procurement",
+                                                 "dessert",
+                                                 "beans"
                                              ]
                                },
                       "icons":  [
@@ -130,9 +130,9 @@
                       "cost":  {
                                    "cash":  30,
                                    "icons":  [
-                                                 "channel",
-                                                 "channel",
-                                                 "channel"
+                                                 "procurement",
+                                                 "dessert",
+                                                 "beans"
                                              ]
                                },
                       "icons":  [

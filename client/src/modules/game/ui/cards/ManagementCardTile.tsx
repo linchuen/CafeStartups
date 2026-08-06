@@ -27,7 +27,7 @@ export function ManagementCardTile({ card, selected, onClick }: { card: PlayerCa
     <Box sx={{ display: 'grid', height: 105, flex: '0 0 105px', placeItems: 'center', overflow: 'hidden' }}><CardArtwork card={card} /></Box>
     <Box sx={{ minHeight: 88, flex: 1, px: 1.5, py: 1, boxSizing: 'border-box', bgcolor: '#ffffffcc' }}><Typography variant="caption" color="text.secondary">卡片說明</Typography><Typography variant="body2" sx={{ minHeight: 34 }}>{card.description ?? '可執行的經營管理行動。'}</Typography></Box>
     <Stack direction="column" sx={{ minHeight: 62, bgcolor: meta.pale }}>
-      <Box sx={{ display: 'flex', width: '100%', minHeight: 34, alignItems: 'center', px: 1.5, py: .65, borderBottom: '1px solid rgba(111,82,65,.16)' }}><CardCost card={card} color={meta.color} /></Box>
+      <Box sx={{ display: 'flex', width: '100%', minHeight: 34, alignItems: 'center', px: 1.5, py: .65, borderBottom: '1px solid rgba(111,82,65,.16)' }}><CardCost card={card} color={meta.color} compact /></Box>
       <Box sx={{ display: 'flex', minHeight: 28, alignItems: 'center', justifyContent: 'flex-end', gap: .25, px: 1.5, py: .45 }}>{visibleMarketEntries.map(([key, value]) => <CustomerTypeTokens key={key} type={key} count={value} size={14} />)}</Box>
     </Stack>
   </MuiCard>

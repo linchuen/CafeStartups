@@ -12,11 +12,11 @@
                       "cost":  {
                                    "cash":  40,
                                    "icons":  [
-                                                 "channel",
-                                                 "channel",
-                                                 "channel",
-                                                 "channel",
-                                                 "channel"
+                                                 "operations",
+                                                 "coffee",
+                                                 "value",
+                                                 "data",
+                                                 "procurement"
                                              ]
                                },
                       "icons":  [
@@ -43,12 +43,12 @@
                       "cost":  {
                                    "cash":  40,
                                    "icons":  [
-                                                 "channel",
-                                                 "channel",
-                                                 "channel",
-                                                 "channel",
-                                                 "channel",
-                                                 "channel"
+                                                 "coffee",
+                                                 "value",
+                                                 "data",
+                                                 "procurement",
+                                                 "dessert",
+                                                 "beans"
                                              ]
                                },
                       "icons":  [
@@ -75,11 +75,11 @@
                       "cost":  {
                                    "cash":  40,
                                    "icons":  [
-                                                 "channel",
-                                                 "channel",
-                                                 "channel",
-                                                 "channel",
-                                                 "channel"
+                                                 "value",
+                                                 "data",
+                                                 "procurement",
+                                                 "dessert",
+                                                 "beans"
                                              ]
                                },
                       "icons":  [
@@ -106,12 +106,12 @@
                       "cost":  {
                                    "cash":  40,
                                    "icons":  [
-                                                 "channel",
-                                                 "channel",
-                                                 "channel",
-                                                 "channel",
-                                                 "channel",
-                                                 "channel"
+                                                 "data",
+                                                 "procurement",
+                                                 "dessert",
+                                                 "beans",
+                                                 "taste",
+                                                 "service"
                                              ]
                                },
                       "icons":  [
@@ -138,11 +138,11 @@
                       "cost":  {
                                    "cash":  40,
                                    "icons":  [
-                                                 "channel",
-                                                 "channel",
-                                                 "channel",
-                                                 "channel",
-                                                 "channel"
+                                                 "procurement",
+                                                 "dessert",
+                                                 "beans",
+                                                 "taste",
+                                                 "service"
                                              ]
                                },
                       "icons":  [
