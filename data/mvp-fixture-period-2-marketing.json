@@ -22,7 +22,8 @@
         "difficult": 0
       },
       "source": "mvp-fixture",
-      "function": "marketing"
+      "function": "marketing",
+      "brandAwareness": 1
     },
     {
       "id": "mvp-p2-025",
@@ -42,7 +43,8 @@
         "difficult": 0
       },
       "source": "mvp-fixture",
-      "function": "marketing"
+      "function": "marketing",
+      "brandAwareness": 1
     },
     {
       "id": "mvp-p2-026",
@@ -62,7 +64,8 @@
         "difficult": 0
       },
       "source": "mvp-fixture",
-      "function": "marketing"
+      "function": "marketing",
+      "brandAwareness": 1
     },
     {
       "id": "mvp-p2-027",
@@ -82,7 +85,8 @@
         "difficult": 0
       },
       "source": "mvp-fixture",
-      "function": "marketing"
+      "function": "marketing",
+      "brandAwareness": 1
     },
     {
       "id": "mvp-p2-028",
@@ -102,7 +106,8 @@
         "difficult": 0
       },
       "source": "mvp-fixture",
-      "function": "marketing"
+      "function": "marketing",
+      "brandAwareness": 1
     }
   ]
 }

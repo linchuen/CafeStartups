@@ -1,0 +1,27 @@
+{
+  "description": "每期各類卡片數量規則；調整後可作為卡片資料重新生成的依據。",
+  "functions": ["resource", "product", "value", "channel", "marketing"],
+  "periods": {
+    "1": {
+      "resource": 6,
+      "product": 6,
+      "value": 6,
+      "channel": 5,
+      "marketing": 5
+    },
+    "2": {
+      "resource": 6,
+      "product": 6,
+      "value": 6,
+      "channel": 5,
+      "marketing": 5
+    },
+    "3": {
+      "resource": 6,
+      "product": 6,
+      "value": 6,
+      "channel": 5,
+      "marketing": 5
+    }
+  }
+}

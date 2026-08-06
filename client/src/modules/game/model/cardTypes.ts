@@ -15,6 +15,7 @@ export type CardFaceData = {
   icons: string[]
   marketChange?: Record<string, number>
   customerCount?: Record<string, number>
+  brandAwareness?: number
 }
 
 export type PlayerCard = CardFaceData

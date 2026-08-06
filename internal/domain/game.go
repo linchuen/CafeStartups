@@ -404,15 +404,22 @@ func (g *Game) applyCardEffects(p *Player, c Card) {
 		p.IconValues = map[string]int{}
 	}
 	for _, icon := range c.Icons {
-		p.IconValues[icon]++
 		switch icon {
 		case "marketing":
-			p.BrandAwareness++
+			stars := c.BrandAwareness
+			if stars < 1 {
+				stars = 1
+			}
+			p.BrandAwareness += stars
+			p.IconValues[icon] += stars
 		case "coffee", "dessert", "beans":
+			p.IconValues[icon]++
 			p.Products++
 		case "value", "taste", "service":
+			p.IconValues[icon]++
 			p.Values++
 		case "data", "procurement", "operations", "marketing_resource", "channel":
+			p.IconValues[icon]++
 			p.Resources++
 		}
 	}

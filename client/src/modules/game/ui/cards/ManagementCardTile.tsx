@@ -14,13 +14,14 @@ export function ManagementCardTile({ card, selected, onClick }: { card: PlayerCa
   const customerEntries = Object.entries(card.customerCount ?? {}).filter(([key, value]) => (key === 'gourmet' || key === 'regular') && value !== 0)
   const visibleCustomerEntries = customerEntries.length > 0 ? customerEntries : marketEntries.length > 0 ? marketEntries : [['regular', 1]]
   const visibleMarketEntries = card.kind === 'channel' ? visibleCustomerEntries : marketEntries
+  const displayIcons = card.kind === 'marketing' ? Array.from({ length: card.brandAwareness ?? 1 }, () => 'marketing') : card.icons.slice(0, 4)
 
   return <MuiCard onClick={onClick} variant="outlined" sx={{ display: 'flex', height: '100%', minHeight: 290, flexDirection: 'column', overflow: 'hidden', cursor: onClick ? 'pointer' : 'default', bgcolor: meta.pale, borderColor: selected ? meta.color : `${meta.color}66`, borderWidth: selected ? 3 : 1 }}>
     <Box sx={{ minHeight: 39, px: 1.5, py: .9, boxSizing: 'border-box', bgcolor: meta.color, color: 'white', textAlign: 'center' }}><Typography variant="caption" fontWeight={900}>{card.name}</Typography></Box>
     <Box sx={{ display: 'flex', height: 88, flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: .2, px: 1.5, py: .85, boxSizing: 'border-box', bgcolor: `${meta.color}dd`, color: 'white' }}>
       <Typography variant="caption" sx={{ opacity: .8 }}>卡片功能</Typography>
       <Box sx={{ display: 'flex', minWidth: 0, maxWidth: '100%', alignItems: 'center', justifyContent: 'center', gap: .8, overflow: 'hidden' }}>
-        {card.kind === 'channel' ? visibleMarketEntries.map(([key, value]) => <CustomerTypeTokens key={key} type={key} count={value} size={18} />) : card.icons.slice(0, 4).map((icon, index) => <GameIcon key={`${icon}-${index}`} name={icon} sx={{ fontSize: 24 }} />)}
+        {card.kind === 'channel' ? visibleMarketEntries.map(([key, value]) => <CustomerTypeTokens key={key} type={key} count={value} size={18} />) : displayIcons.map((icon, index) => <GameIcon key={`${icon}-${index}`} name={icon} sx={{ fontSize: 24 }} />)}
       </Box>
     </Box>
     <Box sx={{ display: 'grid', height: 105, flex: '0 0 105px', placeItems: 'center', overflow: 'hidden' }}><CardArtwork card={card} /></Box>

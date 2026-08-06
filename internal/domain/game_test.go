@@ -244,6 +244,23 @@ func TestPlayingCardAddsOneMetricPerIcon(t *testing.T) {
 	}
 }
 
+func TestMarketingCardUsesPrintedStarValue(t *testing.T) {
+	g, _ := NewGame("marketing-stars", []string{"a", "b"})
+	p := g.Players[0]
+	g.Phase = PhaseExperiment
+	card := Card{ID: "five-star-card", Kind: "marketing", Icons: []string{"marketing"}, BrandAwareness: 5, Cost: Cost{Cash: 10}}
+	p.Hand = []Card{card}
+	if err := g.SelectCard(p.ID, card.ID); err != nil {
+		t.Fatal(err)
+	}
+	if err := g.PlaySelectedCard(p.ID); err != nil {
+		t.Fatal(err)
+	}
+	if p.BrandAwareness != 5 || p.IconValues["marketing"] != 5 {
+		t.Fatalf("marketing values awareness=%d icons=%v, want 5", p.BrandAwareness, p.IconValues)
+	}
+}
+
 func TestPlayingCardCostUsesInitialCardsAndCountsDuplicateIcons(t *testing.T) {
 	g, err := NewGame("cost-icons", []string{"a", "b"})
 	if err != nil {
