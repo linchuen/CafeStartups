@@ -21,6 +21,8 @@ func (g *Game) PrepareMarketBag() error {
 	}
 	g.MarketRanking = append([]int(nil), counts[:len(g.Players)]...)
 	g.MarketBag = map[string]int{"gourmet": 0, "regular": 0, "difficult": 0}
+	// Every market draw starts with one difficult customer in the bag.
+	g.MarketBag["difficult"] = 1
 	for _, p := range g.Players {
 		if len(p.Hand) == 0 {
 			continue

@@ -543,21 +543,21 @@ func TestDrawMarketUsesFinalHandsToBuildBag(t *testing.T) {
 	if err := g.PrepareMarketBag(); err != nil {
 		t.Fatal(err)
 	}
-	if total := g.MarketBag["gourmet"] + g.MarketBag["regular"] + g.MarketBag["difficult"]; total != 3 {
-		t.Fatalf("prepared bag=%d, want 3 before drawing", total)
+	if total := g.MarketBag["gourmet"] + g.MarketBag["regular"] + g.MarketBag["difficult"]; total != 4 {
+		t.Fatalf("prepared bag=%d, want 4 including one difficult customer", total)
 	}
 	if err := g.DrawMarket(); err != nil {
 		t.Fatal(err)
 	}
 	if total := g.MarketBag["gourmet"] + g.MarketBag["regular"] + g.MarketBag["difficult"]; total != 0 {
-		t.Fatalf("remaining bag=%d, want 0 after drawing three customers", total)
+		t.Fatalf("remaining bag=%d, want 0 after drawing all four customers", total)
 	}
 	totalDrawn := 0
 	for _, draw := range g.MarketDraws {
 		totalDrawn += draw.Total
 	}
-	if totalDrawn != 3 {
-		t.Fatalf("drawn=%d, want 3 customers from final hands", totalDrawn)
+	if totalDrawn != 4 {
+		t.Fatalf("drawn=%d, want 4 customers including the difficult customer", totalDrawn)
 	}
 }
 
