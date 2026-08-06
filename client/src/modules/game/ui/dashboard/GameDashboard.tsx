@@ -21,6 +21,8 @@ function MarketRankingPanel({ room, command, busy }: { room: DashboardRoom; comm
   const types = ['gourmet', 'regular', 'difficult'] as const
   const typeLabels = { gourmet: '饕客', regular: '一般客', difficult: '困難客' }
   const bag = room.marketBag ?? { gourmet: 0, regular: 0, difficult: 0 }
+  const actionType = draws.length > 0 ? 'RESOLVE_LEARNING' : room.marketBagReady ? 'DRAW_MARKET' : 'PREPARE_MARKET_BAG'
+  const actionLabel = draws.length > 0 ? '確認排名並結算' : room.marketBagReady ? '抽取市場袋顧客數' : '先更新來客袋數量'
   const rankedPlayers = ranking.map((count, index) => ({
     count,
     name: room.players[index]?.displayName ?? `玩家 ${index + 1}`,
@@ -33,7 +35,7 @@ function MarketRankingPanel({ room, command, busy }: { room: DashboardRoom; comm
         <Typography variant="h6" fontWeight={900}>市場排名與抽取結果</Typography>
         <Typography variant="body2" color="text.secondary">6 回合完成後，最後一張牌的市場變動才會放入袋中，再依排名抽取。</Typography>
       </Box>
-      <Button variant="contained" onClick={() => command(ranking.length ? 'RESOLVE_LEARNING' : 'DRAW_MARKET')} disabled={busy}>{ranking.length ? '確認排名並結算' : '抽取市場袋顧客數'}</Button>
+      <Button variant="contained" onClick={() => command(actionType)} disabled={busy}>{actionLabel}</Button>
     </Stack>
 
     <Paper variant="outlined" sx={{ mt: 1.5, p: 1.5, bgcolor: '#fff' }}>

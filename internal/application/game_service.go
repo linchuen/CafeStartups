@@ -39,6 +39,8 @@ func ExecuteCommand(game *domain.Game, playerID string, command Command) error {
 		return game.ResolveLearning()
 	case "DRAW_MARKET":
 		return game.DrawMarket()
+	case "PREPARE_MARKET_BAG":
+		return game.PrepareMarketBag()
 	default:
 		return domain.ErrInvalidAction
 	}

@@ -540,6 +540,12 @@ func TestDrawMarketUsesFinalHandsToBuildBag(t *testing.T) {
 	g.Players[2].Hand = []Card{{MarketChange: map[string]int{"difficult": -5}}}
 	g.Players[3].Hand = []Card{{MarketChange: map[string]int{}}}
 
+	if err := g.PrepareMarketBag(); err != nil {
+		t.Fatal(err)
+	}
+	if total := g.MarketBag["gourmet"] + g.MarketBag["regular"] + g.MarketBag["difficult"]; total != 3 {
+		t.Fatalf("prepared bag=%d, want 3 before drawing", total)
+	}
 	if err := g.DrawMarket(); err != nil {
 		t.Fatal(err)
 	}

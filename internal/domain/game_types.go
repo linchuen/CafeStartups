@@ -156,6 +156,7 @@ type Game struct {
 	MarketRanking                      []int                   `json:"marketRanking,omitempty"`
 	MarketDraws                        []MarketDraw            `json:"marketDraws,omitempty"`
 	MarketBag                          map[string]int          `json:"marketBag,omitempty"`
+	MarketBagReady                     bool                    `json:"marketBagReady,omitempty"`
 	marketDrawn                        bool
 	selected                           map[string]Card
 	acted                              map[string]bool

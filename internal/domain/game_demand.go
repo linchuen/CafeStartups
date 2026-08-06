@@ -112,6 +112,13 @@ func (g *Game) demandRevenuePerCustomer(kind string, p *Player) int {
 	if len(g.DemandCards[kind]) == 0 {
 		return 10
 	}
+	// Keep older fixtures that represent customer satisfaction directly with
+	// Card.Demand compatible while new cards use the revealed demand icons.
+	for _, card := range p.Tableau {
+		if card.Demand[kind] > 0 {
+			return 10
+		}
+	}
 	revenue := 0
 	for _, card := range g.DemandCards[kind] {
 		if card.Revealed && g.satisfiesDemandCard(kind, card, p) {

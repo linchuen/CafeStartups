@@ -8,10 +8,11 @@ var marketCustomersByPeriod = map[Period][]int{
 	PeriodThree: {5, 3, 2, 1},
 }
 
-// DrawMarket fills the market bag from each player's final card, then assigns
-// the reference-board draw amounts in ranking order.
-func (g *Game) DrawMarket() error {
-	if g.Phase != PhaseLearning || g.marketDrawn {
+// PrepareMarketBag fills the market bag from each player's final card without
+// drawing. The full bag is exposed so players can verify how many customers
+// will be available before the ranking draw.
+func (g *Game) PrepareMarketBag() error {
+	if g.Phase != PhaseLearning || g.marketDrawn || g.MarketBagReady {
 		return ErrInvalidAction
 	}
 	counts := marketCustomersByPeriod[g.Period]
@@ -28,6 +29,22 @@ func (g *Game) DrawMarket() error {
 			if _, ok := g.MarketBag[kind]; ok && count > 0 {
 				g.MarketBag[kind] += count
 			}
+		}
+	}
+	g.MarketBagReady = true
+	return nil
+}
+
+// DrawMarket assigns the reference-board draw amounts in ranking order.
+func (g *Game) DrawMarket() error {
+	if g.Phase != PhaseLearning || g.marketDrawn {
+		return ErrInvalidAction
+	}
+	// Keep direct domain callers compatible while the UI uses the explicit
+	// PREPARE_MARKET_BAG command first.
+	if !g.MarketBagReady {
+		if err := g.PrepareMarketBag(); err != nil {
+			return err
 		}
 	}
 	market := make([]string, 0)
@@ -95,6 +112,7 @@ func (g *Game) ResolveLearning() error {
 	g.MarketRanking = nil
 	g.MarketDraws = nil
 	g.MarketBag = nil
+	g.MarketBagReady = false
 	g.marketDrawn = false
 	g.selected = map[string]Card{}
 	g.acted = map[string]bool{}

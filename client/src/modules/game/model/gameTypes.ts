@@ -51,6 +51,7 @@ export type GameState = {
   marketRanking?: number[]
   marketDraws?: { rank: number; playerId: string; playerName: string; customerCounts: Record<'gourmet' | 'regular' | 'difficult', number>; total: number }[]
   marketBag?: Record<'gourmet' | 'regular' | 'difficult', number>
+  marketBagReady?: boolean
   partnerOptions?: Card[]
   starterShopOptions?: Card[]
   players: Player[]
