@@ -85,6 +85,9 @@ func (g *Game) PassHands() error {
 		}
 		g.Center = g.Players[0].Hand[0]
 		g.Phase = PhaseLearning
+		if err := g.PrepareMarketBag(); err != nil {
+			return err
+		}
 	}
 	return nil
 }

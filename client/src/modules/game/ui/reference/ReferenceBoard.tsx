@@ -1,4 +1,5 @@
 import { arrangeDemandCards, demandQuantityForPosition, DemandCard, DemandCardData } from '../market/DemandMarket'
+import { AttachMoney, Coffee, Star, Verified } from '@mui/icons-material'
 
 const REFERENCE_KPIS = [
   { label: '饕客滿意度', value: '每張 +5 分', tone: 'gourmet', symbol: '' },
@@ -39,7 +40,7 @@ export function ReferenceBoard(props: { period: number; phase?: string; round?: 
         <ReferenceDemandRow type="gourmet" label="饕客" base="$10" additions={REFERENCE_PERIODS.map((item) => item.gourmet)} activePeriod={props.period} revealed={props.phase === 'experiment' || props.phase === 'learning' || props.phase === 'finished'} round={props.round} seed={props.seed} demandCards={props.demandCards?.gourmet} />
         <ReferenceDemandRow type="regular" label="一般客" base="$10" additions={REFERENCE_PERIODS.map((item) => item.regular)} activePeriod={props.period} revealed={props.phase === 'experiment' || props.phase === 'learning' || props.phase === 'finished'} round={props.round} seed={props.seed} demandCards={props.demandCards?.regular} />
         </div></div><div className="reference-bottom">
-          <div className="reference-summary"><span className="reference-cube blue">◆</span><span>關鍵資源</span><strong>$0</strong><div className="reference-metric-order"><b>?</b><b>→</b><b>▣</b><b>→</b><b>■</b><b>→</b><b>◆</b></div></div>
+          <div className="reference-summary"><span className="reference-cube blue">◆</span><span>關鍵資源</span><strong>$0</strong><div className="reference-metric-order" aria-label="知名度 → 品質 → 產品 → 成本"><b className="metric-awareness" title="知名度"><Star fontSize="inherit" /></b><b>→</b><b className="metric-quality" title="品質"><Verified fontSize="inherit" /></b><b>→</b><b className="metric-product" title="產品"><Coffee fontSize="inherit" /></b><b>→</b><b className="metric-cost" title="成本"><AttachMoney fontSize="inherit" /></b></div></div>
           <div className="reference-ranking"><div className="reference-ranking-title"><span>市場排名</span><small>抽取市場袋顧客數</small></div><div className="reference-ranking-grid"><div className="reference-rank-labels"><span>1st</span><span>2nd</span><span>3rd</span><span>4th</span></div>{REFERENCE_PERIODS.map((item) => <div className={props.period === item.id ? 'reference-rank-column is-current' : 'reference-rank-column'} key={item.id}>{item.customers.map((count, index) => <span key={`${item.id}-${index}`}><b>{count}</b><i>●</i></span>)}</div>)}</div></div>
         </div>
       </div>
@@ -54,7 +55,9 @@ function ReferenceDemandRow(props: { type: 'gourmet' | 'regular'; label: string;
   const slot = (column: number, fallback: string) => {
     const savedCard = props.demandCards?.find((item) => item.position === column)
     const card: DemandCardData | undefined = savedCard ? { id: savedCard.id, kind: 'demand', icons: savedCard.icons, source: 'mvp-fixture' } : cards[column]
-    const isRevealed = savedCard ? savedCard.revealed : Boolean(card && props.revealed && props.round !== undefined && props.round >= column)
+    const isRevealed = savedCard
+      ? savedCard.revealed && props.round !== undefined && props.round >= column
+      : Boolean(card && props.revealed && props.round !== undefined && props.round >= column)
     return isRevealed ? <DemandCard card={card!} revealed quantity={demandQuantityForPosition(props.type, column)} /> : <><b>{questionMarks(column)}</b><small>{fallback}</small></>
   }
   return <div className={`reference-demand-row reference-demand-${props.type}`}>

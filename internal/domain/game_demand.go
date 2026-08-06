@@ -111,17 +111,12 @@ func demandValue(kind string, position int) int {
 }
 
 func (g *Game) demandRevenuePerCustomer(kind string, p *Player) int {
+	revenue := basePrice(kind)
 	if len(g.DemandCards[kind]) == 0 {
-		return 10
+		return revenue
 	}
-	// Keep older fixtures that represent customer satisfaction directly with
-	// Card.Demand compatible while new cards use the revealed demand icons.
-	for _, card := range p.Tableau {
-		if card.Demand[kind] > 0 {
-			return 10
-		}
-	}
-	revenue := 0
+	// Older fixtures may carry Card.Demand directly; keep the base price while
+	// still evaluating every revealed demand card for additional revenue.
 	for _, card := range g.DemandCards[kind] {
 		if card.Revealed && g.satisfiesDemandCard(kind, card, p) {
 			revenue += demandValue(kind, card.Position)

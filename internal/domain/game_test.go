@@ -428,6 +428,9 @@ func TestPeriodsAdvanceThreeTimes(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
+	if !g.MarketBagReady || g.MarketBag["difficult"] != 1 {
+		t.Fatalf("market bag was not prepared automatically: ready=%t bag=%v", g.MarketBagReady, g.MarketBag)
+	}
 	if err := g.AdvancePeriod(); err != nil {
 		t.Fatal(err)
 	}
@@ -592,14 +595,14 @@ func TestDemandCardsRevealByRoundAndScoreCustomerTypesSeparately(t *testing.T) {
 func TestRevenueUsesSatisfiedDemandValuePerCustomerType(t *testing.T) {
 	g := gameForTest(t)
 	p := g.Players[0]
-	p.Tableau = []Card{{Icons: []string{"coffee", "coffee", "taste"}}}
+	p.Tableau = []Card{{Icons: []string{"coffee", "coffee", "taste"}, Demand: map[string]int{"gourmet": 1}}}
 	g.DemandCards = map[string][]DemandCard{
 		"gourmet": {{Position: 0, Icons: []string{"coffee"}, Revealed: true}, {Position: 1, Icons: []string{"coffee"}, Revealed: true}},
 		"regular": {{Position: 0, Icons: []string{"taste"}, Revealed: true}},
 	}
 	p.Customers = []Customer{{Kind: "gourmet", Count: 2}, {Kind: "regular", Count: 1}}
 	g.SettleRevenue()
-	if p.Revenue != 50 || p.cashFlowGourmetRevenue != 40 || p.cashFlowRegularRevenue != 10 {
-		t.Fatalf("revenue=%d gourmet=%d regular=%d, want 50, 40, 10", p.Revenue, p.cashFlowGourmetRevenue, p.cashFlowRegularRevenue)
+	if p.Revenue != 80 || p.cashFlowGourmetRevenue != 60 || p.cashFlowRegularRevenue != 20 {
+		t.Fatalf("revenue=%d gourmet=%d regular=%d, want 80, 60, 20", p.Revenue, p.cashFlowGourmetRevenue, p.cashFlowRegularRevenue)
 	}
 }

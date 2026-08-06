@@ -21,8 +21,8 @@ function MarketRankingPanel({ room, command, busy }: { room: DashboardRoom; comm
   const types = ['gourmet', 'regular', 'difficult'] as const
   const typeLabels = { gourmet: '饕客', regular: '一般客', difficult: '困難客' }
   const bag = room.marketBag ?? { gourmet: 0, regular: 0, difficult: 0 }
-  const actionType = draws.length > 0 ? 'RESOLVE_LEARNING' : room.marketBagReady ? 'DRAW_MARKET' : 'PREPARE_MARKET_BAG'
-  const actionLabel = draws.length > 0 ? '確認排名並結算' : room.marketBagReady ? '抽取市場袋顧客數' : '先更新來客袋數量'
+  const actionType = draws.length > 0 ? 'RESOLVE_LEARNING' : 'DRAW_MARKET'
+  const actionLabel = draws.length > 0 ? '確認排名並結算' : '抽取市場袋顧客數'
   const rankedPlayers = ranking.map((count, index) => ({
     count,
     name: room.players[index]?.displayName ?? `玩家 ${index + 1}`,
@@ -39,7 +39,7 @@ function MarketRankingPanel({ room, command, busy }: { room: DashboardRoom; comm
     </Stack>
 
     <Paper variant="outlined" sx={{ mt: 1.5, p: 1.5, bgcolor: '#fff' }}>
-      <Typography variant="subtitle2" fontWeight={900}>來客袋目前數量（含困難客）</Typography>
+      <Typography variant="subtitle2" fontWeight={900}>來客袋目前數量</Typography>
       <Grid container spacing={1} sx={{ mt: .4 }}>
         {types.map((type) => <Grid key={type} size={{ xs: 4 }}><Stack alignItems="center" spacing={.2}>{bag[type] > 0 && <CustomerTypeTokens type={type} count={bag[type]} size={18} />}<Typography variant="caption">{typeLabels[type]}</Typography><Typography variant="h6" fontWeight={900}>{bag[type]} 位</Typography></Stack></Grid>)}
       </Grid>
