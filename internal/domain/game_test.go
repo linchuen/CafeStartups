@@ -566,6 +566,13 @@ func TestDemandCardsRevealByRoundAndScoreCustomerTypesSeparately(t *testing.T) {
 	if !g.DemandCards["gourmet"][0].Revealed || g.DemandCards["gourmet"][1].Revealed {
 		t.Fatal("expected only the initial demand position to be revealed")
 	}
+	for _, kind := range []string{"gourmet", "regular"} {
+		for index, card := range g.DemandCards[kind] {
+			if card.Position != index {
+				t.Fatalf("%s demand card %s position=%d, want %d", kind, card.ID, card.Position, index)
+			}
+		}
+	}
 	g.Round = 1
 	g.revealDemandCards()
 	if !g.DemandCards["regular"][1].Revealed {

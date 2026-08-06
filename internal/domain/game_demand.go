@@ -13,6 +13,8 @@ func (g *Game) prepareDemandCards() {
 	shuffleDemandCards(first, demandSeed(g.Seed))
 	shuffleDemandCards(second, demandSeed(g.Seed)+97)
 	for index := range first {
+		first[index].Position = index
+		second[index].Position = index
 		first[index].Revealed = index == 0
 		second[index].Revealed = index == 0
 	}
