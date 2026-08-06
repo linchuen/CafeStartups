@@ -530,3 +530,27 @@ func TestDrawMarketUsesReferencePeriodRules(t *testing.T) {
 		}
 	}
 }
+
+func TestDrawMarketUsesFinalHandsToBuildBag(t *testing.T) {
+	g := gameForTest(t)
+	g.Phase = PhaseLearning
+	g.Players[0].Tableau = []Card{{MarketChange: map[string]int{"gourmet": 99}}}
+	g.Players[0].Hand = []Card{{MarketChange: map[string]int{"gourmet": 2}}}
+	g.Players[1].Hand = []Card{{MarketChange: map[string]int{"regular": 1}}}
+	g.Players[2].Hand = []Card{{MarketChange: map[string]int{"difficult": -5}}}
+	g.Players[3].Hand = []Card{{MarketChange: map[string]int{}}}
+
+	if err := g.DrawMarket(); err != nil {
+		t.Fatal(err)
+	}
+	if total := g.MarketBag["gourmet"] + g.MarketBag["regular"] + g.MarketBag["difficult"]; total != 0 {
+		t.Fatalf("remaining bag=%d, want 0 after drawing three customers", total)
+	}
+	totalDrawn := 0
+	for _, draw := range g.MarketDraws {
+		totalDrawn += draw.Total
+	}
+	if totalDrawn != 3 {
+		t.Fatalf("drawn=%d, want 3 customers from final hands", totalDrawn)
+	}
+}
