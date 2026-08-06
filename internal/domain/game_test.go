@@ -52,21 +52,15 @@ func TestCatalogPreservesExplicitCostIcons(t *testing.T) {
 	}
 }
 
-func TestCatalogKeepsSchemaCostIconOrderAndCount(t *testing.T) {
+func TestCatalogKeepsBlankCostIconsBlank(t *testing.T) {
 	catalog, err := LoadCatalog([]byte(`{"cards":[{"id":"multi-icon","name":"Multi icon","kind":"product","period":3,"cost":{"cash":35,"icons":[]},"icons":["coffee","operations"],"marketChange":{},"source":"mvp-fixture"}]}`))
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	want := []string{"coffee", "operations"}
 	got := catalog[0].Cost.Icons
-	if len(got) != len(want) {
-		t.Fatalf("cost icons=%v, want %v", got, want)
-	}
-	for index, icon := range got {
-		if icon != want[index] {
-			t.Fatalf("cost icon[%d]=%q, want %q", index, icon, want[index])
-		}
+	if len(got) != 0 {
+		t.Fatalf("cost icons=%v, want blank cost", got)
 	}
 }
 

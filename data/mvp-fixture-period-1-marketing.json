@@ -33,7 +33,7 @@
                       "kind":  "marketing",
                       "period":  1,
                       "cost":  {
-                                   "cash":  20,
+                                   "cash":  10,
                                    "icons":  [
                                                  "coffee",
                                                  "value"
@@ -57,7 +57,7 @@
                       "kind":  "marketing",
                       "period":  1,
                       "cost":  {
-                                   "cash":  30,
+                                   "cash":  10,
                                    "icons":  [
                                                  "value",
                                                  "data",
@@ -82,7 +82,7 @@
                       "kind":  "marketing",
                       "period":  1,
                       "cost":  {
-                                   "cash":  20,
+                                   "cash":  10,
                                    "icons":  [
                                                  "data",
                                                  "procurement"
@@ -106,7 +106,7 @@
                       "kind":  "marketing",
                       "period":  1,
                       "cost":  {
-                                   "cash":  30,
+                                   "cash":  10,
                                    "icons":  [
                                                  "procurement",
                                                  "dessert",

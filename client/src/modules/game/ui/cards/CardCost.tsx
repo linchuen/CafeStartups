@@ -23,7 +23,8 @@ export function CardCost({ card, color, compact = false }: { card: PlayerCard; c
   const icons = card.cost?.icons ?? []
   const accent = color ?? '#b36f42'
   const isPartnerInitialCashBonus = card.kind === 'partner' && card.function === 'channel' && (card.cost?.cash ?? 0) > 0
-  const cashLabel = `${isPartnerInitialCashBonus ? '+' : ''}$${card.cost?.cash ?? 0}${compact ? '' : ' 萬'}`
+  const cashParts = [`${isPartnerInitialCashBonus ? '+' : ''}$${card.cost?.cash ?? 0}`]
+  const cashLabel = cashParts.map((part) => `${part}${compact ? '' : ' 萬'}`).join(' + ')
 
   return <Stack direction="row" spacing={compact ? .35 : .55} alignItems="center" sx={{ minWidth: 0, flexWrap: compact ? 'wrap' : 'nowrap' }}>
     {!compact && <Typography variant="caption" color="text.secondary">成本</Typography>}

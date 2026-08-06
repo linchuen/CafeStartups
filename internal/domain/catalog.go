@@ -38,7 +38,6 @@ func LoadCatalog(data []byte) ([]Card, error) {
 		if card.Cost.Cash < 0 {
 			return nil, fmt.Errorf("negative cost for card %q", card.ID)
 		}
-		card = withSchemaCostIcons(card)
 		for _, icon := range card.Cost.Icons {
 			if !allowedCostIcons[icon] {
 				return nil, fmt.Errorf("invalid cost icon %q for card %q", icon, card.ID)
@@ -48,15 +47,4 @@ func LoadCatalog(data []byte) ([]Card, error) {
 		seen[card.ID] = true
 	}
 	return file.Cards, nil
-}
-
-// withSchemaCostIcons uses the card's schema icons as the resources required
-// to obtain the card. Explicit cost icons remain a fallback for older data.
-func withSchemaCostIcons(card Card) Card {
-	if len(card.Cost.Icons) > 0 || len(card.Icons) == 0 {
-		return card
-	}
-
-	card.Cost.Icons = append([]string(nil), card.Icons...)
-	return card
 }
