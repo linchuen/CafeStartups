@@ -1,4 +1,5 @@
 .gocache/
+.tmp-go-cache*/
 client/node_modules/
 client/dist/
 client/tsconfig.tsbuildinfo

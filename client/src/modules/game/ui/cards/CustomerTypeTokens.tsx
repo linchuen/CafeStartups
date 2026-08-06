@@ -1,10 +1,11 @@
 import { Box } from '@mui/material'
 
-type CustomerType = 'gourmet' | 'regular'
+export type CustomerType = 'gourmet' | 'regular' | 'difficult'
 
 const customerTypeMeta: Record<CustomerType, { label: string; color: string }> = {
   gourmet: { label: '饕客', color: '#ff7900' },
   regular: { label: '一般客', color: '#e5b832' },
+  difficult: { label: '困難客', color: '#7b6b61' },
 }
 
 export function CustomerTypeTokens({ type, count, size = 18 }: { type: CustomerType; count: number; size?: number }) {

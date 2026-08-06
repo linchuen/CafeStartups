@@ -104,6 +104,12 @@ type Customer struct {
 	UnitPrice, Count int
 }
 
+type MarketDraw struct {
+	PlayerID     string `json:"playerId"`
+	CustomerType string `json:"customerType"`
+	Count        int    `json:"count"`
+}
+
 type CashFlowStatement struct {
 	Period             Period `json:"period"`
 	Round              int    `json:"round,omitempty"`
@@ -128,7 +134,8 @@ type Game struct {
 	Catalog                            []Card
 	PartnerOptions, StarterShopOptions []Card
 	DemandBoard                        map[string]int
-	MarketRanking                      []int `json:"marketRanking,omitempty"`
+	MarketRanking                      []int        `json:"marketRanking,omitempty"`
+	MarketDraws                        []MarketDraw `json:"marketDraws,omitempty"`
 	marketDrawn                        bool
 	selected                           map[string]Card
 	acted                              map[string]bool

@@ -42,6 +42,7 @@ export type GameState = {
   round: number
   demandBoard?: Record<string, number>
   marketRanking?: number[]
+  marketDraws?: { playerId: string; playerName: string; customerType: 'gourmet' | 'regular' | 'difficult'; count: number }[]
   partnerOptions?: Card[]
   starterShopOptions?: Card[]
   players: Player[]

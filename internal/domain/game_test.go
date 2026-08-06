@@ -207,6 +207,22 @@ func TestDraftEndsWithOneCardAndPeriodDirection(t *testing.T) {
 	}
 }
 
+func TestSelectCardCanReplaceBeforeAction(t *testing.T) {
+	g := gameForTest(t)
+	p := g.Players[0]
+	first, second := p.Hand[0], p.Hand[1]
+
+	if err := g.SelectCard(p.ID, first.ID); err != nil {
+		t.Fatal(err)
+	}
+	if err := g.SelectCard(p.ID, second.ID); err != nil {
+		t.Fatalf("reselecting before action should succeed: %v", err)
+	}
+	if g.selected[p.ID].ID != second.ID {
+		t.Fatalf("selected card=%s, want %s", g.selected[p.ID].ID, second.ID)
+	}
+}
+
 func TestPlayingCardAppliesMetricAndMarketEffects(t *testing.T) {
 	g, _ := NewGame("effects", []string{"a", "b"})
 	p := g.Players[0]

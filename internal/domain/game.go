@@ -175,7 +175,7 @@ func (g *Game) SelectCard(playerID, cardID string) error {
 	if err != nil {
 		return err
 	}
-	if _, ok := g.selected[playerID]; ok {
+	if g.acted[playerID] {
 		return ErrAlreadySelected
 	}
 	for _, c := range p.Hand {
@@ -506,6 +506,21 @@ func (g *Game) DrawMarket() error {
 	g.rng.Shuffle(len(bag), func(i, j int) { bag[i], bag[j] = bag[j], bag[i] })
 	g.MarketRanking = append([]int(nil), bag[:len(g.Players)]...)
 	sort.Sort(sort.Reverse(sort.IntSlice(g.MarketRanking)))
+	market := make([]string, 0)
+	for _, kind := range []string{"gourmet", "regular", "difficult"} {
+		count := g.DemandBoard[kind]
+		if count < 1 {
+			count = 1
+		}
+		for i := 0; i < count; i++ {
+			market = append(market, kind)
+		}
+	}
+	g.rng.Shuffle(len(market), func(i, j int) { market[i], market[j] = market[j], market[i] })
+	g.MarketDraws = make([]MarketDraw, 0, len(g.Players))
+	for i, p := range g.Players {
+		g.MarketDraws = append(g.MarketDraws, MarketDraw{PlayerID: p.ID, CustomerType: market[(int(g.Period)+i)%len(market)], Count: g.MarketRanking[i]})
+	}
 	g.marketDrawn = true
 	return nil
 }
@@ -521,25 +536,14 @@ func (g *Game) ResolveLearning() error {
 	if err := g.SettleInterest(); err != nil {
 		return err
 	}
-	market := make([]string, 0)
-	for _, kind := range []string{"gourmet", "regular", "difficult"} {
-		count := g.DemandBoard[kind]
-		if count < 1 {
-			count = 1
-		}
-		for i := 0; i < count; i++ {
-			market = append(market, kind)
-		}
-	}
-	g.rng.Shuffle(len(market), func(i, j int) { market[i], market[j] = market[j], market[i] })
 	customers := make([]Customer, 0, len(g.Players))
-	for i := range g.Players {
-		kind := market[(int(g.Period)+i)%len(market)]
+	for _, draw := range g.MarketDraws {
+		kind := draw.CustomerType
 		demand := ""
 		if kind != "difficult" {
 			demand = kind
 		}
-		customers = append(customers, Customer{Kind: kind, Demand: demand, Count: g.MarketRanking[i]})
+		customers = append(customers, Customer{Kind: kind, Demand: demand, Count: draw.Count})
 	}
 	g.DistributeCustomers(customers)
 	g.SettleRevenue()
@@ -556,6 +560,7 @@ func (g *Game) ResolveLearning() error {
 	g.Round = 0
 	g.Phase = PhaseHypothesis
 	g.MarketRanking = nil
+	g.MarketDraws = nil
 	g.marketDrawn = false
 	g.selected = map[string]Card{}
 	g.acted = map[string]bool{}
