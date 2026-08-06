@@ -15,7 +15,7 @@ func (room *gameRoom) view(token string) map[string]any {
 	if token == room.Token {
 		for _, p := range room.Domain.Players {
 			if p.ID == room.PlayerID {
-				result["me"] = map[string]any{"id": p.ID, "hand": p.Hand, "tableau": p.Tableau, "discardCount": len(p.Discard), "partner": p.Partner, "starterShop": p.StarterShop, "initialCardsSelected": p.InitialCardsSelected, "cash": p.Cash, "loans": p.Loans, "customers": p.Customers, "revenue": p.Revenue, "score": p.Score, "selectedKPIs": p.SelectedKPIs, "cashFlow": p.CashFlow, "cashFlowRounds": p.CashFlowRounds, "gourmetSatisfaction": p.GourmetSatisfaction, "regularSatisfaction": p.RegularSatisfaction, "brandAwareness": p.BrandAwareness, "products": p.Products, "values": p.Values, "resources": p.Resources, "iconValues": p.IconValues}
+				result["me"] = map[string]any{"id": p.ID, "hand": p.Hand, "tableau": p.Tableau, "retainedCards": p.RetainedCards, "discardCount": len(p.Discard), "partner": p.Partner, "starterShop": p.StarterShop, "initialCardsSelected": p.InitialCardsSelected, "cash": p.Cash, "loans": p.Loans, "customers": p.Customers, "revenue": p.Revenue, "score": p.Score, "selectedKPIs": p.SelectedKPIs, "cashFlow": p.CashFlow, "cashFlowRounds": p.CashFlowRounds, "brandAwareness": p.BrandAwareness, "products": p.Products, "values": p.Values, "resources": p.Resources, "gourmetSatisfaction": p.GourmetSatisfaction, "regularSatisfaction": p.RegularSatisfaction, "iconValues": p.IconValues}
 			}
 		}
 	}

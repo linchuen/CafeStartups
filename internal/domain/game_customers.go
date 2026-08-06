@@ -110,6 +110,7 @@ func (g *Game) SettleRevenue() {
 		p.cashFlowRegularRevenue = regularRate * regularCount
 		revenue := p.cashFlowGourmetRevenue + p.cashFlowRegularRevenue
 		p.Revenue = revenue
+		p.TotalRevenue += revenue
 		p.Cash += revenue
 		p.cashFlowRevenue += revenue
 	}

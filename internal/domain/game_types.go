@@ -27,6 +27,7 @@ const (
 	InitialCash      = 150
 	LoanAmount       = 50
 	LoanInterest     = 10
+	CashScoreDivisor = 10
 	MaxLoans         = 6
 	DiscardRefund    = 20
 	InitialRound     = 0
@@ -92,24 +93,26 @@ type Player struct {
 	Partner, StarterShop   Card
 	InitialCardsSelected   bool
 	Hand, Tableau, Discard []Card
-	SelectedKPIs           []string
-	Customers              []Customer
-	Revenue, Score         int
-	Order                  int
-	KPISelectionPeriod     Period
-	CashFlow               []CashFlowStatement
-	CashFlowRounds         []CashFlowStatement
-	cashFlowBeginning      int
-	cashFlowRevenue        int
-	cashFlowGourmetCount   int
-	cashFlowRegularCount   int
-	cashFlowGourmetRevenue int
-	cashFlowRegularRevenue int
-	cashFlowOtherIncome    int
-	cashFlowExpenses       int
-	cashFlowInterest       int
-	cashFlowPrincipal      int
-	cashFlowNewLoans       int
+
+	RetainedCards                []Card
+	SelectedKPIs                 []string
+	Customers                    []Customer
+	Revenue, TotalRevenue, Score int
+	Order                        int
+	KPISelectionPeriod           Period
+	CashFlow                     []CashFlowStatement
+	CashFlowRounds               []CashFlowStatement
+	cashFlowBeginning            int
+	cashFlowRevenue              int
+	cashFlowGourmetCount         int
+	cashFlowRegularCount         int
+	cashFlowGourmetRevenue       int
+	cashFlowRegularRevenue       int
+	cashFlowOtherIncome          int
+	cashFlowExpenses             int
+	cashFlowInterest             int
+	cashFlowPrincipal            int
+	cashFlowNewLoans             int
 }
 
 type Customer struct {

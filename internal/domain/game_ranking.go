@@ -18,8 +18,9 @@ func (g *Game) Finish() error {
 	g.SettleRevenue()
 	g.updateSatisfactionScores()
 	for _, p := range g.Players {
-		p.Score = p.Cash + p.metricScore()
+		p.Score = p.Cash/CashScoreDivisor + p.metricScore()
 	}
+	g.rememberFinalHands()
 	g.Phase = PhaseFinished
 	return nil
 }
@@ -44,35 +45,76 @@ func (g *Game) playerIndex(id string) (int, error) {
 
 func (p *Player) metricScore() int {
 	s := 0
+	cards := p.scoreCardCounts()
 	for _, k := range p.SelectedKPIs {
 		switch k {
 		case "gourmet_satisfaction":
-			s += p.GourmetSatisfaction * 5
+			s += p.GourmetSatisfaction
 		case "regular_satisfaction":
-			s += p.RegularSatisfaction * 4
+			s += p.RegularSatisfaction
 		case "total_satisfaction":
-			s += (p.GourmetSatisfaction + p.RegularSatisfaction) * 2
+			s += p.GourmetSatisfaction + p.RegularSatisfaction
 		case "channel":
-			s += p.Resources
+			s += cards.channelCards * 4
 		case "awareness":
-			s += p.BrandAwareness
+			s += cards.marketingStars
 		case "brand_awareness":
-			s += p.BrandAwareness
+			s += cards.marketingStars
 		case "products":
-			s += p.Products
+			s += cards.productCards * 3
 		case "quality":
-			s += p.Values
+			s += cards.valueCards * 3
 		case "values":
-			s += p.Values
+			s += cards.valueCards * 3
 		case "cost":
-			s += p.cashFlowExpenses
+			s += cards.resourceCards * 3
 		case "surplus":
-			s += p.Cash
+			s += p.TotalRevenue / 30
 		case "resources":
-			s += p.Resources
+			s += cards.resourceCards * 3
 		}
 	}
 	return s
+}
+
+type scoreCardCounts struct {
+	channelCards, marketingStars, productCards, valueCards, resourceCards int
+}
+
+func (p *Player) scoreCardCounts() scoreCardCounts {
+	counts := scoreCardCounts{}
+	seen := map[string]bool{}
+	cards := append([]Card{p.Partner, p.StarterShop}, p.Tableau...)
+	cards = append(cards, p.RetainedCards...)
+	for _, card := range cards {
+		if card.ID != "" && seen[card.ID] {
+			continue
+		}
+		if card.ID != "" {
+			seen[card.ID] = true
+		}
+		category := card.Function
+		if category == "" {
+			category = card.ColorKey
+		}
+		if category == "" {
+			category = card.Kind
+		}
+		if category == "marketing" {
+			counts.marketingStars += card.BrandAwareness
+		}
+		switch category {
+		case "channel":
+			counts.channelCards++
+		case "product":
+			counts.productCards++
+		case "value":
+			counts.valueCards++
+		case "resource":
+			counts.resourceCards++
+		}
+	}
+	return counts
 }
 
 func (p *Player) satisfiedCustomerCount(kind string) int {

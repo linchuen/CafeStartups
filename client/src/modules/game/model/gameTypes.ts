@@ -59,6 +59,7 @@ export type GameState = {
     id: string
     hand: Card[]
     tableau: Card[]
+    retainedCards: Card[]
     discardCount: number
     partner?: Card
     starterShop?: Card

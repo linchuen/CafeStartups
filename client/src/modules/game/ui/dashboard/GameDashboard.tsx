@@ -49,6 +49,18 @@ function MarketRankingPanel({ room, command, busy }: { room: DashboardRoom; comm
   </Paper>
 }
 
+function FinalScoreboard({ room }: { room: DashboardRoom }) {
+  const rankedPlayers = [...room.players].sort((left, right) => (right.score ?? 0) - (left.score ?? 0))
+  return <Paper className="final-scoreboard" sx={{ mb: 2.5, p: { xs: 2, md: 2.5 }, borderRadius: 3, border: '2px solid #b36f42', bgcolor: '#fffaf4' }}>
+    <Typography variant="overline" color="primary">FINAL SCOREBOARD</Typography>
+    <Typography variant="h5" fontWeight={900} sx={{ mb: 2 }}>遊戲結束・總分公布</Typography>
+    <Box sx={{ display: 'grid', gridTemplateColumns: '64px minmax(0, 1fr) 100px 120px', gap: 1, alignItems: 'center' }}>
+      <Typography variant="caption" color="text.secondary">排名</Typography><Typography variant="caption" color="text.secondary">玩家</Typography><Typography variant="caption" color="text.secondary" textAlign="right">現金</Typography><Typography variant="caption" color="text.secondary" textAlign="right">總分</Typography>
+      {rankedPlayers.map((player, index) => <Box key={player.id} sx={{ display: 'contents' }}><Typography sx={{ py: 1.2, borderTop: '1px solid', borderColor: 'divider', fontWeight: 900 }}>{index + 1}</Typography><Typography sx={{ py: 1.2, borderTop: '1px solid', borderColor: 'divider', fontWeight: player.id === room.me?.id ? 900 : 500 }}>{player.displayName}{player.id === room.me?.id ? '（你）' : ''}</Typography><Typography sx={{ py: 1.2, borderTop: '1px solid', borderColor: 'divider', textAlign: 'right' }}>${player.cash} 萬</Typography><Typography sx={{ py: 1.2, borderTop: '1px solid', borderColor: 'divider', textAlign: 'right', color: '#b36f42', fontSize: 18, fontWeight: 900 }}>{player.score ?? '—'}</Typography></Box>)}
+    </Box>
+  </Paper>
+}
+
 const KPI_OPTIONS = [
   ['gourmet_satisfaction', '饕客滿意度'],
   ['regular_satisfaction', '一般客滿意度'],
@@ -99,22 +111,27 @@ export function GameDashboard({ room, selectedCard, setSelectedCard, command, bu
   const startingCards = (room.period === 0 && !me?.initialCardsSelected ? [] : [me?.partner, me?.starterShop]).filter((card): card is PlayerCard => Boolean(card))
   const hand = me?.hand ?? []
   const tableau = me?.tableau ?? []
-  const acquiredCards = [...startingCards, ...tableau]
-  const ownedIcons = acquiredCards.flatMap((card) => card.icons ?? [])
+  const retainedCards = me?.retainedCards ?? []
+  const historicalRetainedCards = retainedCards.filter((card) => !hand.some((current) => current.id === card.id))
+  const activeCards = [...startingCards, ...tableau]
+  // Tableau is preserved when the game advances to the next period, so this
+  // collection intentionally accumulates cards acquired from periods 1 to 3.
+  const acquiredCards = [...activeCards, ...historicalRetainedCards]
+  const ownedIcons = activeCards.flatMap((card) => card.icons ?? [])
   const orderedAcquiredCards = [...acquiredCards].sort((left, right) => {
     const leftKey = left.kind === 'starter_shop' ? 'starter_shop' : left.colorKey ?? left.function ?? left.kind
     const rightKey = right.kind === 'starter_shop' ? 'starter_shop' : right.colorKey ?? right.function ?? right.kind
     return leftKey.localeCompare(rightKey) || left.id.localeCompare(right.id)
   })
-  const iconCounts = acquiredCards.flatMap((card) => [...(card.kind === 'marketing' ? Array.from({ length: card.brandAwareness ?? 1 }, () => 'marketing') : (card.icons ?? [])), ...(card.kind === 'starter_shop' ? ['channel'] : [])]).reduce<Record<string, number>>((counts, icon) => ({ ...counts, [icon]: (counts[icon] ?? 0) + 1 }), {})
-  const customerCounts = acquiredCards.reduce<Record<string, number>>((counts, card) => {
+  const iconCounts = activeCards.flatMap((card) => [...(card.kind === 'marketing' ? Array.from({ length: card.brandAwareness ?? 1 }, () => 'marketing') : (card.icons ?? [])), ...(card.kind === 'starter_shop' ? ['channel'] : [])]).reduce<Record<string, number>>((counts, icon) => ({ ...counts, [icon]: (counts[icon] ?? 0) + 1 }), {})
+  const customerCounts = activeCards.reduce<Record<string, number>>((counts, card) => {
     const source = card.customerCount
     for (const type of ['gourmet', 'regular']) counts[type] = (counts[type] ?? 0) + (source?.[type] ?? 0)
     return counts
   }, {})
   const selected = hand.find((card) => card.id === selectedCard)
   const phaseLabel: Record<string, string> = { hypothesis: '設定關鍵指標', experiment: '選擇實驗策略', learning: '結算本期市場', finished: '遊戲完成' }
-  const totalCards = startingCards.length + hand.length + tableau.length
+  const totalCards = acquiredCards.length + hand.length
   const market = useMemo(() => Object.entries(room.demandBoard ?? {}), [room.demandBoard])
 
   return <Box sx={{ minHeight: '100vh', bgcolor: '#f8f5f1', color: '#33251f' }}>
@@ -122,9 +139,10 @@ export function GameDashboard({ room, selectedCard, setSelectedCard, command, bu
     <Container maxWidth="xl" sx={{ py: 3 }}>
       <Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" alignItems={{ xs: 'start', md: 'center' }} spacing={1} sx={{ mb: 2.5 }}><Box><Typography variant="overline" color="text.secondary">PERIOD {room.period} · ROUND {room.round}/6</Typography><Typography variant="h4" fontWeight={900}>{phaseLabel[room.phase] ?? room.phase}</Typography></Box><Chip icon={<Coffee />} label={`${totalCards} 張卡牌`} color="primary" variant="outlined" /></Stack>
       {room.phase === 'hypothesis' && room.period === 0 && <GameDashboardSetupCards partners={room.partnerOptions ?? []} shops={room.starterShopOptions ?? []} selectedPartnerId={me?.initialCardsSelected ? me?.partner?.id : undefined} selectedShopId={me?.initialCardsSelected ? me?.starterShop?.id : undefined} busy={busy} onSelect={setupInitialCards} onBegin={() => command('BEGIN_EXPERIMENT')} />}
+      {room.phase === 'finished' && <FinalScoreboard room={room} />}
       <CustomerCountsPanel counts={customerCounts} />
       <PlayerSummaryBar room={room} />
-      <Paper elevation={0} sx={{ p: { xs: 2, md: 2.5 }, border: '1px solid', borderColor: 'divider', borderRadius: 3, mb: 2.5 }}><Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" spacing={1}><Box><Typography variant="overline" color="primary">YOUR COLLECTION</Typography><Typography variant="h5" fontWeight={900}>我的卡牌</Typography></Box><Typography variant="body2" color="text.secondary" sx={{ maxWidth: 420 }}>開局取得的卡牌、目前手牌與已打出的卡牌都會顯示在這裡。</Typography></Stack><Grid container spacing={1.2} sx={{ mt: 1.5 }}>{Object.entries(iconCounts).map(([icon, count]) => <Grid key={icon} size={{ xs: 4, sm: 2, md: 1.5 }}><Paper variant="outlined" sx={{ p: 1.1, bgcolor: '#faf7f2', textAlign: 'center' }}><GameIcon name={icon} sx={{ fontSize: 24 }} /><Typography display="block" variant="h6" fontWeight={900}>{count}</Typography></Paper></Grid>)}</Grid><GameDashboardCardGroup title="已取得卡牌" subtitle={`${acquiredCards.length} 張・開局卡與已打出卡牌`} cards={orderedAcquiredCards} collapsible /><GameDashboardCardGroup title="目前手牌" subtitle={`${hand.length} 張・點選卡牌後執行操作`} cards={hand} selectedId={selectedCard} onSelect={(id) => { setSelectedCard(id); command('SELECT_CARD', { cardId: id }) }} headerContent={<HandActionBar room={room} selected={selected} ownedIcons={ownedIcons} command={command} busy={busy} />} /></Paper>
+      <Paper elevation={0} sx={{ p: { xs: 2, md: 2.5 }, border: '1px solid', borderColor: 'divider', borderRadius: 3, mb: 2.5 }}><Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" spacing={1}><Box><Typography variant="overline" color="primary">YOUR COLLECTION</Typography><Typography variant="h5" fontWeight={900}>我的卡牌</Typography></Box><Typography variant="body2" color="text.secondary" sx={{ maxWidth: 420 }}>第 1～3 期的已取得卡牌與每期最後保留的手牌都會顯示在這裡。</Typography></Stack><Grid container spacing={1.2} sx={{ mt: 1.5 }}>{Object.entries(iconCounts).map(([icon, count]) => <Grid key={icon} size={{ xs: 4, sm: 2, md: 1.5 }}><Paper variant="outlined" sx={{ p: 1.1, bgcolor: '#faf7f2', textAlign: 'center' }}><GameIcon name={icon} sx={{ fontSize: 24 }} /><Typography display="block" variant="h6" fontWeight={900}>{count}</Typography></Paper></Grid>)}</Grid><GameDashboardCardGroup title="已取得卡牌" subtitle={`${acquiredCards.length} 張・第 1～3 期累計（開局卡、已打出與保留手牌）`} cards={orderedAcquiredCards} collapsible /><GameDashboardCardGroup title="目前手牌" subtitle={`${hand.length} 張・第 ${room.period} 期最後保留`} cards={hand} selectedId={selectedCard} onSelect={(id) => { setSelectedCard(id); command('SELECT_CARD', { cardId: id }) }} headerContent={<HandActionBar room={room} selected={selected} ownedIcons={ownedIcons} command={command} busy={busy} />} /></Paper>
       <KPISelectionPanel key={room.period} room={room} command={command} busy={busy} />
       <MarketRankingPanel room={room} command={command} busy={busy} />
       <Grid container spacing={2.5}>

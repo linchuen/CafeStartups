@@ -102,8 +102,9 @@ func (g *Game) ResolveLearning() error {
 	g.recordCashFlow()
 	g.recordCashFlowRound()
 	for _, p := range g.Players {
-		p.Score = p.Cash + p.metricScore()
+		p.Score = p.Cash/CashScoreDivisor + p.metricScore()
 	}
+	g.rememberFinalHands()
 	if g.Period == PeriodThree {
 		g.Phase = PhaseFinished
 		return nil
@@ -119,6 +120,14 @@ func (g *Game) ResolveLearning() error {
 	g.selected = map[string]Card{}
 	g.acted = map[string]bool{}
 	return nil
+}
+
+func (g *Game) rememberFinalHands() {
+	for _, p := range g.Players {
+		if len(p.Hand) > 0 {
+			p.RetainedCards = append(p.RetainedCards, p.Hand[0])
+		}
+	}
 }
 
 // AdvancePeriod moves from learning to the next period after the current
