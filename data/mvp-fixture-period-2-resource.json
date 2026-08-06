@@ -1,0 +1,128 @@
+{
+  "source": "mvp-fixture",
+  "version": 2,
+  "seed": "phase-1-mvp-84",
+  "function": "resource",
+  "cards": [
+    {
+      "id": "mvp-p2-001",
+      "name": "流程標準化",
+      "kind": "resource",
+      "period": 2,
+      "cost": {
+        "cash": 20,
+        "icons": []
+      },
+      "icons": [
+        "operations"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture",
+      "function": "resource"
+    },
+    {
+      "id": "mvp-p2-002",
+      "name": "供應商管理",
+      "kind": "resource",
+      "period": 2,
+      "cost": {
+        "cash": 20,
+        "icons": []
+      },
+      "icons": [
+        "operations"
+      ],
+      "marketChange": {
+        "gourmet": 1,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture",
+      "function": "resource"
+    },
+    {
+      "id": "mvp-p2-003",
+      "name": "烘豆設備",
+      "kind": "resource",
+      "period": 2,
+      "cost": {
+        "cash": 20,
+        "icons": []
+      },
+      "icons": [
+        "operations"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture",
+      "function": "resource"
+    },
+    {
+      "id": "mvp-p2-004",
+      "name": "冷藏設備",
+      "kind": "resource",
+      "period": 2,
+      "cost": {
+        "cash": 20,
+        "icons": []
+      },
+      "icons": [
+        "operations"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture",
+      "function": "resource"
+    },
+    {
+      "id": "mvp-p2-005",
+      "name": "原料採購",
+      "kind": "resource",
+      "period": 2,
+      "cost": {
+        "cash": 20,
+        "icons": []
+      },
+      "icons": [
+        "operations"
+      ],
+      "marketChange": {
+        "gourmet": 1,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture",
+      "function": "resource"
+    },
+    {
+      "id": "mvp-p2-006",
+      "name": "品質控管",
+      "kind": "resource",
+      "period": 2,
+      "cost": {
+        "cash": 20,
+        "icons": []
+      },
+      "icons": [
+        "operations"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture",
+      "function": "resource"
+    }
+  ]
+}

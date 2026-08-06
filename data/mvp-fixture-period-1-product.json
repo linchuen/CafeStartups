@@ -1,0 +1,128 @@
+{
+  "source": "mvp-fixture",
+  "version": 2,
+  "seed": "phase-1-mvp-84",
+  "function": "product",
+  "cards": [
+    {
+      "id": "mvp-p1-007",
+      "name": "經典拿鐵",
+      "kind": "product",
+      "period": 1,
+      "cost": {
+        "cash": 25,
+        "icons": []
+      },
+      "icons": [
+        "coffee"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture",
+      "function": "product"
+    },
+    {
+      "id": "mvp-p1-008",
+      "name": "手沖咖啡",
+      "kind": "product",
+      "period": 1,
+      "cost": {
+        "cash": 25,
+        "icons": []
+      },
+      "icons": [
+        "coffee"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture",
+      "function": "product"
+    },
+    {
+      "id": "mvp-p1-009",
+      "name": "季節特調",
+      "kind": "product",
+      "period": 1,
+      "cost": {
+        "cash": 25,
+        "icons": []
+      },
+      "icons": [
+        "coffee"
+      ],
+      "marketChange": {
+        "gourmet": 1,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture",
+      "function": "product"
+    },
+    {
+      "id": "mvp-p1-010",
+      "name": "燕麥奶咖啡",
+      "kind": "product",
+      "period": 1,
+      "cost": {
+        "cash": 25,
+        "icons": []
+      },
+      "icons": [
+        "coffee"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture",
+      "function": "product"
+    },
+    {
+      "id": "mvp-p1-011",
+      "name": "濃縮咖啡",
+      "kind": "product",
+      "period": 1,
+      "cost": {
+        "cash": 25,
+        "icons": []
+      },
+      "icons": [
+        "coffee"
+      ],
+      "marketChange": {
+        "gourmet": 0,
+        "regular": 1,
+        "difficult": 0
+      },
+      "source": "mvp-fixture",
+      "function": "product"
+    },
+    {
+      "id": "mvp-p1-012",
+      "name": "精品單品",
+      "kind": "product",
+      "period": 1,
+      "cost": {
+        "cash": 25,
+        "icons": []
+      },
+      "icons": [
+        "coffee"
+      ],
+      "marketChange": {
+        "gourmet": 1,
+        "regular": 0,
+        "difficult": 0
+      },
+      "source": "mvp-fixture",
+      "function": "product"
+    }
+  ]
+}

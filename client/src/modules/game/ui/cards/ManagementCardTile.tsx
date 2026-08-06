@@ -20,7 +20,7 @@ export function ManagementCardTile({ card, selected, onClick }: { card: PlayerCa
     <Box sx={{ display: 'flex', height: 88, flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: .2, px: 1.5, py: .85, boxSizing: 'border-box', bgcolor: `${meta.color}dd`, color: 'white' }}>
       <Typography variant="caption" sx={{ opacity: .8 }}>卡片功能</Typography>
       <Box sx={{ display: 'flex', minWidth: 0, maxWidth: '100%', alignItems: 'center', justifyContent: 'center', gap: .8, overflow: 'hidden' }}>
-        {card.kind === 'channel' ? visibleMarketEntries.map(([key, value]) => <CustomerTypeTokens key={key} type={key} count={value} size={18} />) : card.kind === 'resource' ? ['data', 'procurement', 'operations', 'marketing_resource'].map((icon) => <GameIcon key={icon} name={icon} sx={{ fontSize: 24 }} />) : card.icons.slice(0, 4).map((icon, index) => <GameIcon key={`${icon}-${index}`} name={icon} sx={{ fontSize: 24 }} />)}
+        {card.kind === 'channel' ? visibleMarketEntries.map(([key, value]) => <CustomerTypeTokens key={key} type={key} count={value} size={18} />) : card.icons.slice(0, 4).map((icon, index) => <GameIcon key={`${icon}-${index}`} name={icon} sx={{ fontSize: 24 }} />)}
       </Box>
     </Box>
     <Box sx={{ display: 'grid', height: 105, flex: '0 0 105px', placeItems: 'center', overflow: 'hidden' }}><CardArtwork card={card} /></Box>
