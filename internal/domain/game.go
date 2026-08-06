@@ -400,15 +400,21 @@ func (g *Game) satisfies(p *Player, demand string) bool {
 }
 
 func (g *Game) applyCardEffects(p *Player, c Card) {
-	switch c.Kind {
-	case "marketing":
-		p.BrandAwareness++
-	case "product":
-		p.Products++
-	case "value":
-		p.Values++
-	case "resource", "channel":
-		p.Resources++
+	if p.IconValues == nil {
+		p.IconValues = map[string]int{}
+	}
+	for _, icon := range c.Icons {
+		p.IconValues[icon]++
+		switch icon {
+		case "marketing":
+			p.BrandAwareness++
+		case "coffee", "dessert", "beans":
+			p.Products++
+		case "value", "taste", "service":
+			p.Values++
+		case "data", "procurement", "operations", "marketing_resource", "channel":
+			p.Resources++
+		}
 	}
 	for demand, change := range c.MarketChange {
 		if demand == "difficult" {

@@ -80,6 +80,7 @@ type Player struct {
 	Products               int
 	Values                 int
 	Resources              int
+	IconValues             map[string]int
 	Partner, StarterShop   Card
 	InitialCardsSelected   bool
 	Hand, Tableau, Discard []Card

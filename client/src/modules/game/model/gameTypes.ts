@@ -16,6 +16,7 @@ export type Player = {
   products?: number
   values?: number
   resources?: number
+  iconValues?: Record<string, number>
   handCount: number
 }
 
@@ -65,6 +66,7 @@ export type GameState = {
     products?: number
     values?: number
     resources?: number
+    iconValues?: Record<string, number>
   }
 }
 

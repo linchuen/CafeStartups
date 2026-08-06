@@ -211,7 +211,7 @@ func TestPlayingCardAppliesMetricAndMarketEffects(t *testing.T) {
 	g, _ := NewGame("effects", []string{"a", "b"})
 	p := g.Players[0]
 	g.Phase = PhaseExperiment
-	card := Card{ID: "marketing-card", Kind: "marketing", Cost: Cost{Cash: 10}, MarketChange: map[string]int{"gourmet": 2}}
+	card := Card{ID: "marketing-card", Kind: "marketing", Icons: []string{"marketing"}, Cost: Cost{Cash: 10}, MarketChange: map[string]int{"gourmet": 2}}
 	p.Hand = []Card{card}
 	if err := g.SelectCard(p.ID, card.ID); err != nil {
 		t.Fatal(err)
@@ -221,6 +221,26 @@ func TestPlayingCardAppliesMetricAndMarketEffects(t *testing.T) {
 	}
 	if p.BrandAwareness != 1 || g.DemandBoard["gourmet"] != 2 {
 		t.Fatalf("effects not applied: brand=%d demand=%d", p.BrandAwareness, g.DemandBoard["gourmet"])
+	}
+}
+
+func TestPlayingCardAddsOneMetricPerIcon(t *testing.T) {
+	g, _ := NewGame("multi-icon-effects", []string{"a", "b"})
+	p := g.Players[0]
+	g.Phase = PhaseExperiment
+	card := Card{ID: "multi-icon-card", Kind: "resource", Icons: []string{"operations", "coffee", "taste", "marketing"}, Cost: Cost{Cash: 10}}
+	p.Hand = []Card{card}
+	if err := g.SelectCard(p.ID, card.ID); err != nil {
+		t.Fatal(err)
+	}
+	if err := g.PlaySelectedCard(p.ID); err != nil {
+		t.Fatal(err)
+	}
+	if p.Resources != 1 || p.Products != 1 || p.Values != 1 || p.BrandAwareness != 1 {
+		t.Fatalf("metrics resources=%d products=%d values=%d awareness=%d, want 1 each", p.Resources, p.Products, p.Values, p.BrandAwareness)
+	}
+	if p.IconValues["operations"] != 1 || p.IconValues["coffee"] != 1 || p.IconValues["taste"] != 1 || p.IconValues["marketing"] != 1 || len(p.IconValues) != 4 {
+		t.Fatalf("icon values=%v, want one count for each of the four icons", p.IconValues)
 	}
 }
 
