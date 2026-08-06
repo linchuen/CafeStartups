@@ -1,138 +1,112 @@
 {
-    "source":  "mvp-fixture",
-    "version":  2,
-    "seed":  "phase-1-mvp-84",
-    "function":  "channel",
-    "cards":  [
-                  {
-                      "id":  "mvp-p1-019",
-                      "name":  "店內座位",
-                      "kind":  "channel",
-                      "period":  1,
-                      "cost":  {
-                                   "cash":  20,
-                                   "icons":  [
-                                                 "operations"
-                                             ]
-                               },
-                      "icons":  [
-                                    "channel"
-                                ],
-                      "marketChange":  {
-                                           "gourmet":  0,
-                                           "regular":  1,
-                                           "difficult":  0
-                                       },
-                      "source":  "mvp-fixture",
-                      "customerCount":  {
-                                            "gourmet":  0,
-                                            "regular":  1
-                                        },
-                      "function":  "channel"
-                  },
-                  {
-                      "id":  "mvp-p1-020",
-                      "name":  "外帶窗口",
-                      "kind":  "channel",
-                      "period":  1,
-                      "cost":  {
-                                   "cash":  20,
-                                   "icons":  [
-                                                 "coffee"
-                                             ]
-                               },
-                      "icons":  [
-                                    "channel"
-                                ],
-                      "marketChange":  {
-                                           "gourmet":  0,
-                                           "regular":  1,
-                                           "difficult":  0
-                                       },
-                      "source":  "mvp-fixture",
-                      "customerCount":  {
-                                            "gourmet":  0,
-                                            "regular":  1
-                                        },
-                      "function":  "channel"
-                  },
-                  {
-                      "id":  "mvp-p1-021",
-                      "name":  "外送平台",
-                      "kind":  "channel",
-                      "period":  1,
-                      "cost":  {
-                                   "cash":  20,
-                                   "icons":  [
-                                                 "value"
-                                             ]
-                               },
-                      "icons":  [
-                                    "channel"
-                                ],
-                      "marketChange":  {
-                                           "gourmet":  1,
-                                           "regular":  0,
-                                           "difficult":  0
-                                       },
-                      "source":  "mvp-fixture",
-                      "customerCount":  {
-                                            "gourmet":  1,
-                                            "regular":  0
-                                        },
-                      "function":  "channel"
-                  },
-                  {
-                      "id":  "mvp-p1-022",
-                      "name":  "企業訂單",
-                      "kind":  "channel",
-                      "period":  1,
-                      "cost":  {
-                                   "cash":  20,
-                                   "icons":  [
-                                                 "data"
-                                             ]
-                               },
-                      "icons":  [
-                                    "channel"
-                                ],
-                      "marketChange":  {
-                                           "gourmet":  0,
-                                           "regular":  1,
-                                           "difficult":  0
-                                       },
-                      "source":  "mvp-fixture",
-                      "customerCount":  {
-                                            "gourmet":  0,
-                                            "regular":  1
-                                        },
-                      "function":  "channel"
-                  },
-                  {
-                      "id":  "mvp-p1-023",
-                      "name":  "市集攤位",
-                      "kind":  "channel",
-                      "period":  1,
-                      "cost":  {
-                                   "cash":  20,
-                                   "icons":  [
-                                                 "procurement"
-                                             ]
-                               },
-                      "icons":  [
-                                    "channel"
-                                ],
-                      "marketChange":  {
-                                           "gourmet":  0,
-                                           "regular":  1,
-                                           "difficult":  0
-                                       },
-                      "source":  "mvp-fixture",
-                      "customerCount":  {
-                                            "gourmet":  0,
-                                            "regular":  1
-                                        },
-                      "function":  "channel"
-                  }
-              ]
+  "source": "mvp-fixture",
+  "version": 2,
+  "seed": "phase-1-mvp-84",
+  "function": "channel",
+  "cards": [
+    {
+      "id": "mvp-p1-019",
+      "name": "店內座位",
+      "kind": "channel",
+      "function": "channel",
+      "period": 1,
+      "cost": {
+        "cash": 20,
+        "icons": [
+          "service"
+        ]
+      },
+      "icons": [
+        "channel"
+      ],
+      "marketChange": {
+        "difficult": 0,
+        "gourmet": 0,
+        "regular": 1
+      },
+      "customerCount": {
+        "gourmet": 0,
+        "regular": 1
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-020",
+      "name": "外帶窗口",
+      "kind": "channel",
+      "function": "channel",
+      "period": 1,
+      "cost": {
+        "cash": 20,
+        "icons": [
+          "data"
+        ]
+      },
+      "icons": [
+        "channel"
+      ],
+      "marketChange": {
+        "difficult": 0,
+        "gourmet": 0,
+        "regular": 1
+      },
+      "customerCount": {
+        "gourmet": 0,
+        "regular": 1
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-021",
+      "name": "外送平台",
+      "kind": "channel",
+      "function": "channel",
+      "period": 1,
+      "cost": {
+        "cash": 20,
+        "icons": [
+          "procurement"
+        ]
+      },
+      "icons": [
+        "channel"
+      ],
+      "marketChange": {
+        "difficult": 0,
+        "gourmet": 1,
+        "regular": 0
+      },
+      "customerCount": {
+        "gourmet": 1,
+        "regular": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-022",
+      "name": "企業訂單",
+      "kind": "channel",
+      "function": "channel",
+      "period": 1,
+      "cost": {
+        "cash": 20,
+        "icons": [
+          "operations"
+        ]
+      },
+      "icons": [
+        "channel"
+      ],
+      "marketChange": {
+        "difficult": 0,
+        "gourmet": 0,
+        "regular": 1
+      },
+      "customerCount": {
+        "gourmet": 0,
+        "regular": 1
+      },
+      "source": "mvp-fixture"
+    }
+  ]
 }

@@ -1,173 +1,173 @@
 {
-    "source":  "mvp-fixture",
-    "version":  2,
-    "seed":  "phase-1-mvp-84",
-    "function":  "value",
-    "cards":  [
-                  {
-                      "id":  "mvp-p3-013",
-                      "name":  "快速取餐",
-                      "kind":  "value",
-                      "period":  3,
-                      "cost":  {
-                                   "cash":  30,
-                                   "icons":  [
-                                                 "value",
-                                                 "value",
-                                                 "value",
-                                                 "value",
-                                                 "value"
-                                             ]
-                               },
-                      "icons":  [
-                                    "value",
-                                    "value"
-                                ],
-                      "marketChange":  {
-                                           "gourmet":  1,
-                                           "regular":  0,
-                                           "difficult":  0
-                                       },
-                      "source":  "mvp-fixture",
-                      "function":  "value"
-                  },
-                  {
-                      "id":  "mvp-p3-014",
-                      "name":  "職人風味",
-                      "kind":  "value",
-                      "period":  3,
-                      "cost":  {
-                                   "cash":  30,
-                                   "icons":  [
-                                                 "value",
-                                                 "value",
-                                                 "value",
-                                                 "value",
-                                                 "value",
-                                                 "value"
-                                             ]
-                               },
-                      "icons":  [
-                                    "value",
-                                    "value"
-                                ],
-                      "marketChange":  {
-                                           "gourmet":  0,
-                                           "regular":  1,
-                                           "difficult":  0
-                                       },
-                      "source":  "mvp-fixture",
-                      "function":  "value"
-                  },
-                  {
-                      "id":  "mvp-p3-015",
-                      "name":  "健康選擇",
-                      "kind":  "value",
-                      "period":  3,
-                      "cost":  {
-                                   "cash":  30,
-                                   "icons":  [
-                                                 "value",
-                                                 "value",
-                                                 "value",
-                                                 "value",
-                                                 "value"
-                                             ]
-                               },
-                      "icons":  [
-                                    "value",
-                                    "value"
-                                ],
-                      "marketChange":  {
-                                           "gourmet":  0,
-                                           "regular":  1,
-                                           "difficult":  0
-                                       },
-                      "source":  "mvp-fixture",
-                      "function":  "value"
-                  },
-                  {
-                      "id":  "mvp-p3-016",
-                      "name":  "友善環境",
-                      "kind":  "value",
-                      "period":  3,
-                      "cost":  {
-                                   "cash":  30,
-                                   "icons":  [
-                                                 "value",
-                                                 "value",
-                                                 "value",
-                                                 "value",
-                                                 "value",
-                                                 "value"
-                                             ]
-                               },
-                      "icons":  [
-                                    "value",
-                                    "value"
-                                ],
-                      "marketChange":  {
-                                           "gourmet":  1,
-                                           "regular":  0,
-                                           "difficult":  0
-                                       },
-                      "source":  "mvp-fixture",
-                      "function":  "value"
-                  },
-                  {
-                      "id":  "mvp-p3-017",
-                      "name":  "社區連結",
-                      "kind":  "value",
-                      "period":  3,
-                      "cost":  {
-                                   "cash":  30,
-                                   "icons":  [
-                                                 "value",
-                                                 "value",
-                                                 "value",
-                                                 "value",
-                                                 "value"
-                                             ]
-                               },
-                      "icons":  [
-                                    "value",
-                                    "value"
-                                ],
-                      "marketChange":  {
-                                           "gourmet":  0,
-                                           "regular":  1,
-                                           "difficult":  0
-                                       },
-                      "source":  "mvp-fixture",
-                      "function":  "value"
-                  },
-                  {
-                      "id":  "mvp-p3-018",
-                      "name":  "客製體驗",
-                      "kind":  "value",
-                      "period":  3,
-                      "cost":  {
-                                   "cash":  30,
-                                   "icons":  [
-                                                 "value",
-                                                 "value",
-                                                 "value",
-                                                 "value",
-                                                 "value",
-                                                 "value"
-                                             ]
-                               },
-                      "icons":  [
-                                    "value",
-                                    "value"
-                                ],
-                      "marketChange":  {
-                                           "gourmet":  0,
-                                           "regular":  1,
-                                           "difficult":  0
-                                       },
-                      "source":  "mvp-fixture",
-                      "function":  "value"
-                  }
-              ]
+  "source": "mvp-fixture",
+  "version": 2,
+  "seed": "phase-1-mvp-84",
+  "function": "value",
+  "cards": [
+    {
+      "id": "mvp-p3-013",
+      "name": "快速取餐",
+      "kind": "value",
+      "function": "value",
+      "period": 3,
+      "cost": {
+        "cash": 30,
+        "icons": [
+          "data",
+          "procurement",
+          "operations",
+          "marketing_resource",
+          "coffee"
+        ]
+      },
+      "icons": [
+        "value",
+        "taste"
+      ],
+      "marketChange": {
+        "difficult": 0,
+        "gourmet": 1,
+        "regular": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-014",
+      "name": "職人風味",
+      "kind": "value",
+      "function": "value",
+      "period": 3,
+      "cost": {
+        "cash": 30,
+        "icons": [
+          "dessert",
+          "beans",
+          "value",
+          "taste",
+          "service",
+          "data"
+        ]
+      },
+      "icons": [
+        "service",
+        "value"
+      ],
+      "marketChange": {
+        "difficult": 0,
+        "gourmet": 0,
+        "regular": 1
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-015",
+      "name": "健康選擇",
+      "kind": "value",
+      "function": "value",
+      "period": 3,
+      "cost": {
+        "cash": 30,
+        "icons": [
+          "procurement",
+          "operations",
+          "marketing_resource",
+          "coffee",
+          "dessert"
+        ]
+      },
+      "icons": [
+        "taste",
+        "service"
+      ],
+      "marketChange": {
+        "difficult": 0,
+        "gourmet": 0,
+        "regular": 1
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-016",
+      "name": "友善環境",
+      "kind": "value",
+      "function": "value",
+      "period": 3,
+      "cost": {
+        "cash": 30,
+        "icons": [
+          "beans",
+          "value",
+          "taste",
+          "service",
+          "data",
+          "procurement"
+        ]
+      },
+      "icons": [
+        "value",
+        "taste"
+      ],
+      "marketChange": {
+        "difficult": 0,
+        "gourmet": 1,
+        "regular": 0
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-017",
+      "name": "社區連結",
+      "kind": "value",
+      "function": "value",
+      "period": 3,
+      "cost": {
+        "cash": 30,
+        "icons": [
+          "operations",
+          "marketing_resource",
+          "coffee",
+          "dessert",
+          "beans"
+        ]
+      },
+      "icons": [
+        "service",
+        "value"
+      ],
+      "marketChange": {
+        "difficult": 0,
+        "gourmet": 0,
+        "regular": 1
+      },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-018",
+      "name": "客製體驗",
+      "kind": "value",
+      "function": "value",
+      "period": 3,
+      "cost": {
+        "cash": 30,
+        "icons": [
+          "value",
+          "taste",
+          "service",
+          "data",
+          "procurement",
+          "operations"
+        ]
+      },
+      "icons": [
+        "taste",
+        "service"
+      ],
+      "marketChange": {
+        "difficult": 0,
+        "gourmet": 0,
+        "regular": 1
+      },
+      "source": "mvp-fixture"
+    }
+  ]
 }

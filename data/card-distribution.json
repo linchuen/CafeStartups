@@ -4,9 +4,9 @@
   "periods": {
     "1": {
       "resource": 6,
-      "product": 6,
+      "product": 7,
       "value": 6,
-      "channel": 5,
+      "channel": 4,
       "marketing": 5
     },
     "2": {
@@ -18,9 +18,9 @@
     },
     "3": {
       "resource": 6,
-      "product": 6,
+      "product": 5,
       "value": 6,
-      "channel": 5,
+      "channel": 6,
       "marketing": 5
     }
   }
