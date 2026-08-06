@@ -372,21 +372,23 @@ func (g *Game) DistributeCustomers(customers []Customer) {
 		p.Customers = append(p.Customers, customer)
 	}
 	for _, p := range g.Players {
-		g.appendPartnerCustomers(p)
+		g.appendCardCustomers(p)
 	}
 }
 
-func (g *Game) appendPartnerCustomers(p *Player) {
-	for kind, count := range p.Partner.CustomerCount {
-		if count <= 0 {
-			continue
+func (g *Game) appendCardCustomers(p *Player) {
+	for _, counts := range []map[string]int{p.Partner.CustomerCount, p.StarterShop.CustomerCount} {
+		for kind, count := range counts {
+			if count <= 0 {
+				continue
+			}
+			demand := kind
+			customer := Customer{Kind: kind, Demand: demand, Count: count, UnitPrice: basePrice(kind)}
+			if !g.satisfies(p, demand) {
+				customer.UnitPrice = 0
+			}
+			p.Customers = append(p.Customers, customer)
 		}
-		demand := kind
-		customer := Customer{Kind: kind, Demand: demand, Count: count, UnitPrice: basePrice(kind)}
-		if !g.satisfies(p, demand) {
-			customer.UnitPrice = 0
-		}
-		p.Customers = append(p.Customers, customer)
 	}
 }
 

@@ -54,7 +54,6 @@ type Card struct {
 	Name              string         `json:"name"`
 	Kind              string         `json:"kind"`
 	Description       string         `json:"description,omitempty"`
-	Effect            string         `json:"effect,omitempty"`
 	Function          string         `json:"function,omitempty"`
 	ColorKey          string         `json:"colorKey,omitempty"`
 	StartingCashBonus int            `json:"startingCashBonus,omitempty"`

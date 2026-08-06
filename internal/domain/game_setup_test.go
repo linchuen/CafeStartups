@@ -34,3 +34,38 @@ func TestLoadPartnerCardsRejectsMismatchedColor(t *testing.T) {
 		t.Fatal("expected mismatched partner color to be rejected")
 	}
 }
+
+func TestMVPStarterShopCardsUseTenUnitCosts(t *testing.T) {
+	cards := MVPStarterShopCards()
+	if len(cards) != 10 {
+		t.Fatalf("starter shop cards=%d, want 10", len(cards))
+	}
+	for _, card := range cards {
+		if card.Kind != "starter_shop" {
+			t.Fatalf("card %q kind=%q, want starter_shop", card.ID, card.Kind)
+		}
+		if card.Cost.Cash%10 != 0 {
+			t.Fatalf("card %q cost=%d is not a 10-unit value", card.ID, card.Cost.Cash)
+		}
+		if card.CustomerCount["gourmet"] == 0 && card.CustomerCount["regular"] == 0 {
+			t.Fatalf("card %q has no customer count", card.ID)
+		}
+	}
+}
+
+func TestStarterShopCustomerCountAddsCustomers(t *testing.T) {
+	g, err := NewGame("starter-shop-customers", []string{"a"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	p := g.Players[0]
+	p.Partner = Card{}
+	p.StarterShop = Card{CustomerCount: map[string]int{"gourmet": 2}}
+	p.Tableau = []Card{{Demand: map[string]int{"gourmet": 1}}}
+
+	g.DistributeCustomers(nil)
+
+	if len(p.Customers) != 1 || p.Customers[0].Kind != "gourmet" || p.Customers[0].Count != 2 || p.Customers[0].UnitPrice == 0 {
+		t.Fatalf("starter shop customers=%+v", p.Customers)
+	}
+}

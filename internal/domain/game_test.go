@@ -389,7 +389,7 @@ func TestSeedAndRevenueAreDeterministic(t *testing.T) {
 	a.Players[0].Tableau = []Card{{Demand: map[string]int{"gourmet": 1}}}
 	a.DistributeCustomers([]Customer{{Kind: "gourmet", Demand: "gourmet", Count: 2}, {Kind: "regular", Demand: "gourmet", Count: 1}})
 	a.SettleRevenue()
-	if a.Players[0].Revenue != 20 || a.Players[0].Cash != InitialCash-a.Players[0].StarterShop.Cost.Cash+20 {
+	if a.Players[0].Revenue != 40 || a.Players[0].Cash != InitialCash-a.Players[0].StarterShop.Cost.Cash+40 {
 		t.Fatalf("revenue=%d cash=%d", a.Players[0].Revenue, a.Players[0].Cash)
 	}
 }

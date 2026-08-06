@@ -56,6 +56,9 @@ var MVPFixturePeriod3Marketing []byte
 //go:embed mvp-fixture-partner.json
 var MVPPartnerFixture []byte
 
+//go:embed mvp-fixture-starter-shops.json
+var MVPStarterShopFixture []byte
+
 type fixtureEnvelope struct {
 	Source  string            `json:"source"`
 	Version int               `json:"version"`

@@ -67,7 +67,7 @@ export function GameDashboard({ room, selectedCard, setSelectedCard, command, bu
   })
   const iconCounts = acquiredCards.flatMap((card) => [...(card.kind === 'marketing' ? Array.from({ length: card.brandAwareness ?? 1 }, () => 'marketing') : (card.icons ?? [])), ...(card.kind === 'starter_shop' ? ['channel'] : [])]).reduce<Record<string, number>>((counts, icon) => ({ ...counts, [icon]: (counts[icon] ?? 0) + 1 }), {})
   const customerCounts = acquiredCards.reduce<Record<string, number>>((counts, card) => {
-    const source = card.kind === 'starter_shop' ? card.demand : card.customerCount
+    const source = card.customerCount
     for (const type of ['gourmet', 'regular']) counts[type] = (counts[type] ?? 0) + (source?.[type] ?? 0)
     return counts
   }, {})
