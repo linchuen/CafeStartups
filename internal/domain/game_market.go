@@ -79,12 +79,13 @@ func (g *Game) ResolveLearning() error {
 	}
 	g.DistributeCustomers(customers)
 	g.SettleRevenue()
+	g.updateSatisfactionScores()
 	g.recordCashFlow()
 	g.recordCashFlowRound()
+	for _, p := range g.Players {
+		p.Score = p.Cash + p.metricScore()
+	}
 	if g.Period == PeriodThree {
-		for _, p := range g.Players {
-			p.Score = p.Cash + p.metricScore()
-		}
 		g.Phase = PhaseFinished
 		return nil
 	}

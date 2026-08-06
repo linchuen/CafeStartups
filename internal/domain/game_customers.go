@@ -90,20 +90,25 @@ func basePrice(kind string) int {
 
 func (g *Game) SettleRevenue() {
 	for _, p := range g.Players {
-		revenue := 0
-		for _, c := range p.Customers {
-			amount := c.Count * c.UnitPrice
-			revenue += amount
-			if c.UnitPrice <= 0 {
-				continue
-			}
+		gourmetRate := g.demandRevenuePerCustomer("gourmet", p)
+		regularRate := g.demandRevenuePerCustomer("regular", p)
+		gourmetCount, regularCount := 0, 0
+		for index := range p.Customers {
+			c := &p.Customers[index]
 			switch c.Kind {
 			case "gourmet":
+				c.UnitPrice = gourmetRate
+				gourmetCount += c.Count
 				p.cashFlowGourmetCount += c.Count
 			case "regular":
+				c.UnitPrice = regularRate
+				regularCount += c.Count
 				p.cashFlowRegularCount += c.Count
 			}
 		}
+		p.cashFlowGourmetRevenue = gourmetRate * gourmetCount
+		p.cashFlowRegularRevenue = regularRate * regularCount
+		revenue := p.cashFlowGourmetRevenue + p.cashFlowRegularRevenue
 		p.Revenue = revenue
 		p.Cash += revenue
 		p.cashFlowRevenue += revenue

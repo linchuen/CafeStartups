@@ -71,6 +71,13 @@ type Card struct {
 	Demand            map[string]int `json:"demand,omitempty"`
 }
 
+type DemandCard struct {
+	ID       string   `json:"id"`
+	Position int      `json:"position"`
+	Icons    []string `json:"icons"`
+	Revealed bool     `json:"revealed"`
+}
+
 type Player struct {
 	ID, DisplayName        string
 	IsBot                  bool
@@ -79,6 +86,8 @@ type Player struct {
 	Products               int
 	Values                 int
 	Resources              int
+	GourmetSatisfaction    int
+	RegularSatisfaction    int
 	IconValues             map[string]int
 	Partner, StarterShop   Card
 	InitialCardsSelected   bool
@@ -94,6 +103,8 @@ type Player struct {
 	cashFlowRevenue        int
 	cashFlowGourmetCount   int
 	cashFlowRegularCount   int
+	cashFlowGourmetRevenue int
+	cashFlowRegularRevenue int
 	cashFlowOtherIncome    int
 	cashFlowExpenses       int
 	cashFlowInterest       int
@@ -141,9 +152,10 @@ type Game struct {
 	Catalog                            []Card
 	PartnerOptions, StarterShopOptions []Card
 	DemandBoard                        map[string]int
-	MarketRanking                      []int          `json:"marketRanking,omitempty"`
-	MarketDraws                        []MarketDraw   `json:"marketDraws,omitempty"`
-	MarketBag                          map[string]int `json:"marketBag,omitempty"`
+	DemandCards                        map[string][]DemandCard `json:"demandCards,omitempty"`
+	MarketRanking                      []int                   `json:"marketRanking,omitempty"`
+	MarketDraws                        []MarketDraw            `json:"marketDraws,omitempty"`
+	MarketBag                          map[string]int          `json:"marketBag,omitempty"`
 	marketDrawn                        bool
 	selected                           map[string]Card
 	acted                              map[string]bool

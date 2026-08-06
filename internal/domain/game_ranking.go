@@ -16,6 +16,7 @@ func (g *Game) Finish() error {
 		return err
 	}
 	g.SettleRevenue()
+	g.updateSatisfactionScores()
 	for _, p := range g.Players {
 		p.Score = p.Cash + p.metricScore()
 	}
@@ -46,11 +47,11 @@ func (p *Player) metricScore() int {
 	for _, k := range p.SelectedKPIs {
 		switch k {
 		case "gourmet_satisfaction":
-			s += p.satisfiedCustomerCount("gourmet")
+			s += p.GourmetSatisfaction * 5
 		case "regular_satisfaction":
-			s += p.satisfiedCustomerCount("regular")
+			s += p.RegularSatisfaction * 4
 		case "total_satisfaction":
-			s += p.satisfiedCustomerCount("gourmet") + p.satisfiedCustomerCount("regular")
+			s += (p.GourmetSatisfaction + p.RegularSatisfaction) * 2
 		case "channel":
 			s += p.Resources
 		case "awareness":

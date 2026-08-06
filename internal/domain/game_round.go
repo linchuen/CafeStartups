@@ -75,6 +75,7 @@ func (g *Game) PassHands() error {
 	}
 	g.Round++
 	g.selected, g.acted = map[string]Card{}, map[string]bool{}
+	g.revealDemandCards()
 	g.recordCashFlowRound()
 	if g.Round == ExperimentRounds {
 		for _, p := range g.Players {

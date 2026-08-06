@@ -148,6 +148,10 @@ func (g *Game) BeginExperiment() error {
 		p.cashFlowRevenue = 0
 		p.cashFlowGourmetCount = 0
 		p.cashFlowRegularCount = 0
+		p.GourmetSatisfaction = 0
+		p.RegularSatisfaction = 0
+		p.cashFlowGourmetRevenue = 0
+		p.cashFlowRegularRevenue = 0
 		p.cashFlowOtherIncome = 0
 		p.cashFlowExpenses = 0
 		p.cashFlowInterest = 0
@@ -155,6 +159,7 @@ func (g *Game) BeginExperiment() error {
 		p.cashFlowNewLoans = 0
 	}
 	g.Round, g.Phase = InitialRound, PhaseExperiment
+	g.prepareDemandCards()
 	g.deal()
 	return nil
 }

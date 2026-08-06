@@ -16,6 +16,8 @@ export type Player = {
   products?: number
   values?: number
   resources?: number
+  gourmetSatisfaction?: number
+  regularSatisfaction?: number
   iconValues?: Record<string, number>
   handCount: number
 }
@@ -45,6 +47,7 @@ export type GameState = {
   phase: string
   round: number
   demandBoard?: Record<string, number>
+  demandCards?: Record<'gourmet' | 'regular', { id: string; position: number; icons: string[]; revealed: boolean }[]>
   marketRanking?: number[]
   marketDraws?: { rank: number; playerId: string; playerName: string; customerCounts: Record<'gourmet' | 'regular' | 'difficult', number>; total: number }[]
   marketBag?: Record<'gourmet' | 'regular' | 'difficult', number>
@@ -72,6 +75,8 @@ export type GameState = {
     products?: number
     values?: number
     resources?: number
+    gourmetSatisfaction?: number
+    regularSatisfaction?: number
     iconValues?: Record<string, number>
   }
 }

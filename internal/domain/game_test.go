@@ -554,3 +554,39 @@ func TestDrawMarketUsesFinalHandsToBuildBag(t *testing.T) {
 		t.Fatalf("drawn=%d, want 3 customers from final hands", totalDrawn)
 	}
 }
+
+func TestDemandCardsRevealByRoundAndScoreCustomerTypesSeparately(t *testing.T) {
+	g := gameForTest(t)
+	if !g.DemandCards["gourmet"][0].Revealed || g.DemandCards["gourmet"][1].Revealed {
+		t.Fatal("expected only the initial demand position to be revealed")
+	}
+	g.Round = 1
+	g.revealDemandCards()
+	if !g.DemandCards["regular"][1].Revealed {
+		t.Fatal("expected the demand position to reveal after the round ends")
+	}
+	g.DemandCards = map[string][]DemandCard{
+		"gourmet": {{Position: 0, Icons: []string{"coffee"}, Revealed: true}},
+		"regular": {{Position: 0, Icons: []string{"taste"}, Revealed: true}},
+	}
+	g.Players[0].Tableau = []Card{{Icons: []string{"coffee"}}}
+	g.updateSatisfactionScores()
+	if g.Players[0].GourmetSatisfaction != 1 || g.Players[0].RegularSatisfaction != 0 {
+		t.Fatalf("satisfaction gourmet=%d regular=%d, want 1 and 0", g.Players[0].GourmetSatisfaction, g.Players[0].RegularSatisfaction)
+	}
+}
+
+func TestRevenueUsesSatisfiedDemandValuePerCustomerType(t *testing.T) {
+	g := gameForTest(t)
+	p := g.Players[0]
+	p.Tableau = []Card{{Icons: []string{"coffee", "coffee", "taste"}}}
+	g.DemandCards = map[string][]DemandCard{
+		"gourmet": {{Position: 0, Icons: []string{"coffee"}, Revealed: true}, {Position: 1, Icons: []string{"coffee"}, Revealed: true}},
+		"regular": {{Position: 0, Icons: []string{"taste"}, Revealed: true}},
+	}
+	p.Customers = []Customer{{Kind: "gourmet", Count: 2}, {Kind: "regular", Count: 1}}
+	g.SettleRevenue()
+	if p.Revenue != 50 || p.cashFlowGourmetRevenue != 40 || p.cashFlowRegularRevenue != 10 {
+		t.Fatalf("revenue=%d gourmet=%d regular=%d, want 50, 40, 10", p.Revenue, p.cashFlowGourmetRevenue, p.cashFlowRegularRevenue)
+	}
+}
