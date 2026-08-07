@@ -148,6 +148,35 @@
         "regular": 2
       },
       "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p3-012",
+      "name": "精品單品",
+      "description": "以完整產品組合建立精品單品線，滿足高品質需求。",
+      "kind": "product",
+      "function": "product",
+      "period": 3,
+      "cost": {
+        "cash": 30,
+        "icons": [
+          "coffee",
+          "dessert",
+          "beans",
+          "value",
+          "taste",
+          "service"
+        ]
+      },
+      "icons": [
+        "coffee",
+        "beans"
+      ],
+      "marketChange": {
+        "difficult": 0,
+        "gourmet": 2,
+        "regular": 0
+      },
+      "source": "mvp-fixture"
     }
   ]
 }
