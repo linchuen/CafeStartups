@@ -123,7 +123,7 @@ export function GameDashboard({ room, selectedCard, setSelectedCard, command, bu
     const rightKey = right.kind === 'starter_shop' ? 'starter_shop' : right.colorKey ?? right.function ?? right.kind
     return leftKey.localeCompare(rightKey) || left.id.localeCompare(right.id)
   })
-  const iconCounts = activeCards.flatMap((card) => [...(card.kind === 'marketing' ? Array.from({ length: card.brandAwareness ?? 1 }, () => 'marketing') : (card.icons ?? [])), ...(card.kind === 'starter_shop' ? ['channel'] : [])]).reduce<Record<string, number>>((counts, icon) => ({ ...counts, [icon]: (counts[icon] ?? 0) + 1 }), {})
+  const iconCounts = activeCards.flatMap((card) => [...((card.kind === 'marketing' || (card.kind === 'partner' && card.function === 'marketing')) ? Array.from({ length: card.brandAwareness ?? 1 }, () => 'marketing') : (card.icons ?? [])), ...(card.kind === 'starter_shop' ? ['channel'] : [])]).reduce<Record<string, number>>((counts, icon) => ({ ...counts, [icon]: (counts[icon] ?? 0) + 1 }), {})
   const customerCounts = activeCards.reduce<Record<string, number>>((counts, card) => {
     const source = card.customerCount
     for (const type of ['gourmet', 'regular']) counts[type] = (counts[type] ?? 0) + (source?.[type] ?? 0)
