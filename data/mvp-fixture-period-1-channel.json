@@ -6,7 +6,7 @@
   "cards": [
     {
       "id": "mvp-p1-019",
-      "name": "松山店",
+      "name": "松山內用店",
       "description": "提供店內座位，穩定接待一般客。",
       "kind": "channel",
       "function": "channel",
@@ -33,7 +33,7 @@
     },
     {
       "id": "mvp-p1-020",
-      "name": "民生店",
+      "name": "民生外帶店",
       "description": "建立快速外帶動線，增加一般客接觸機會。",
       "kind": "channel",
       "function": "channel",
@@ -60,7 +60,7 @@
     },
     {
       "id": "mvp-p1-021",
-      "name": "信義店",
+      "name": "信義外送店",
       "description": "連結外送通路，接觸更多饕客。",
       "kind": "channel",
       "function": "channel",

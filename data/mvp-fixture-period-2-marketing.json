@@ -6,7 +6,7 @@
   "cards": [
     {
       "id": "mvp-p2-024",
-      "name": "社群經營",
+      "name": "社群經營（第2期）",
       "description": "以數據經營社群並串連通路，擴大一般客的品牌觸及。",
       "kind": "marketing",
       "function": "marketing",
@@ -33,7 +33,7 @@
     },
     {
       "id": "mvp-p2-025",
-      "name": "會員制度",
+      "name": "會員制度（第2期）",
       "description": "深化會員經營並提升服務價值，提高饕客的回訪與認同。",
       "kind": "marketing",
       "function": "marketing",
@@ -61,7 +61,7 @@
     },
     {
       "id": "mvp-p2-026",
-      "name": "開幕活動",
+      "name": "開幕活動（第2期）",
       "description": "策劃大型活動並推出特色咖啡，讓一般客持續關注品牌。",
       "kind": "marketing",
       "function": "marketing",
@@ -90,7 +90,7 @@
     },
     {
       "id": "mvp-p2-027",
-      "name": "口碑推薦",
+      "name": "口碑推薦（第2期）",
       "description": "放大顧客推薦與風味口碑，持續吸引一般客到店。",
       "kind": "marketing",
       "function": "marketing",
@@ -118,7 +118,7 @@
     },
     {
       "id": "mvp-p2-028",
-      "name": "品牌故事",
+      "name": "品牌故事（第2期）",
       "description": "建立完整品牌敘事並強化服務體驗，與饕客形成更深連結。",
       "kind": "marketing",
       "function": "marketing",
