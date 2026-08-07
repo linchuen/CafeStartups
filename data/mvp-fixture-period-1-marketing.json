@@ -61,8 +61,7 @@
         "cash": 10,
         "icons": [
           "beans",
-          "value",
-          "taste"
+          "value"
         ]
       },
       "icons": [
@@ -110,7 +109,6 @@
         "cash": 10,
         "icons": [
           "procurement",
-          "operations",
           "marketing_resource"
         ]
       },
