@@ -14,6 +14,9 @@ export function PartnerCardTile({ card, selected, onClick }: { card: PlayerCard;
 
   const customerEntries = Object.entries(card.customerCount ?? {}).filter(([key, value]) => (key === 'gourmet' || key === 'regular') && value > 0)
   const icon = card.icons[0] ?? 'people'
+  const displayIcons = card.function === 'marketing'
+    ? Array.from({ length: card.brandAwareness ?? 1 }, () => 'marketing')
+    : [icon]
 
   return <MuiCard onClick={onClick} variant="outlined" sx={{ display: 'flex', height: '100%', minHeight: 290, flexDirection: 'column', overflow: 'hidden', cursor: onClick ? 'pointer' : 'default', bgcolor: colorTheme.pale, borderColor: selected ? colorTheme.color : `${colorTheme.color}66`, borderWidth: selected ? 3 : 1 }}>
     <Box sx={{ minHeight: 39, px: 1.5, py: .9, boxSizing: 'border-box', bgcolor: colorTheme.color, color: 'white', textAlign: 'center' }}><Typography variant="caption" fontWeight={900}>{card.name}</Typography></Box>
@@ -23,7 +26,9 @@ export function PartnerCardTile({ card, selected, onClick }: { card: PlayerCard;
         ? <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: .8 }}>
             {customerEntries.map(([key, value]) => <CustomerTypeTokens key={key} type={key} count={value} size={24} />)}
           </Box>
-        : <GameIcon name={icon} sx={{ fontSize: 30 }} />}
+        : <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: .8 }}>
+          {displayIcons.map((displayIcon, index) => <GameIcon key={`${displayIcon}-${index}`} name={displayIcon} sx={{ fontSize: 30 }} />)}
+        </Box>}
     </Box>
     <Box sx={{ display: 'grid', width: '100%', minHeight: 180, height: 180, flex: '0 0 180px', flexShrink: 0, placeItems: 'center', overflow: 'hidden' }}><CardArtwork card={card} /></Box>
     <Box sx={{ minHeight: 88, flex: 1, px: 1.5, py: 1, boxSizing: 'border-box', bgcolor: '#ffffffcc' }}><Typography variant="caption" color="text.secondary">卡片說明</Typography><Typography variant="body2" sx={{ minHeight: 34 }}>{card.description ?? '合夥人卡'}</Typography></Box>
