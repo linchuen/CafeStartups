@@ -15,10 +15,11 @@
         "cash": 30,
         "icons": [
           "dessert",
-          "beans",
-          "value",
-          "taste",
-          "service"
+        "beans",
+        "value",
+        "taste",
+        "service",
+        "data"
         ]
       },
       "icons": [

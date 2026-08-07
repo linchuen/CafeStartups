@@ -17,8 +17,9 @@
           "marketing_resource",
           "coffee",
           "dessert",
-          "beans",
-          "value"
+        "beans",
+        "value",
+        "taste"
         ]
       },
       "icons": [
@@ -81,9 +82,10 @@
         "icons": [
           "coffee",
           "dessert",
-          "beans",
-          "value",
-          "taste"
+        "beans",
+        "value",
+        "taste",
+        "service"
         ]
       },
       "icons": [
@@ -146,9 +148,10 @@
         "icons": [
           "dessert",
           "beans",
-          "value",
-          "taste",
-          "service"
+        "value",
+        "taste",
+        "service",
+        "data"
         ]
       },
       "icons": [
@@ -180,7 +183,8 @@
           "procurement",
           "operations",
           "marketing_resource",
-          "coffee"
+          "coffee",
+          "dessert"
         ]
       },
       "icons": [

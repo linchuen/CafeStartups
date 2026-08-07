@@ -16,9 +16,10 @@
         "icons": [
           "data",
           "procurement",
-          "operations",
-          "marketing_resource",
-          "coffee"
+        "operations",
+        "marketing_resource",
+        "coffee",
+        "dessert"
         ]
       },
       "icons": [
@@ -75,7 +76,8 @@
           "operations",
           "marketing_resource",
           "coffee",
-          "dessert"
+          "dessert",
+          "beans"
         ]
       },
       "icons": [
@@ -132,7 +134,8 @@
           "marketing_resource",
           "coffee",
           "dessert",
-          "beans"
+          "beans",
+          "value"
         ]
       },
       "icons": [
