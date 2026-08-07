@@ -15,13 +15,11 @@
         "cash": 20,
         "icons": [
           "operations",
-          "marketing_resource",
-          "coffee"
+          "marketing_resource"
         ]
       },
       "icons": [
-        "value",
-        "taste"
+        "value"
       ],
       "marketChange": {
         "difficult": 0,
@@ -41,14 +39,11 @@
         "cash": 20,
         "icons": [
           "dessert",
-          "beans",
-          "value",
-          "taste"
+          "beans"
         ]
       },
       "icons": [
-        "service",
-        "value"
+        "service"
       ],
       "marketChange": {
         "difficult": 0,
@@ -68,13 +63,11 @@
         "cash": 20,
         "icons": [
           "service",
-          "data",
-          "procurement"
+          "data"
         ]
       },
       "icons": [
-        "taste",
-        "service"
+        "taste"
       ],
       "marketChange": {
         "difficult": 0,
@@ -94,14 +87,11 @@
         "cash": 20,
         "icons": [
           "operations",
-          "marketing_resource",
-          "coffee",
-          "dessert"
+          "marketing_resource"
         ]
       },
       "icons": [
-        "value",
-        "taste"
+        "value"
       ],
       "marketChange": {
         "difficult": 0,
@@ -121,13 +111,11 @@
         "cash": 20,
         "icons": [
           "beans",
-          "value",
-          "taste"
+          "value"
         ]
       },
       "icons": [
-        "service",
-        "value"
+        "service"
       ],
       "marketChange": {
         "difficult": 0,
@@ -147,14 +135,11 @@
         "cash": 20,
         "icons": [
           "service",
-          "data",
-          "procurement",
-          "operations"
+          "data"
         ]
       },
       "icons": [
-        "taste",
-        "service"
+        "taste"
       ],
       "marketChange": {
         "difficult": 0,

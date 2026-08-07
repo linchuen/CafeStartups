@@ -15,12 +15,10 @@
         "cash": 30,
         "icons": [
           "marketing_resource",
-          "coffee",
-          "dessert"
+          "coffee"
         ]
       },
       "icons": [
-        "channel",
         "channel"
       ],
       "marketChange": {
@@ -45,13 +43,10 @@
         "cash": 30,
         "icons": [
           "beans",
-          "value",
-          "taste",
-          "service"
+          "value"
         ]
       },
       "icons": [
-        "channel",
         "channel"
       ],
       "marketChange": {
@@ -76,12 +71,10 @@
         "cash": 30,
         "icons": [
           "data",
-          "procurement",
-          "operations"
+          "procurement"
         ]
       },
       "icons": [
-        "channel",
         "channel"
       ],
       "marketChange": {
@@ -106,13 +99,10 @@
         "cash": 30,
         "icons": [
           "marketing_resource",
-          "coffee",
-          "dessert",
-          "beans"
+          "coffee"
         ]
       },
       "icons": [
-        "channel",
         "channel"
       ],
       "marketChange": {
@@ -137,12 +127,10 @@
         "cash": 30,
         "icons": [
           "value",
-          "taste",
-          "service"
+          "taste"
         ]
       },
       "icons": [
-        "channel",
         "channel"
       ],
       "marketChange": {
