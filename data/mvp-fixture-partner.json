@@ -36,7 +36,7 @@
       "period": null,
       "cost": { "cash": 0, "icons": [] },
       "icons": ["marketing"],
-      "brandAwareness": 2,
+      "brandAwareness": 3,
       "marketChange": { "gourmet": 0, "regular": 0, "difficult": 0 },
       "function": "marketing",
       "colorKey": "marketing",
@@ -49,7 +49,7 @@
       "kind": "partner",
       "period": null,
       "cost": { "cash": 0, "icons": [] },
-      "icons": ["service"],
+      "icons": ["taste"],
       "marketChange": { "gourmet": 0, "regular": 0, "difficult": 0 },
       "function": "value",
       "colorKey": "value",
@@ -133,6 +133,45 @@
       "colorKey": "channel",
       "description": "分析商圈資料，每期增加 1 位一般客。",
       "customerCount": { "gourmet": 0, "regular": 1 },
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "partner-beans",
+      "name": "Bean Specialist",
+      "kind": "partner",
+      "period": null,
+      "cost": { "cash": 0, "icons": [] },
+      "icons": ["beans"],
+      "marketChange": { "gourmet": 0, "regular": 0, "difficult": 0 },
+      "function": "product",
+      "colorKey": "product",
+      "description": "Provides a coffee bean capability.",
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "partner-value",
+      "name": "Value Strategist",
+      "kind": "partner",
+      "period": null,
+      "cost": { "cash": 0, "icons": [] },
+      "icons": ["value"],
+      "marketChange": { "gourmet": 0, "regular": 0, "difficult": 0 },
+      "function": "value",
+      "colorKey": "value",
+      "description": "Provides a value capability.",
+      "source": "mvp-fixture"
+    },
+    {
+      "id": "partner-marketing-resource",
+      "name": "Campaign Coordinator",
+      "kind": "partner",
+      "period": null,
+      "cost": { "cash": 0, "icons": [] },
+      "icons": ["marketing_resource"],
+      "marketChange": { "gourmet": 0, "regular": 0, "difficult": 0 },
+      "function": "resource",
+      "colorKey": "resource",
+      "description": "Provides a marketing resource capability.",
       "source": "mvp-fixture"
     }
   ]

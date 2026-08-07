@@ -4,8 +4,8 @@ import "testing"
 
 func TestMVPPartnerCardsLoadFromCardFixture(t *testing.T) {
 	cards := MVPPartnerCards()
-	if len(cards) != 10 {
-		t.Fatalf("partner cards=%d, want 10", len(cards))
+	if len(cards) != 13 {
+		t.Fatalf("partner cards=%d, want 13", len(cards))
 	}
 
 	for _, card := range cards {
