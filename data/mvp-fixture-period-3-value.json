@@ -6,7 +6,7 @@
   "cards": [
     {
       "id": "mvp-p3-013",
-      "name": "快速取餐（第3期）",
+      "name": "快速取餐",
       "description": "以完整營運與產品流程，讓饕客享有快速取餐體驗。",
       "kind": "value",
       "function": "value",
@@ -35,7 +35,7 @@
     },
     {
       "id": "mvp-p3-014",
-      "name": "職人風味（第3期）",
+      "name": "職人風味",
       "description": "整合服務、價值與產品資源，打造一般客認可的職人風味。",
       "kind": "value",
       "function": "value",
@@ -64,7 +64,7 @@
     },
     {
       "id": "mvp-p3-015",
-      "name": "健康選擇（第3期）",
+      "name": "健康選擇",
       "description": "以完整服務與營運配置，提供一般客穩定的健康選擇。",
       "kind": "value",
       "function": "value",
@@ -93,7 +93,7 @@
     },
     {
       "id": "mvp-p3-016",
-      "name": "友善環境（第3期）",
+      "name": "友善環境",
       "description": "整合產品、價值與服務，打造饕客願意回訪的友善環境。",
       "kind": "value",
       "function": "value",
@@ -122,7 +122,7 @@
     },
     {
       "id": "mvp-p3-017",
-      "name": "社區連結（第3期）",
+      "name": "社區連結",
       "description": "以完整營運與產品資源深化社區關係，穩定服務一般客。",
       "kind": "value",
       "function": "value",
@@ -151,7 +151,7 @@
     },
     {
       "id": "mvp-p3-018",
-      "name": "客製體驗（第3期）",
+      "name": "客製體驗",
       "description": "整合價值、服務與營運能力，提供一般客完整客製體驗。",
       "kind": "value",
       "function": "value",

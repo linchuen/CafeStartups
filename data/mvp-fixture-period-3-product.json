@@ -6,7 +6,7 @@
   "cards": [
     {
       "id": "mvp-p3-007",
-      "name": "經典拿鐵（第3期）",
+      "name": "經典拿鐵",
       "description": "以成熟的奶香咖啡與甜點組合，吸引饕客回訪。",
       "kind": "product",
       "function": "product",
@@ -35,7 +35,7 @@
     },
     {
       "id": "mvp-p3-008",
-      "name": "手沖咖啡（第3期）",
+      "name": "手沖咖啡",
       "description": "整合風味與營運工藝，提供一般客高品質手沖體驗。",
       "kind": "product",
       "function": "product",
@@ -64,7 +64,7 @@
     },
     {
       "id": "mvp-p3-009",
-      "name": "季節特調（第3期）",
+      "name": "季節特調",
       "description": "以完整產品風味設計季節特調，穩定服務一般客。",
       "kind": "product",
       "function": "product",
@@ -93,7 +93,7 @@
     },
     {
       "id": "mvp-p3-010",
-      "name": "燕麥奶咖啡（第3期）",
+      "name": "燕麥奶咖啡",
       "description": "結合咖啡與營運能力，為饕客提供穩定的特色飲品。",
       "kind": "product",
       "function": "product",
@@ -122,7 +122,7 @@
     },
     {
       "id": "mvp-p3-011",
-      "name": "濃縮咖啡（第3期）",
+      "name": "濃縮咖啡",
       "description": "以完整風味成本配置，打造一般客熟悉的濃縮基底。",
       "kind": "product",
       "function": "product",

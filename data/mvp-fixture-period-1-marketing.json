@@ -23,7 +23,7 @@
       "marketChange": {
         "difficult": 0,
         "gourmet": 0,
-        "regular": 2
+        "regular": 0
       },
       "source": "mvp-fixture",
       "brandAwareness": 2
@@ -48,7 +48,7 @@
       "marketChange": {
         "difficult": 0,
         "gourmet": 0,
-        "regular": 2
+        "regular": 0
       },
       "source": "mvp-fixture",
       "brandAwareness": 3
@@ -72,7 +72,7 @@
       ],
       "marketChange": {
         "difficult": 0,
-        "gourmet": 2,
+        "gourmet": 0,
         "regular": 0
       },
       "source": "mvp-fixture",
@@ -98,7 +98,7 @@
       "marketChange": {
         "difficult": 0,
         "gourmet": 0,
-        "regular": 2
+        "regular": 0
       },
       "source": "mvp-fixture",
       "brandAwareness": 3
@@ -123,7 +123,7 @@
       "marketChange": {
         "difficult": 0,
         "gourmet": 0,
-        "regular": 2
+        "regular": 0
       },
       "source": "mvp-fixture",
       "brandAwareness": 4
