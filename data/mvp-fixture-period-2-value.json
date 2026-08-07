@@ -7,6 +7,7 @@
     {
       "id": "mvp-p2-013",
       "name": "快速取餐",
+      "description": "整合流程與產品動線，讓一般客更快完成取餐。",
       "kind": "value",
       "function": "value",
       "period": 2,
@@ -32,6 +33,7 @@
     {
       "id": "mvp-p2-014",
       "name": "職人風味",
+      "description": "以服務與價值設計，打造饕客重視的職人風味。",
       "kind": "value",
       "function": "value",
       "period": 2,
@@ -58,6 +60,7 @@
     {
       "id": "mvp-p2-015",
       "name": "健康選擇",
+      "description": "結合健康理念與貼心服務，讓一般客安心選擇。",
       "kind": "value",
       "function": "value",
       "period": 2,
@@ -83,6 +86,7 @@
     {
       "id": "mvp-p2-016",
       "name": "友善環境",
+      "description": "升級友善環境與產品體驗，提升一般客滿意度。",
       "kind": "value",
       "function": "value",
       "period": 2,
@@ -109,6 +113,7 @@
     {
       "id": "mvp-p2-017",
       "name": "社區連結",
+      "description": "用貼心服務與價值主張深化社區關係，吸引饕客。",
       "kind": "value",
       "function": "value",
       "period": 2,
@@ -134,6 +139,7 @@
     {
       "id": "mvp-p2-018",
       "name": "客製體驗",
+      "description": "整合服務流程，為一般客提供更精準的客製體驗。",
       "kind": "value",
       "function": "value",
       "period": 2,

@@ -7,6 +7,7 @@
     {
       "id": "mvp-p2-019",
       "name": "店內座位",
+      "description": "擴充店內座位與接待能力，穩定服務一般客。",
       "kind": "channel",
       "function": "channel",
       "period": 2,
@@ -36,6 +37,7 @@
     {
       "id": "mvp-p2-020",
       "name": "外帶窗口",
+      "description": "升級外帶流程，快速服務更多饕客。",
       "kind": "channel",
       "function": "channel",
       "period": 2,
@@ -66,6 +68,7 @@
     {
       "id": "mvp-p2-021",
       "name": "外送平台",
+      "description": "擴大外送覆蓋範圍，持續接觸一般客。",
       "kind": "channel",
       "function": "channel",
       "period": 2,
@@ -95,6 +98,7 @@
     {
       "id": "mvp-p2-022",
       "name": "企業訂單",
+      "description": "承接更完整的企業訂單，拓展穩定客源。",
       "kind": "channel",
       "function": "channel",
       "period": 2,
@@ -125,6 +129,7 @@
     {
       "id": "mvp-p2-023",
       "name": "市集攤位",
+      "description": "進入市集接觸新客，吸引饕客認識品牌。",
       "kind": "channel",
       "function": "channel",
       "period": 2,

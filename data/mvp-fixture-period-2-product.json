@@ -7,6 +7,7 @@
     {
       "id": "mvp-p2-007",
       "name": "經典拿鐵",
+      "description": "升級招牌拿鐵配方，以穩定品質服務一般客。",
       "kind": "product",
       "function": "product",
       "period": 2,
@@ -32,6 +33,7 @@
     {
       "id": "mvp-p2-008",
       "name": "手沖咖啡",
+      "description": "結合咖啡豆與手沖技術，呈現饕客喜愛的層次。",
       "kind": "product",
       "function": "product",
       "period": 2,
@@ -58,6 +60,7 @@
     {
       "id": "mvp-p2-009",
       "name": "季節特調",
+      "description": "以甜點與咖啡豆設計季節風味，吸引一般客嘗鮮。",
       "kind": "product",
       "function": "product",
       "period": 2,
@@ -83,6 +86,7 @@
     {
       "id": "mvp-p2-010",
       "name": "燕麥奶咖啡",
+      "description": "打造更完整的燕麥奶咖啡體驗，服務一般客。",
       "kind": "product",
       "function": "product",
       "period": 2,
@@ -109,6 +113,7 @@
     {
       "id": "mvp-p2-011",
       "name": "濃縮咖啡",
+      "description": "以咖啡豆與濃縮技術提升風味強度，滿足饕客。",
       "kind": "product",
       "function": "product",
       "period": 2,
@@ -134,6 +139,7 @@
     {
       "id": "mvp-p2-012",
       "name": "精品單品",
+      "description": "整合甜點與單品豆，提供一般客完整的品飲選擇。",
       "kind": "product",
       "function": "product",
       "period": 2,

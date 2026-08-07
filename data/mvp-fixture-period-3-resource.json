@@ -7,6 +7,7 @@
     {
       "id": "mvp-p3-001",
       "name": "流程標準化",
+      "description": "整合資料、採購與設備，建立可複製的擴張流程。",
       "kind": "resource",
       "function": "resource",
       "period": 3,
@@ -34,6 +35,7 @@
     {
       "id": "mvp-p3-002",
       "name": "供應商管理",
+      "description": "以完整供應與價值資源支撐多店營運，降低一般客服務成本。",
       "kind": "resource",
       "function": "resource",
       "period": 3,
@@ -62,6 +64,7 @@
     {
       "id": "mvp-p3-003",
       "name": "烘豆設備",
+      "description": "升級烘豆與採購設備，穩定一般客所需的產品供應。",
       "kind": "resource",
       "function": "resource",
       "period": 3,
@@ -89,6 +92,7 @@
     {
       "id": "mvp-p3-004",
       "name": "冷藏設備",
+      "description": "整合冷藏、供應與品質流程，支撐饕客型產品品質。",
       "kind": "resource",
       "function": "resource",
       "period": 3,
@@ -117,6 +121,7 @@
     {
       "id": "mvp-p3-005",
       "name": "原料採購",
+      "description": "以完整採購與生產資源，穩定一般客的產品供應。",
       "kind": "resource",
       "function": "resource",
       "period": 3,
@@ -144,6 +149,7 @@
     {
       "id": "mvp-p3-006",
       "name": "品質控管",
+      "description": "整合品質、資料與採購流程，維持一般客信賴的標準。",
       "kind": "resource",
       "function": "resource",
       "period": 3,

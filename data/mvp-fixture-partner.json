@@ -137,7 +137,7 @@
     },
     {
       "id": "partner-beans",
-      "name": "Bean Specialist",
+      "name": "咖啡豆專家",
       "kind": "partner",
       "period": null,
       "cost": { "cash": 0, "icons": [] },
@@ -145,12 +145,12 @@
       "marketChange": { "gourmet": 0, "regular": 0, "difficult": 0 },
       "function": "product",
       "colorKey": "product",
-      "description": "Provides a coffee bean capability.",
+      "description": "提供咖啡豆專業，協助拓展產品選擇。",
       "source": "mvp-fixture"
     },
     {
       "id": "partner-value",
-      "name": "Value Strategist",
+      "name": "價值策略顧問",
       "kind": "partner",
       "period": null,
       "cost": { "cash": 0, "icons": [] },
@@ -158,12 +158,12 @@
       "marketChange": { "gourmet": 0, "regular": 0, "difficult": 0 },
       "function": "value",
       "colorKey": "value",
-      "description": "Provides a value capability.",
+      "description": "協助設計產品價值，提升顧客體驗。",
       "source": "mvp-fixture"
     },
     {
       "id": "partner-marketing-resource",
-      "name": "Campaign Coordinator",
+      "name": "行銷資源協調師",
       "kind": "partner",
       "period": null,
       "cost": { "cash": 0, "icons": [] },
@@ -171,7 +171,7 @@
       "marketChange": { "gourmet": 0, "regular": 0, "difficult": 0 },
       "function": "resource",
       "colorKey": "resource",
-      "description": "Provides a marketing resource capability.",
+      "description": "整合行銷資源，支援品牌推廣活動。",
       "source": "mvp-fixture"
     }
   ]

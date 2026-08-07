@@ -7,6 +7,7 @@
     {
       "id": "mvp-p1-001",
       "name": "流程標準化",
+      "description": "整理日常工作流程，降低營運失誤並穩定服務。",
       "kind": "resource",
       "function": "resource",
       "period": 1,
@@ -29,6 +30,7 @@
     {
       "id": "mvp-p1-002",
       "name": "供應商管理",
+      "description": "建立可靠供應商合作，讓採購流程更順暢。",
       "kind": "resource",
       "function": "resource",
       "period": 1,
@@ -51,6 +53,7 @@
     {
       "id": "mvp-p1-003",
       "name": "烘豆設備",
+      "description": "配置烘豆設備，提升店內製作與營運能力。",
       "kind": "resource",
       "function": "resource",
       "period": 1,
@@ -73,6 +76,7 @@
     {
       "id": "mvp-p1-004",
       "name": "冷藏設備",
+      "description": "完善冷藏保存，減少原料耗損並穩定營運。",
       "kind": "resource",
       "function": "resource",
       "period": 1,
@@ -83,7 +87,7 @@
         ]
       },
       "icons": [
-        "marketing_resource"
+        "operations"
       ],
       "marketChange": {
         "difficult": 0,
@@ -95,6 +99,7 @@
     {
       "id": "mvp-p1-005",
       "name": "原料採購",
+      "description": "規劃原料採購來源，確保產品供應穩定。",
       "kind": "resource",
       "function": "resource",
       "period": 1,
@@ -105,7 +110,7 @@
         ]
       },
       "icons": [
-        "data"
+        "procurement"
       ],
       "marketChange": {
         "difficult": 0,
@@ -117,6 +122,7 @@
     {
       "id": "mvp-p1-006",
       "name": "品質控管",
+      "description": "建立品質檢查流程，維持每杯產品的穩定表現。",
       "kind": "resource",
       "function": "resource",
       "period": 1,
@@ -127,7 +133,7 @@
         ]
       },
       "icons": [
-        "procurement"
+        "data"
       ],
       "marketChange": {
         "difficult": 0,
