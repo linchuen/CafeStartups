@@ -128,9 +128,10 @@ func (p *Player) satisfiedCustomerCount(kind string) int {
 }
 
 func less(a, b *Player) bool {
-	for _, v := range [5]func(*Player) int{func(p *Player) int { return p.BrandAwareness }, func(p *Player) int { return p.Products }, func(p *Player) int { return p.Values }, func(p *Player) int { return p.Resources }, func(p *Player) int { return p.Cash }} {
-		if v(a) != v(b) {
-			return v(a) > v(b)
+	aCards, bCards := a.scoreCardCounts(), b.scoreCardCounts()
+	for _, values := range [][2]int{{a.BrandAwareness, b.BrandAwareness}, {aCards.valueCards, bCards.valueCards}, {aCards.productCards, bCards.productCards}, {aCards.resourceCards, bCards.resourceCards}} {
+		if values[0] != values[1] {
+			return values[0] > values[1]
 		}
 	}
 	return a.Order < b.Order

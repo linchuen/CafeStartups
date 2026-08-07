@@ -49,6 +49,7 @@ export type GameState = {
   demandBoard?: Record<string, number>
   demandCards?: Record<'gourmet' | 'regular', { id: string; position: number; icons: string[]; revealed: boolean }[]>
   marketRanking?: number[]
+  marketRankingPlayerIds?: string[]
   marketDraws?: { rank: number; playerId: string; playerName: string; customerCounts: Record<'gourmet' | 'regular' | 'difficult', number>; total: number }[]
   marketBag?: Record<'gourmet' | 'regular' | 'difficult', number>
   marketBagReady?: boolean

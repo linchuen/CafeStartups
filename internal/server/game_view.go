@@ -11,7 +11,7 @@ func (room *gameRoom) view(token string) map[string]any {
 	for _, draw := range room.Domain.MarketDraws {
 		marketDraws = append(marketDraws, map[string]any{"rank": draw.Rank, "playerId": draw.PlayerID, "playerName": playerNames[draw.PlayerID], "customerCounts": draw.CustomerCounts, "total": draw.Total})
 	}
-	result := map[string]any{"id": room.ID, "status": room.Status, "seed": room.Seed, "gameVersion": room.Version, "period": room.Domain.Period, "phase": room.Domain.Phase, "round": room.Domain.Round, "demandBoard": room.Domain.DemandBoard, "demandCards": room.Domain.DemandCards, "marketRanking": room.Domain.MarketRanking, "marketDraws": marketDraws, "marketBag": room.Domain.MarketBag, "marketBagReady": room.Domain.MarketBagReady, "center": room.Domain.Center, "partnerOptions": room.Domain.PartnerOptions, "starterShopOptions": room.Domain.StarterShopOptions, "players": players}
+	result := map[string]any{"id": room.ID, "status": room.Status, "seed": room.Seed, "gameVersion": room.Version, "period": room.Domain.Period, "phase": room.Domain.Phase, "round": room.Domain.Round, "demandBoard": room.Domain.DemandBoard, "demandCards": room.Domain.DemandCards, "marketRanking": room.Domain.MarketRanking, "marketRankingPlayerIds": room.Domain.MarketRankingPlayerIDs, "marketDraws": marketDraws, "marketBag": room.Domain.MarketBag, "marketBagReady": room.Domain.MarketBagReady, "center": room.Domain.Center, "partnerOptions": room.Domain.PartnerOptions, "starterShopOptions": room.Domain.StarterShopOptions, "players": players}
 	if token == room.Token {
 		for _, p := range room.Domain.Players {
 			if p.ID == room.PlayerID {

@@ -19,7 +19,12 @@ func (g *Game) PrepareMarketBag() error {
 	if len(counts) < len(g.Players) {
 		return fmt.Errorf("%w: market customer rule", ErrInvalidAction)
 	}
-	g.MarketRanking = append([]int(nil), counts[:len(g.Players)]...)
+	rankedPlayers := g.Rank()
+	g.MarketRanking = append([]int(nil), counts[:len(rankedPlayers)]...)
+	g.MarketRankingPlayerIDs = make([]string, len(rankedPlayers))
+	for index, p := range rankedPlayers {
+		g.MarketRankingPlayerIDs[index] = p.ID
+	}
 	g.MarketBag = map[string]int{"gourmet": 0, "regular": 0, "difficult": 0}
 	// Every market draw starts with one difficult customer in the bag.
 	g.MarketBag["difficult"] = 1
@@ -56,8 +61,14 @@ func (g *Game) DrawMarket() error {
 		}
 	}
 	g.rng.Shuffle(len(market), func(i, j int) { market[i], market[j] = market[j], market[i] })
-	g.MarketDraws = make([]MarketDraw, 0, len(g.Players))
-	for i, p := range g.Players {
+	rankedPlayers := make([]*Player, 0, len(g.MarketRankingPlayerIDs))
+	for _, id := range g.MarketRankingPlayerIDs {
+		if p, err := g.player(id); err == nil {
+			rankedPlayers = append(rankedPlayers, p)
+		}
+	}
+	g.MarketDraws = make([]MarketDraw, 0, len(rankedPlayers))
+	for i, p := range rankedPlayers {
 		countsByType := map[string]int{"gourmet": 0, "regular": 0, "difficult": 0}
 		for draw := 0; draw < g.MarketRanking[i] && len(market) > 0; draw++ {
 			kind := market[0]
@@ -83,8 +94,14 @@ func (g *Game) ResolveLearning() error {
 	if err := g.SettleInterest(); err != nil {
 		return err
 	}
-	customers := make([]Customer, 0, len(g.Players))
+	for _, p := range g.Players {
+		p.Customers = nil
+	}
 	for _, draw := range g.MarketDraws {
+		p, err := g.player(draw.PlayerID)
+		if err != nil {
+			continue
+		}
 		for kind, count := range draw.CustomerCounts {
 			if count <= 0 {
 				continue
@@ -93,10 +110,16 @@ func (g *Game) ResolveLearning() error {
 			if kind != "difficult" {
 				demand = kind
 			}
-			customers = append(customers, Customer{Kind: kind, Demand: demand, Count: count})
+			customer := Customer{Kind: kind, Demand: demand, Count: count, UnitPrice: basePrice(kind)}
+			if !g.satisfies(p, demand) {
+				customer.UnitPrice = 0
+			}
+			p.Customers = append(p.Customers, customer)
 		}
 	}
-	g.DistributeCustomers(customers)
+	for _, p := range g.Players {
+		g.appendCardCustomers(p)
+	}
 	g.SettleRevenue()
 	g.updateSatisfactionScores()
 	g.recordCashFlow()
@@ -113,6 +136,7 @@ func (g *Game) ResolveLearning() error {
 	g.Round = 0
 	g.Phase = PhaseHypothesis
 	g.MarketRanking = nil
+	g.MarketRankingPlayerIDs = nil
 	g.MarketDraws = nil
 	g.MarketBag = nil
 	g.MarketBagReady = false

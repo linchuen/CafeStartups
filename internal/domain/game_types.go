@@ -157,6 +157,7 @@ type Game struct {
 	DemandBoard                        map[string]int
 	DemandCards                        map[string][]DemandCard `json:"demandCards,omitempty"`
 	MarketRanking                      []int                   `json:"marketRanking,omitempty"`
+	MarketRankingPlayerIDs             []string                `json:"marketRankingPlayerIds,omitempty"`
 	MarketDraws                        []MarketDraw            `json:"marketDraws,omitempty"`
 	MarketBag                          map[string]int          `json:"marketBag,omitempty"`
 	MarketBagReady                     bool                    `json:"marketBagReady,omitempty"`

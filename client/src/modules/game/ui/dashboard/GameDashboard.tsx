@@ -25,7 +25,7 @@ function MarketRankingPanel({ room, command, busy }: { room: DashboardRoom; comm
   const actionLabel = draws.length > 0 ? '確認排名並結算' : '抽取市場袋顧客數'
   const rankedPlayers = ranking.map((count, index) => ({
     count,
-    name: room.players[index]?.displayName ?? `玩家 ${index + 1}`,
+    name: room.players.find((player) => player.id === room.marketRankingPlayerIds?.[index])?.displayName ?? `玩家 ${index + 1}`,
   }))
 
   return <Paper sx={{ p: 2.2, borderRadius: 3, border: '2px solid #b36f42', bgcolor: '#fffaf4', mb: 2 }}>
