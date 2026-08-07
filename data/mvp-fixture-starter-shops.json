@@ -257,6 +257,31 @@
                                             "regular":  1,
                                             "gourmet":  1
                                         }
+                  },
+                  {
+                      "id":  "starter-huashan",
+                      "name":  "華山單人店",
+                      "kind":  "starter_shop",
+                      "period":  null,
+                      "cost":  {
+                                   "cash":  10,
+                                   "icons":  [
+
+                                             ]
+                               },
+                      "icons":  [
+
+                                ],
+                      "marketChange":  {
+                                           "gourmet":  0,
+                                           "regular":  0,
+                                           "difficult":  0
+                                       },
+                      "description":  "小型據點，以一位一般客作為穩定起步。",
+                      "source":  "mvp-fixture",
+                      "customerCount":  {
+                                            "regular":  1
+                                        }
                   }
               ]
 }
