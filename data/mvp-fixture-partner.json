@@ -36,6 +36,7 @@
       "period": null,
       "cost": { "cash": 0, "icons": [] },
       "icons": ["marketing"],
+      "brandAwareness": 2,
       "marketChange": { "gourmet": 0, "regular": 0, "difficult": 0 },
       "function": "marketing",
       "colorKey": "marketing",
