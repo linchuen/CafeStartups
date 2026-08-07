@@ -25,7 +25,7 @@ export function PartnerCardTile({ card, selected, onClick }: { card: PlayerCard;
           </Box>
         : <GameIcon name={icon} sx={{ fontSize: 30 }} />}
     </Box>
-    <Box sx={{ display: 'grid', height: 180, flex: '0 0 180px', placeItems: 'center', overflow: 'hidden' }}><CardArtwork card={card} /></Box>
+    <Box sx={{ display: 'grid', width: '100%', minHeight: 180, height: 180, flex: '0 0 180px', flexShrink: 0, placeItems: 'center', overflow: 'hidden' }}><CardArtwork card={card} /></Box>
     <Box sx={{ minHeight: 88, flex: 1, px: 1.5, py: 1, boxSizing: 'border-box', bgcolor: '#ffffffcc' }}><Typography variant="caption" color="text.secondary">卡片說明</Typography><Typography variant="body2" sx={{ minHeight: 34 }}>{card.description ?? '合夥人卡'}</Typography></Box>
     <Box sx={{ minHeight: 42, display: 'flex', alignItems: 'center', px: 1.5, py: .8, boxSizing: 'border-box', bgcolor: colorTheme.pale }}><CardCost card={card} color={colorTheme.color} /></Box>
   </MuiCard>
