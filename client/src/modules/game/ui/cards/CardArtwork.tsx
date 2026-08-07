@@ -31,5 +31,5 @@ const partnerArtwork: Record<string, string> = {
 }
 
 export function CardArtwork({ card }: { card: PlayerCard }) {
-  return <img src={partnerArtwork[card.id] ?? placeholder} alt="" style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover' }} />
+  return <img src={partnerArtwork[card.id] ?? placeholder} alt="" style={{ display: 'block', width: '100%', height: '100%', boxSizing: 'border-box', padding: '8px 16px', objectFit: 'contain', objectPosition: 'center' }} />
 }
