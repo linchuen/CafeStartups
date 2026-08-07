@@ -18,7 +18,7 @@ const DEMAND_TYPES = [
   { id: 'beans', label: '咖啡豆' },
   { id: 'taste', label: '可口美味' },
   { id: 'service', label: '貼心服務' },
-  { id: 'price', label: '合理價格' },
+  { id: 'value', label: '價值' },
 ] as const
 
 export const DEMAND_CARDS: DemandCardData[] = DEMAND_TYPES.flatMap((type, index) => [
@@ -27,6 +27,7 @@ export const DEMAND_CARDS: DemandCardData[] = DEMAND_TYPES.flatMap((type, index)
 ])
 
 const iconOf = (id: string) => DEMAND_TYPES.find((type) => type.id === id) ?? DEMAND_TYPES[0]
+const iconCategory = (id: string) => ['coffee', 'dessert', 'beans'].includes(id) ? 'product' : 'value'
 
 // A seeded shuffle keeps every player on the same random board while the seed
 // can be replaced by the server's game seed when the API exposes it.
@@ -46,14 +47,14 @@ export const arrangeDemandCards = (seed = 1) => ({
   second: shuffle(DEMAND_CARDS.slice(DEMAND_TYPES.length), seed + 97),
 })
 
-export function DemandCard({ card, revealed, quantity = card.icons.length, customerType = 'gourmet' }: { card: DemandCardData; revealed: boolean; quantity?: number; customerType?: DemandCustomerType }) {
+export function DemandCard({ card, revealed, quantity = card.icons.length }: { card: DemandCardData; revealed: boolean; quantity?: number }) {
   const visibleIcons = Array.from({ length: quantity }, (_, index) => card.icons[index % card.icons.length])
   if (!revealed) return <div className="demand-card demand-card-back" aria-label="\u5c1a\u672a\u63ed\u793a\u9700\u6c42\u5361"><span>?</span></div>
-  return <div className={`demand-card demand-card-face demand-card-${customerType}`}><div className="demand-card-heading"><span>需求卡</span></div><div className="demand-card-icons">{visibleIcons.map((icon, index) => <span key={`${icon}-${index}`} title={iconOf(icon).label}><GameIcon name={icon} fontSize="inherit" /></span>)}</div><div className="demand-card-labels">{visibleIcons.map((icon, index) => <small key={`${icon}-${index}`}>{iconOf(icon).label}</small>)}</div></div>
+  return <div className="demand-card demand-card-face"><div className="demand-card-heading"><span>需求卡</span></div><div className="demand-card-icons">{visibleIcons.map((icon, index) => <span className={`demand-icon-${iconCategory(icon)}`} key={`${icon}-${index}`} title={iconOf(icon).label}><GameIcon name={icon} fontSize="inherit" /></span>)}</div><div className="demand-card-labels">{visibleIcons.map((icon, index) => <small key={`${icon}-${index}`}>{iconOf(icon).label}</small>)}</div></div>
 }
 
 export function DemandMarket({ period, round, reveal = false, embedded = false, seed = 1 }: { period: number; round: number; reveal?: boolean; embedded?: boolean; seed?: number }) {
   const revealedColumn = reveal ? Math.min(5, Math.max(-1, round)) : -1
   const { first, second } = arrangeDemandCards(seed)
-  return <section className={`demand-market ${embedded ? 'demand-market-embedded' : 'panel'}`} aria-label="\u9700\u6c42\u5361"><div className="demand-market-heading"><div><p className="eyebrow">DEMAND CARDS</p><h2>\u9700\u6c42\u5361</h2></div><span>\u7b2c {period} \u671f\u30fb\u7b2c {round} \u56de\u5408</span></div><div className="demand-card-board"><div className="demand-card-board-labels"><span>\u5361\u80cc</span><span>\u9700\u6c42\u4f4d\u7f6e 1</span><span>\u9700\u6c42\u4f4d\u7f6e 2</span></div><div className="demand-card-board-grid">{DEMAND_TYPES.map((type, column) => <div className="demand-card-column" key={type.id}><div className="demand-card-type-label"><span><GameIcon name={type.id} fontSize="small" /></span><small>{type.label}</small></div><DemandCard card={first[column]} revealed={column <= revealedColumn} customerType="gourmet" /><DemandCard card={second[column]} revealed={column <= revealedColumn} customerType="regular" /></div>)}</div></div></section>
+  return <section className={`demand-market ${embedded ? 'demand-market-embedded' : 'panel'}`} aria-label="\u9700\u6c42\u5361"><div className="demand-market-heading"><div><p className="eyebrow">DEMAND CARDS</p><h2>\u9700\u6c42\u5361</h2></div><span>\u7b2c {period} \u671f\u30fb\u7b2c {round} \u56de\u5408</span></div><div className="demand-card-board"><div className="demand-card-board-labels"><span>\u5361\u80cc</span><span>\u9700\u6c42\u4f4d\u7f6e 1</span><span>\u9700\u6c42\u4f4d\u7f6e 2</span></div><div className="demand-card-board-grid">{DEMAND_TYPES.map((type, column) => <div className="demand-card-column" key={type.id}><div className={`demand-card-type-label demand-icon-${iconCategory(type.id)}`}><span><GameIcon name={type.id} fontSize="small" /></span><small>{type.label}</small></div><DemandCard card={first[column]} revealed={column <= revealedColumn} /><DemandCard card={second[column]} revealed={column <= revealedColumn} /></div>)}</div></div></section>
 }

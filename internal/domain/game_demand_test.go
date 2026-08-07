@@ -30,6 +30,18 @@ func TestDemandCardsRevealByRoundAndScoreCustomerTypesSeparately(t *testing.T) {
 	}
 }
 
+func TestDemandCardsUseProductAndValueIconsOnly(t *testing.T) {
+	allowed := map[string]bool{"coffee": true, "dessert": true, "beans": true, "taste": true, "service": true, "value": true}
+	for _, icon := range demandIconTypes {
+		if !allowed[icon] {
+			t.Fatalf("unexpected demand icon %q", icon)
+		}
+	}
+	if len(demandIconTypes) != 6 {
+		t.Fatalf("demand icon types=%d, want 6", len(demandIconTypes))
+	}
+}
+
 func TestRevenueUsesSatisfiedDemandValuePerCustomerType(t *testing.T) {
 	g := gameForTest(t)
 	p := g.Players[0]

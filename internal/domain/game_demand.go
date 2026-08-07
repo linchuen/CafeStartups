@@ -1,6 +1,6 @@
 package domain
 
-var demandIconTypes = []string{"coffee", "dessert", "beans", "taste", "service", "price"}
+var demandIconTypes = []string{"coffee", "dessert", "beans", "taste", "service", "value"}
 
 func (g *Game) prepareDemandCards() {
 	first := make([]DemandCard, len(demandIconTypes))

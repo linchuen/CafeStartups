@@ -242,9 +242,10 @@ button { border: 0; border-radius: 10px; padding: 12px 17px; font-weight: 700; t
 .demand-card-back { background: linear-gradient(145deg, #765341, #5a4032); }
 .demand-card-face { background: #fffaf2; }
 .demand-card-heading { color: #765b49; background: #f6ecdf; }
-.demand-card-icons { color: #d8583f; }
-.demand-card-regular .demand-card-icons { color: #d5a62b; }
-.demand-card-type-label span { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; color: #765b49; background: #eadbc9; font-size: 14px; }
+.demand-card-icons { color: #765b49; }
+.demand-card-icons span.demand-icon-product { color: #c88d28; border-color: #c88d28; }
+.demand-card-icons span.demand-icon-value { color: #b44f52; border-color: #b44f52; }
+.demand-card-type-label span { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; color: inherit; background: #eadbc9; font-size: 14px; }
 .demand-card-type-label span svg { color: #fff; }
 .demand-card-icons span { width: 34px; height: 34px; font-size: 21px; }
 .demand-card-type-label span { width: 28px; height: 28px; font-size: 18px; }

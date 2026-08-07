@@ -58,7 +58,7 @@ function ReferenceDemandRow(props: { type: 'gourmet' | 'regular'; label: string;
     const isRevealed = savedCard
       ? savedCard.revealed
       : Boolean(card && props.revealed && props.round !== undefined && props.round >= column)
-    return isRevealed ? <DemandCard card={card!} revealed quantity={demandQuantityForPosition(props.type, column)} customerType={props.type} /> : <><b>{questionMarks(column)}</b><small>{fallback}</small></>
+    return isRevealed ? <DemandCard card={card!} revealed quantity={demandQuantityForPosition(props.type, column)} /> : <><b>{questionMarks(column)}</b><small>{fallback}</small></>
   }
   return <div className={`reference-demand-row reference-demand-${props.type}`}>
     <div className="reference-customer-label"><span className="reference-customer-figures"><i /><i /></span><strong>{props.label}</strong><small>{props.type === 'gourmet' ? '饕客需求 +10' : '一般客需求 +10'}</small></div>
