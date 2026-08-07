@@ -37,8 +37,8 @@ func TestLoadPartnerCardsRejectsMismatchedColor(t *testing.T) {
 
 func TestMVPStarterShopCardsUseTenUnitCosts(t *testing.T) {
 	cards := MVPStarterShopCards()
-	if len(cards) != 11 {
-		t.Fatalf("starter shop cards=%d, want 11", len(cards))
+	if len(cards) != 5 {
+		t.Fatalf("starter shop cards=%d, want 5", len(cards))
 	}
 	for _, card := range cards {
 		if card.Kind != "starter_shop" {

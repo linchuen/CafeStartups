@@ -30,6 +30,7 @@ export const dashboardCardColors = {
     'starter-ximen': { color: '#3f7d66', pale: '#e2f0e8' },
     'starter-gongguan': { color: '#3f7d66', pale: '#e2f0e8' },
     'starter-huashan': { color: '#3f7d66', pale: '#e2f0e8' },
+    'starter-gourmet': { color: '#3f7d66', pale: '#e2f0e8' },
   } satisfies Record<string, CardColorTheme>,
   management: cardColorTokens satisfies Record<string, CardColorTheme>,
 } as const

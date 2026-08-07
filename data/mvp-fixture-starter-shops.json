@@ -55,32 +55,6 @@
                                         }
                   },
                   {
-                      "id":  "starter-xinyi",
-                      "name":  "信義店",
-                      "kind":  "starter_shop",
-                      "period":  null,
-                      "cost":  {
-                                   "cash":  30,
-                                   "icons":  [
-
-                                             ]
-                               },
-                      "icons":  [
-
-                                ],
-                      "marketChange":  {
-                                           "gourmet":  0,
-                                           "regular":  0,
-                                           "difficult":  0
-                                       },
-                      "description":  "開設分店，同時吸引饕客與一般客群。",
-                      "source":  "mvp-fixture",
-                      "customerCount":  {
-                                            "regular":  1,
-                                            "gourmet":  1
-                                        }
-                  },
-                  {
                       "id":  "starter-station",
                       "name":  "站前品牌旗艦店",
                       "kind":  "starter_shop",
@@ -106,8 +80,8 @@
                                         }
                   },
                   {
-                      "id":  "starter-daan",
-                      "name":  "大安巷口店",
+                      "id":  "starter-gourmet",
+                      "name":  "赤峰饕客店",
                       "kind":  "starter_shop",
                       "period":  null,
                       "cost":  {
@@ -124,137 +98,9 @@
                                            "regular":  0,
                                            "difficult":  0
                                        },
-                      "description":  "深耕社區客群，帶來穩定的一般客。",
+                      "description":  "以一位饕客作為高價值客群的起點。",
                       "source":  "mvp-fixture",
                       "customerCount":  {
-                                            "regular":  2
-                                        }
-                  },
-                  {
-                      "id":  "starter-beitou",
-                      "name":  "北投溫泉店",
-                      "kind":  "starter_shop",
-                      "period":  null,
-                      "cost":  {
-                                   "cash":  40,
-                                   "icons":  [
-
-                                             ]
-                               },
-                      "icons":  [
-
-                                ],
-                      "marketChange":  {
-                                           "gourmet":  0,
-                                           "regular":  0,
-                                           "difficult":  0
-                                       },
-                      "description":  "吸引休閒旅客與高消費力饕客。",
-                      "source":  "mvp-fixture",
-                      "customerCount":  {
-                                            "gourmet":  2
-                                        }
-                  },
-                  {
-                      "id":  "starter-neihu",
-                      "name":  "內湖辦公店",
-                      "kind":  "starter_shop",
-                      "period":  null,
-                      "cost":  {
-                                   "cash":  30,
-                                   "icons":  [
-
-                                             ]
-                               },
-                      "icons":  [
-
-                                ],
-                      "marketChange":  {
-                                           "gourmet":  0,
-                                           "regular":  0,
-                                           "difficult":  0
-                                       },
-                      "description":  "服務辦公商圈，兼顧饕客與一般客。",
-                      "source":  "mvp-fixture",
-                      "customerCount":  {
-                                            "regular":  1,
-                                            "gourmet":  1
-                                        }
-                  },
-                  {
-                      "id":  "starter-banqiao",
-                      "name":  "板橋轉運店",
-                      "kind":  "starter_shop",
-                      "period":  null,
-                      "cost":  {
-                                   "cash":  20,
-                                   "icons":  [
-
-                                             ]
-                               },
-                      "icons":  [
-
-                                ],
-                      "marketChange":  {
-                                           "gourmet":  0,
-                                           "regular":  0,
-                                           "difficult":  0
-                                       },
-                      "description":  "掌握交通人流，快速累積一般客。",
-                      "source":  "mvp-fixture",
-                      "customerCount":  {
-                                            "regular":  2
-                                        }
-                  },
-                  {
-                      "id":  "starter-ximen",
-                      "name":  "西門潮流店",
-                      "kind":  "starter_shop",
-                      "period":  null,
-                      "cost":  {
-                                   "cash":  30,
-                                   "icons":  [
-
-                                             ]
-                               },
-                      "icons":  [
-
-                                ],
-                      "marketChange":  {
-                                           "gourmet":  0,
-                                           "regular":  0,
-                                           "difficult":  0
-                                       },
-                      "description":  "連結年輕客群，帶來饕客與一般客。",
-                      "source":  "mvp-fixture",
-                      "customerCount":  {
-                                            "regular":  1,
-                                            "gourmet":  1
-                                        }
-                  },
-                  {
-                      "id":  "starter-gongguan",
-                      "name":  "公館學府店",
-                      "kind":  "starter_shop",
-                      "period":  null,
-                      "cost":  {
-                                   "cash":  30,
-                                   "icons":  [
-
-                                             ]
-                               },
-                      "icons":  [
-
-                                ],
-                      "marketChange":  {
-                                           "gourmet":  0,
-                                           "regular":  0,
-                                           "difficult":  0
-                                       },
-                      "description":  "經營學生與社群客群，擴大來客數。",
-                      "source":  "mvp-fixture",
-                      "customerCount":  {
-                                            "regular":  1,
                                             "gourmet":  1
                                         }
                   },
