@@ -19,7 +19,9 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 export function App() {
   const [screen, setScreen] = useState<Screen>('home')
   const [name, setName] = useState('咖啡創業家')
-  const [seed, setSeed] = useState('phase-3-demo')
+  // Leave the seed blank by default so the server assigns a fresh seed per game.
+  // A fixed seed can still be entered manually to reproduce a game.
+  const [seed, setSeed] = useState('')
   const [room, setRoom] = useState<GameState | null>(null)
   // Each visit to the home screen starts a fresh local game.
   const [token, setToken] = useState('')
