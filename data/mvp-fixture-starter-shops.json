@@ -9,7 +9,7 @@
                       "kind":  "starter_shop",
                       "period":  null,
                       "cost":  {
-                                   "cash":  20,
+                                   "cash":  40,
                                    "icons":  [
 
                                              ]
@@ -34,7 +34,7 @@
                       "kind":  "starter_shop",
                       "period":  null,
                       "cost":  {
-                                   "cash":  20,
+                                   "cash":  30,
                                    "icons":  [
 
                                              ]
@@ -76,7 +76,7 @@
                       "description":  "開設分店，同時吸引饕客與一般客群。",
                       "source":  "mvp-fixture",
                       "customerCount":  {
-                                            "regular":  2,
+                                            "regular":  1,
                                             "gourmet":  1
                                         }
                   },
@@ -86,7 +86,7 @@
                       "kind":  "starter_shop",
                       "period":  null,
                       "cost":  {
-                                   "cash":  30,
+                                   "cash":  20,
                                    "icons":  [
 
                                              ]
@@ -102,7 +102,7 @@
                       "description":  "開設旗艦店，吸引大批一般客。",
                       "source":  "mvp-fixture",
                       "customerCount":  {
-                                            "regular":  3
+                                            "regular":  2
                                         }
                   },
                   {
@@ -136,7 +136,7 @@
                       "kind":  "starter_shop",
                       "period":  null,
                       "cost":  {
-                                   "cash":  20,
+                                   "cash":  40,
                                    "icons":  [
 
                                              ]
@@ -177,13 +177,38 @@
                       "description":  "服務辦公商圈，兼顧饕客與一般客。",
                       "source":  "mvp-fixture",
                       "customerCount":  {
-                                            "regular":  2,
+                                            "regular":  1,
                                             "gourmet":  1
                                         }
                   },
                   {
                       "id":  "starter-banqiao",
                       "name":  "板橋轉運店",
+                      "kind":  "starter_shop",
+                      "period":  null,
+                      "cost":  {
+                                   "cash":  20,
+                                   "icons":  [
+
+                                             ]
+                               },
+                      "icons":  [
+
+                                ],
+                      "marketChange":  {
+                                           "gourmet":  0,
+                                           "regular":  0,
+                                           "difficult":  0
+                                       },
+                      "description":  "掌握交通人流，快速累積一般客。",
+                      "source":  "mvp-fixture",
+                      "customerCount":  {
+                                            "regular":  2
+                                        }
+                  },
+                  {
+                      "id":  "starter-ximen",
+                      "name":  "西門潮流店",
                       "kind":  "starter_shop",
                       "period":  null,
                       "cost":  {
@@ -200,36 +225,11 @@
                                            "regular":  0,
                                            "difficult":  0
                                        },
-                      "description":  "掌握交通人流，快速累積一般客。",
-                      "source":  "mvp-fixture",
-                      "customerCount":  {
-                                            "regular":  3
-                                        }
-                  },
-                  {
-                      "id":  "starter-ximen",
-                      "name":  "西門潮流店",
-                      "kind":  "starter_shop",
-                      "period":  null,
-                      "cost":  {
-                                   "cash":  40,
-                                   "icons":  [
-
-                                             ]
-                               },
-                      "icons":  [
-
-                                ],
-                      "marketChange":  {
-                                           "gourmet":  0,
-                                           "regular":  0,
-                                           "difficult":  0
-                                       },
                       "description":  "連結年輕客群，帶來饕客與一般客。",
                       "source":  "mvp-fixture",
                       "customerCount":  {
                                             "regular":  1,
-                                            "gourmet":  2
+                                            "gourmet":  1
                                         }
                   },
                   {
@@ -254,7 +254,7 @@
                       "description":  "經營學生與社群客群，擴大來客數。",
                       "source":  "mvp-fixture",
                       "customerCount":  {
-                                            "regular":  2,
+                                            "regular":  1,
                                             "gourmet":  1
                                         }
                   }

@@ -50,6 +50,15 @@ func TestMVPStarterShopCardsUseTenUnitCosts(t *testing.T) {
 		if card.CustomerCount["gourmet"] == 0 && card.CustomerCount["regular"] == 0 {
 			t.Fatalf("card %q has no customer count", card.ID)
 		}
+		gourmet := card.CustomerCount["gourmet"]
+		regular := card.CustomerCount["regular"]
+		if gourmet+regular > 2 {
+			t.Fatalf("card %q has %d customers, want at most 2", card.ID, gourmet+regular)
+		}
+		wantCost := gourmet*20 + regular*10
+		if card.Cost.Cash != wantCost {
+			t.Fatalf("card %q cost=%d, want gourmet*20 + regular*10 = %d", card.ID, card.Cost.Cash, wantCost)
+		}
 	}
 }
 
