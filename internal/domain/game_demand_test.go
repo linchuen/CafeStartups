@@ -1,0 +1,46 @@
+package domain
+
+import "testing"
+
+func TestDemandCardsRevealByRoundAndScoreCustomerTypesSeparately(t *testing.T) {
+	g := gameForTest(t)
+	if !g.DemandCards["gourmet"][0].Revealed || g.DemandCards["gourmet"][1].Revealed {
+		t.Fatal("expected only the initial demand position to be revealed")
+	}
+	for _, kind := range []string{"gourmet", "regular"} {
+		for index, card := range g.DemandCards[kind] {
+			if card.Position != index {
+				t.Fatalf("%s demand card %s position=%d, want %d", kind, card.ID, card.Position, index)
+			}
+		}
+	}
+	g.Round = 1
+	g.revealDemandCards()
+	if !g.DemandCards["regular"][1].Revealed {
+		t.Fatal("expected the demand position to reveal after the round ends")
+	}
+	g.DemandCards = map[string][]DemandCard{
+		"gourmet": {{Position: 0, Icons: []string{"coffee"}, Revealed: true}},
+		"regular": {{Position: 0, Icons: []string{"taste"}, Revealed: true}},
+	}
+	g.Players[0].Tableau = []Card{{Icons: []string{"coffee"}}}
+	g.updateSatisfactionScores()
+	if g.Players[0].GourmetSatisfaction != 1 || g.Players[0].RegularSatisfaction != 0 {
+		t.Fatalf("satisfaction gourmet=%d regular=%d, want 1 and 0", g.Players[0].GourmetSatisfaction, g.Players[0].RegularSatisfaction)
+	}
+}
+
+func TestRevenueUsesSatisfiedDemandValuePerCustomerType(t *testing.T) {
+	g := gameForTest(t)
+	p := g.Players[0]
+	p.Tableau = []Card{{Icons: []string{"coffee", "coffee", "taste"}, Demand: map[string]int{"gourmet": 1}}}
+	g.DemandCards = map[string][]DemandCard{
+		"gourmet": {{Position: 0, Icons: []string{"coffee"}, Revealed: true}, {Position: 1, Icons: []string{"coffee"}, Revealed: true}},
+		"regular": {{Position: 0, Icons: []string{"taste"}, Revealed: true}},
+	}
+	p.Customers = []Customer{{Kind: "gourmet", Count: 2}, {Kind: "regular", Count: 1}}
+	g.SettleRevenue()
+	if p.Revenue != 80 || p.TotalRevenue != 80 || p.cashFlowGourmetRevenue != 60 || p.cashFlowRegularRevenue != 20 {
+		t.Fatalf("revenue=%d total=%d gourmet=%d regular=%d, want 80, 80, 60, 20", p.Revenue, p.TotalRevenue, p.cashFlowGourmetRevenue, p.cashFlowRegularRevenue)
+	}
+}
