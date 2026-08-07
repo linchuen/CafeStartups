@@ -24,7 +24,7 @@
       "marketChange": {
         "difficult": 0,
         "gourmet": 0,
-        "regular": 1
+        "regular": 2
       },
       "source": "mvp-fixture"
     },
@@ -47,7 +47,7 @@
       ],
       "marketChange": {
         "difficult": 0,
-        "gourmet": 1,
+        "gourmet": 2,
         "regular": 0
       },
       "source": "mvp-fixture"
@@ -72,7 +72,7 @@
       "marketChange": {
         "difficult": 0,
         "gourmet": 0,
-        "regular": 1
+        "regular": 2
       },
       "source": "mvp-fixture"
     },
@@ -96,7 +96,7 @@
       "marketChange": {
         "difficult": 0,
         "gourmet": 0,
-        "regular": 1
+        "regular": 2
       },
       "source": "mvp-fixture"
     },
@@ -119,7 +119,7 @@
       ],
       "marketChange": {
         "difficult": 0,
-        "gourmet": 1,
+        "gourmet": 2,
         "regular": 0
       },
       "source": "mvp-fixture"
@@ -144,7 +144,7 @@
       "marketChange": {
         "difficult": 0,
         "gourmet": 0,
-        "regular": 1
+        "regular": 2
       },
       "source": "mvp-fixture"
     }
