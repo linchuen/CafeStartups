@@ -44,3 +44,18 @@ func TestRevenueUsesSatisfiedDemandValuePerCustomerType(t *testing.T) {
 		t.Fatalf("revenue=%d total=%d gourmet=%d regular=%d, want 80, 80, 60, 20", p.Revenue, p.TotalRevenue, p.cashFlowGourmetRevenue, p.cashFlowRegularRevenue)
 	}
 }
+
+func TestChannelCustomerCountsAreIncludedInRevenueCustomers(t *testing.T) {
+	g := gameForTest(t)
+	p := g.Players[0]
+	p.Partner = Card{}
+	p.StarterShop = Card{}
+	p.Tableau = []Card{
+		{Kind: "channel", CustomerCount: map[string]int{"regular": 2}},
+		{Kind: "channel", CustomerCount: map[string]int{"regular": 1}},
+	}
+	g.DistributeCustomers(nil)
+	if len(p.Customers) != 2 || p.Customers[0].Count != 2 || p.Customers[1].Count != 1 {
+		t.Fatalf("channel customers=%+v, want regular counts 2 and 1", p.Customers)
+	}
+}

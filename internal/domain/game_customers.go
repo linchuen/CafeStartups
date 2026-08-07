@@ -22,8 +22,10 @@ func (g *Game) DistributeCustomers(customers []Customer) {
 }
 
 func (g *Game) appendCardCustomers(p *Player) {
-	for _, counts := range []map[string]int{p.Partner.CustomerCount, p.StarterShop.CustomerCount} {
-		for kind, count := range counts {
+	cards := []Card{p.Partner, p.StarterShop}
+	cards = append(cards, p.Tableau...)
+	for _, card := range cards {
+		for kind, count := range card.CustomerCount {
 			if count <= 0 {
 				continue
 			}

@@ -5,7 +5,7 @@ export function CashFlowTable(props: { room: GameState }) {
   const latestRounds = new Map((props.room.me?.cashFlowRounds ?? []).map((statement) => [statement.period, statement]))
   const periods = [1, 2, 3]
   const money = (value: number | undefined, signed = false) => value === undefined ? '待結算' : `${value < 0 ? '-$' : signed && value > 0 ? '+$' : '$'}${Math.abs(value)}萬`
-  const statementFor = (period: number) => period === props.room.period ? latestRounds.get(period) ?? statements.get(period) : statements.get(period)
+  const statementFor = (period: number) => statements.get(period) ?? (period === props.room.period ? latestRounds.get(period) : undefined)
   const cell = (period: number, field: keyof CashFlowStatement, signed = false) => money(statementFor(period)?.[field] as number | undefined, signed)
   const customerFormula = (period: number, countField: 'gourmetCustomerCount' | 'regularCustomerCount', revenueField: 'gourmetRevenue' | 'regularRevenue') => {
     const statement = statementFor(period)
