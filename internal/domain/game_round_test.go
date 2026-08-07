@@ -33,6 +33,24 @@ func TestDraftEndsWithOneCardAndPeriodDirection(t *testing.T) {
 	}
 }
 
+func TestRoundEndRevealsThatRoundsDemandCard(t *testing.T) {
+	g := gameForTest(t)
+	for _, p := range g.Players {
+		if err := g.SelectCard(p.ID, p.Hand[0].ID); err != nil {
+			t.Fatal(err)
+		}
+		if err := g.DiscardSelectedCard(p.ID); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := g.PassHands(); err != nil {
+		t.Fatal(err)
+	}
+	if !g.DemandCards["gourmet"][1].Revealed || !g.DemandCards["regular"][1].Revealed {
+		t.Fatal("expected the first completed round's demand cards to be revealed")
+	}
+}
+
 func TestSelectCardCanReplaceBeforeAction(t *testing.T) {
 	g := gameForTest(t)
 	p := g.Players[0]

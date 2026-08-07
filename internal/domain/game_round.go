@@ -75,7 +75,10 @@ func (g *Game) PassHands() error {
 	}
 	g.Round++
 	g.selected, g.acted = map[string]Card{}, map[string]bool{}
+	// Reveal the demand card for the round that just ended before the game
+	// advances to settlement, then immediately refresh satisfaction scores.
 	g.revealDemandCards()
+	g.updateSatisfactionScores()
 	g.recordCashFlowRound()
 	if g.Round == ExperimentRounds {
 		for _, p := range g.Players {

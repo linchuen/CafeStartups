@@ -56,7 +56,7 @@ function ReferenceDemandRow(props: { type: 'gourmet' | 'regular'; label: string;
     const savedCard = props.demandCards?.find((item) => item.position === column)
     const card: DemandCardData | undefined = savedCard ? { id: savedCard.id, kind: 'demand', icons: savedCard.icons, source: 'mvp-fixture' } : cards[column]
     const isRevealed = savedCard
-      ? savedCard.revealed && props.round !== undefined && props.round >= column
+      ? savedCard.revealed
       : Boolean(card && props.revealed && props.round !== undefined && props.round >= column)
     return isRevealed ? <DemandCard card={card!} revealed quantity={demandQuantityForPosition(props.type, column)} /> : <><b>{questionMarks(column)}</b><small>{fallback}</small></>
   }
