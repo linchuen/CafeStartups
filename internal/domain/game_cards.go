@@ -8,7 +8,7 @@ func (g *Game) deal() {
 	if len(g.Catalog) > 0 {
 		cards := make([]Card, 0, len(g.Catalog))
 		for _, card := range g.Catalog {
-			if card.Period == g.Period {
+			if card.Period == g.Period && !(g.Period == PeriodOne && card.Kind == "channel") {
 				cards = append(cards, card)
 			}
 		}

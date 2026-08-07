@@ -141,6 +141,18 @@
         "regular": 0
       },
       "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-029-resource",
+      "name": "門市排班",
+      "description": "建立基礎排班流程，提升日常營運穩定度。",
+      "kind": "resource",
+      "function": "resource",
+      "period": 1,
+      "cost": { "cash": 10, "icons": ["operations"] },
+      "icons": ["operations"],
+      "marketChange": { "difficult": 0, "gourmet": 0, "regular": 2 },
+      "source": "mvp-fixture"
     }
   ]
 }

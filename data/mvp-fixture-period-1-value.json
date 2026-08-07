@@ -141,6 +141,18 @@
         "regular": 0
       },
       "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-029-value",
+      "name": "社群連結",
+      "description": "建立鄰里互動，讓咖啡館融入社區生活。",
+      "kind": "value",
+      "function": "value",
+      "period": 1,
+      "cost": { "cash": 10, "icons": ["service"] },
+      "icons": ["value"],
+      "marketChange": { "difficult": 0, "gourmet": 0, "regular": 2 },
+      "source": "mvp-fixture"
     }
   ]
 }

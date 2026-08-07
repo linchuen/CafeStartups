@@ -2,6 +2,17 @@ package domain
 
 import "testing"
 
+func TestPeriodOneDealExcludesChannelCards(t *testing.T) {
+	g := gameForTest(t)
+	for _, p := range g.Players {
+		for _, card := range p.Hand {
+			if card.Kind == "channel" {
+				t.Fatalf("period one hand contains channel card %q", card.ID)
+			}
+		}
+	}
+}
+
 func TestDraftEndsWithOneCardAndPeriodDirection(t *testing.T) {
 	g := gameForTest(t)
 	for round := InitialRound; round < ExperimentRounds; round++ {

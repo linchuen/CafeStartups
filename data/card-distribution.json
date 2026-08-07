@@ -3,11 +3,11 @@
   "functions": ["resource", "product", "value", "channel", "marketing"],
   "periods": {
     "1": {
-      "resource": 6,
-      "product": 7,
-      "value": 6,
-      "channel": 4,
-      "marketing": 5
+      "resource": 7,
+      "product": 8,
+      "value": 7,
+      "channel": 0,
+      "marketing": 6
     },
     "2": {
       "resource": 6,

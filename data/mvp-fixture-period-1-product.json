@@ -164,6 +164,18 @@
         "regular": 2
       },
       "source": "mvp-fixture"
+    },
+    {
+      "id": "mvp-p1-029-product",
+      "name": "冷萃咖啡",
+      "description": "提供清爽冷萃選擇，拓展產品吸引力。",
+      "kind": "product",
+      "function": "product",
+      "period": 1,
+      "cost": { "cash": 10, "icons": ["coffee"] },
+      "icons": ["coffee"],
+      "marketChange": { "difficult": 0, "gourmet": 2, "regular": 0 },
+      "source": "mvp-fixture"
     }
   ]
 }

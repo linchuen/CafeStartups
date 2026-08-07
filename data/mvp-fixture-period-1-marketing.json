@@ -127,6 +127,19 @@
       },
       "source": "mvp-fixture",
       "brandAwareness": 4
+    },
+    {
+      "id": "mvp-p1-029-marketing",
+      "name": "品牌聯名",
+      "description": "與在地品牌合作，提升知名度並帶來一般客。",
+      "kind": "marketing",
+      "function": "marketing",
+      "period": 1,
+      "cost": { "cash": 10, "icons": ["marketing_resource"] },
+      "icons": ["marketing"],
+      "marketChange": { "difficult": 0, "gourmet": 0, "regular": 2 },
+      "source": "mvp-fixture",
+      "brandAwareness": 3
     }
   ]
 }
