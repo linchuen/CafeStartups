@@ -11,18 +11,19 @@
 
 ## 專案目標
 
-使用 Go、React 與 TypeScript 建立可在本機瀏覽器執行的單機版 Café Startups。
+使用 Wails、Go、React 與 TypeScript 建立可在本機桌面執行的單機版 Café Startups。
 
 目前 MVP 範圍：
 
 - 1 位真人玩家。
 - 由固定 seed 的 Bot 補足至 2–4 位玩家。
-- 本機 HTTP/JSON 通訊。
+- Wails 桌面殼層；前端透過本機 HTTP/JSON 與 Go 後端通訊。
 - 先完成核心遊戲流程、結算、卡牌與 UI，再擴充區域網路與線上模式。
 
 ## 技術堆疊
 
 - Backend：Go 1.22+。
+- Desktop：Wails。
 - Frontend：React、TypeScript、Vite、MUI。
 - 通訊：本機 HTTP/JSON。
 - 測試：Go unit test、server lifecycle test、TypeScript typecheck、production build。
@@ -30,9 +31,9 @@
 
 ## 後端分層
 
-### `cmd/server`
+### `cmd/server`（目前 HTTP 開發入口）
 
-應用程式入口，只負責組合依賴與啟動 HTTP server。不可在此放遊戲規則。
+目前只負責組合依賴與啟動 HTTP server，供獨立前後端開發使用。桌面版目標入口應由 Wails 啟動並組合相同的 application 與 domain 依賴；不可在入口放遊戲規則。Repository 尚未加入 Wails 初始化檔與 binding，完成前不得將 `wails dev` 描述為可用流程。
 
 ### `internal/server`
 

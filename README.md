@@ -1,4 +1,4 @@
-# Café Startups Web
+# Café Startups
 
 Go + React 的《Café Startups》單機桌遊 MVP。MVP 只讓一位真人在本機遊玩，其餘席位由不考慮策略、只做合法隨機選擇的 MVP 電腦玩家補足；玩法確認正確後，才開發區網模式，最後才開發線上模式。
 
@@ -13,25 +13,29 @@ Go + React 的《Café Startups》單機桌遊 MVP。MVP 只讓一位真人在�
 - 單機遊玩設計：預設由 MVP 隨機電腦玩家補足其他席位
 - 產品路線：單機桌遊 → 區域網路 → 線上模式
 
-## 啟動
+## 桌面版啟動方式
 
-### Backend
+預期以 Wails 啟動桌面應用程式，開發模式使用：
 
 ```powershell
+wails dev
+```
+
+目前 repository 尚未加入 Wails 專案設定與 Go binding，因此此指令尚不能在本專案執行。現有版本仍是分開啟動 Go API 與 Vite 前端：
+
+```powershell
+# Terminal 1：API
 go run ./cmd/server
 ```
 
-API 會在 `http://localhost:8080` 啟動。
-
-### Frontend
-
 ```powershell
+# Terminal 2：前端
 cd client
 npm install
 npm run dev
 ```
 
-前端會在 `http://localhost:5173` 啟動。
+API 位於 `http://localhost:8080`，Vite 開發頁面位於 `http://localhost:5173`。
 
 ## 驗證
 
