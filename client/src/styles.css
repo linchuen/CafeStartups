@@ -239,8 +239,15 @@ button { border: 0; border-radius: 10px; padding: 12px 17px; font-weight: 700; t
 .reference-demand-slot > .demand-card .demand-card-labels { min-height: 16px; padding-top: 2px; font-size: 7px; }
 .reference-demand-slot > .demand-card .demand-card-bonus { padding: 4px; font-size: 8px; }
 .reference-demand-slot > .demand-card .demand-card-bonus strong { font-size: 11px; }
+.reference-demand-peek { width: 100%; min-height: 88px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; border: 2px solid #9b5b31; border-radius: 8px; background: #fff4dc; color: #57381f; cursor: pointer; }
+.reference-demand-peek:hover:not(:disabled) { background: #ffe7b7; }
+.reference-demand-peek:disabled { opacity: .55; cursor: wait; }
+.reference-peek-actions { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 16px; color: #57381f; background: #fff0cd; font-weight: 700; }
+.reference-peek-actions button { background: #734a34; color: white; }
 .demand-card-back { background: linear-gradient(145deg, #765341, #5a4032); }
-.demand-card-face { background: #fffaf2; }
+.demand-card-face { background: #fffaf2; animation: demand-card-flip 520ms ease-out both; transform-origin: center; backface-visibility: hidden; }
+@keyframes demand-card-flip { from { transform: perspective(700px) rotateY(90deg); opacity: .45; } to { transform: perspective(700px) rotateY(0); opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .demand-card-face { animation: none; } }
 .demand-card-heading { color: #765b49; background: #f6ecdf; }
 .demand-card-icons { color: #765b49; }
 .demand-card-icons span.demand-icon-product { color: #c88d28; border-color: #c88d28; }

@@ -12,19 +12,29 @@ func (g *Game) prepareDemandCards() {
 	}
 	shuffleDemandCards(first, demandSeed(g.Seed))
 	shuffleDemandCards(second, demandSeed(g.Seed)+97)
-	for index := range first {
-		first[index].Position = index
-		second[index].Position = index
-		first[index].Revealed = index == 0
-		second[index].Revealed = index == 0
+	g.DemandCards = map[string][]DemandCard{"gourmet": make([]DemandCard, 4), "regular": make([]DemandCard, 4)}
+	ordinary, advanced := 0, 0
+	for _, kind := range []string{"gourmet", "regular"} {
+		for position := 0; position < 4; position++ {
+			var card DemandCard
+			if demandQuantity(kind, position) == 1 {
+				card = first[ordinary]
+				ordinary++
+			} else {
+				card = second[advanced]
+				advanced++
+			}
+			card.Position = position
+			card.Revealed = position == 0
+			g.DemandCards[kind][position] = card
+		}
 	}
-	g.DemandCards = map[string][]DemandCard{"gourmet": first, "regular": second}
 }
 
 func (g *Game) revealDemandCards() {
 	for _, cards := range g.DemandCards {
 		for index := range cards {
-			cards[index].Revealed = index <= g.Round
+			cards[index].Revealed = index <= int(g.Period)
 		}
 	}
 }
@@ -63,39 +73,73 @@ func demandQuantity(kind string, position int) int {
 }
 
 func (g *Game) satisfactionFor(kind string, p *Player) int {
-	count := 0
-	for _, card := range g.DemandCards[kind] {
-		if !card.Revealed {
-			continue
-		}
-		if g.satisfiesDemandCard(kind, card, p) {
-			count++
-		}
-	}
-	return count
+	return len(g.matchedDemandCards(kind, p))
 }
 
-func (g *Game) satisfiesDemandCard(kind string, card DemandCard, p *Player) bool {
-	quantity := demandQuantity(kind, card.Position)
-	available := map[string]int{}
-	for _, owned := range []Card{p.Partner, p.StarterShop} {
-		for _, icon := range owned.Icons {
-			available[icon]++
+// A played card can support one demand in each customer row. Matching is
+// performed left to right so repeated icons cannot reuse the same card.
+func (g *Game) matchedDemandCards(kind string, p *Player) map[int]bool {
+	owned := make([]Card, 0, len(p.Tableau))
+	for _, card := range p.Tableau {
+		category := card.Function
+		if category == "" {
+			category = card.ColorKey
+		}
+		if category == "" {
+			category = card.Kind
+		}
+		if category == "product" || category == "value" {
+			owned = append(owned, card)
 		}
 	}
-	for _, owned := range p.Tableau {
-		for _, icon := range owned.Icons {
-			available[icon]++
+	used := make([]bool, len(owned))
+	matched := map[int]bool{}
+	for _, demand := range g.DemandCards[kind] {
+		if !demand.Revealed || len(demand.Icons) == 0 {
+			continue
 		}
-	}
-	for index := 0; index < quantity; index++ {
-		icon := card.Icons[index%len(card.Icons)]
-		if available[icon] == 0 {
+		selected := map[int]map[string]int{}
+		var assign func(int) bool
+		assign = func(index int) bool {
+			if index == len(demand.Icons) {
+				return true
+			}
+			for cardIndex, card := range owned {
+				if used[cardIndex] {
+					continue
+				}
+				available := 0
+				for _, icon := range card.Icons {
+					if icon == demand.Icons[index] {
+						available++
+					}
+				}
+				if selected[cardIndex] == nil {
+					selected[cardIndex] = map[string]int{}
+				}
+				if selected[cardIndex][demand.Icons[index]] >= available {
+					continue
+				}
+				selected[cardIndex][demand.Icons[index]]++
+				if assign(index + 1) {
+					return true
+				}
+				selected[cardIndex][demand.Icons[index]]--
+			}
 			return false
 		}
-		available[icon]--
+		if assign(0) {
+			matched[demand.Position] = true
+			for cardIndex, icons := range selected {
+				for _, count := range icons {
+					if count > 0 {
+						used[cardIndex] = true
+					}
+				}
+			}
+		}
 	}
-	return true
+	return matched
 }
 
 func demandValue(kind string, position int) int {
@@ -112,13 +156,9 @@ func demandValue(kind string, position int) int {
 
 func (g *Game) demandRevenuePerCustomer(kind string, p *Player) int {
 	revenue := basePrice(kind)
-	if len(g.DemandCards[kind]) == 0 {
-		return revenue
-	}
-	// Older fixtures may carry Card.Demand directly; keep the base price while
-	// still evaluating every revealed demand card for additional revenue.
+	matched := g.matchedDemandCards(kind, p)
 	for _, card := range g.DemandCards[kind] {
-		if card.Revealed && g.satisfiesDemandCard(kind, card, p) {
+		if matched[card.Position] {
 			revenue += demandValue(kind, card.Position)
 		}
 	}

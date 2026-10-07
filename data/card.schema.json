@@ -26,7 +26,8 @@
       "required": ["gourmet", "regular"],
       "properties": { "gourmet": { "type": "integer", "minimum": 0 }, "regular": { "type": "integer", "minimum": 0 } }
     },
-    "source": { "enum": ["mvp-fixture", "rulebook-verified"] }
+    "source": { "enum": ["mvp-fixture", "rulebook-verified"] },
+    "peekDemand": { "type": "boolean" }
   },
   "allOf": [
     {

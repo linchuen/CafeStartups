@@ -92,7 +92,7 @@ var validKPI = map[string]bool{
 }
 
 func (g *Game) SetKPIs(playerID string, kpis ...string) error {
-	if g.Phase != PhaseHypothesis || g.Period <= PeriodOne || len(kpis) != 2 || kpis[0] == kpis[1] {
+	if g.Phase != PhaseHypothesis || g.Period == PeriodOne {
 		return ErrInvalidAction
 	}
 	for _, kpi := range kpis {
@@ -104,7 +104,23 @@ func (g *Game) SetKPIs(playerID string, kpis ...string) error {
 	if err != nil {
 		return err
 	}
-	if p.KPISelectionPeriod == g.Period {
+	switch g.Period {
+	case PeriodZero:
+		if len(kpis) != 1 || len(p.SelectedKPIs) != 0 {
+			return ErrInvalidAction
+		}
+	case PeriodTwo:
+		if len(kpis) != 2 || len(p.SelectedKPIs) != 1 || kpis[0] != p.SelectedKPIs[0] || kpis[0] == kpis[1] || p.KPISelectionPeriod == g.Period {
+			return ErrInvalidAction
+		}
+	case PeriodThree:
+		if len(kpis) != 2 || len(p.SelectedKPIs) != 2 || kpis[0] == kpis[1] || p.KPISelectionPeriod == g.Period {
+			return ErrInvalidAction
+		}
+		if kpis[0] != p.SelectedKPIs[0] && kpis[1] != p.SelectedKPIs[1] {
+			return ErrInvalidAction
+		}
+	default:
 		return ErrInvalidAction
 	}
 	p.SelectedKPIs = append([]string(nil), kpis...)
@@ -117,39 +133,39 @@ func (g *Game) BeginExperiment() error {
 		return ErrInvalidPhase
 	}
 	initialSetup := g.Period == PeriodZero
-	if initialSetup {
-		g.Period = PeriodOne
-	}
-	if g.Period != PeriodOne {
-		for _, p := range g.Players {
-			if len(p.SelectedKPIs) != 2 || p.KPISelectionPeriod != g.Period {
-				return ErrInvalidAction
-			}
-		}
-	}
 	for _, p := range g.Players {
-		if g.Period == PeriodOne && len(p.SelectedKPIs) != 0 {
+		if initialSetup && len(p.SelectedKPIs) != 1 {
+			return ErrInvalidAction
+		}
+		if !initialSetup && (len(p.SelectedKPIs) != 2 || p.KPISelectionPeriod != g.Period) {
 			return ErrInvalidAction
 		}
 	}
 	if initialSetup {
 		for _, p := range g.Players {
-			if p.Cash+partnerInitialCashBonus(p) < p.StarterShop.Cost.Cash {
-				return ErrInsufficientCash
+			available := p.Cash + partnerInitialCashBonus(p)
+			if available < p.StarterShop.Cost.Cash {
+				loansNeeded := (p.StarterShop.Cost.Cash - available + LoanAmount - 1) / LoanAmount
+				if p.Loans+loansNeeded > MaxLoans {
+					return ErrLoanLimit
+				}
 			}
 		}
 		for _, p := range g.Players {
 			p.Cash += partnerInitialCashBonus(p)
+			for p.Cash < p.StarterShop.Cost.Cash {
+				p.Cash += LoanAmount
+				p.Loans++
+			}
 			p.Cash -= p.StarterShop.Cost.Cash
 		}
+		g.Period = PeriodOne
 	}
 	for _, p := range g.Players {
 		p.cashFlowBeginning = p.Cash
 		p.cashFlowRevenue = 0
 		p.cashFlowGourmetCount = 0
 		p.cashFlowRegularCount = 0
-		p.GourmetSatisfaction = 0
-		p.RegularSatisfaction = 0
 		p.cashFlowGourmetRevenue = 0
 		p.cashFlowRegularRevenue = 0
 		p.cashFlowOtherIncome = 0
@@ -159,7 +175,11 @@ func (g *Game) BeginExperiment() error {
 		p.cashFlowNewLoans = 0
 	}
 	g.Round, g.Phase = InitialRound, PhaseExperiment
-	g.prepareDemandCards()
+	if initialSetup {
+		g.prepareDemandCards()
+		g.MarketBag = map[string]int{"gourmet": 4, "regular": 6, "difficult": 0}
+		g.DemandBoard = map[string]int{"gourmet": 4, "regular": 6, "difficult": 0}
+	}
 	g.deal()
 	return nil
 }

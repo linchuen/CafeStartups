@@ -5,6 +5,8 @@ import { CashFlowTable } from './modules/game/ui/dashboard/CashFlowTable'
 import { Home } from './modules/game/ui/lobby/Home'
 import { Lobby } from './modules/game/ui/lobby/Lobby'
 import { ReferenceBoard } from './modules/game/ui/reference/ReferenceBoard'
+import { DemandCard } from './modules/game/ui/market/DemandMarket'
+import { Button, Dialog, DialogActions, DialogContent, Typography } from '@mui/material'
 
 const API = 'http://localhost:8080'
 
@@ -30,6 +32,7 @@ export function App() {
   const [selectedCard, setSelectedCard] = useState('')
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [peekedDemand, setPeekedDemand] = useState<{ id: string; position: number; icons: string[] } | null>(null)
 
   const saveSession = (id: string, session: string, player: string) => {
     setGameId(id); setToken(session); setPlayerId(player)
@@ -60,8 +63,10 @@ export function App() {
     if (!room) return
     setBusy(true); setError('')
     try {
-      const result = await request<{ state: GameState }>(`/api/games/${encodeURIComponent(room.id)}/commands`, { method: 'POST', body: JSON.stringify({ token, gameVersion: room.gameVersion, commandId: crypto.randomUUID(), type, ...extra }) })
+      const result = await request<{ state: GameState; peekedDemandCard?: { id: string; position: number; icons: string[] } }>(`/api/games/${encodeURIComponent(room.id)}/commands`, { method: 'POST', body: JSON.stringify({ token, gameVersion: room.gameVersion, commandId: crypto.randomUUID(), type, ...extra }) })
       setRoom(result.state); if (result.state.phase === 'experiment') setScreen('game')
+      if (result.peekedDemandCard) setPeekedDemand(result.peekedDemandCard)
+      if (result.state.round !== room.round || result.state.phase !== room.phase) setSelectedCard('')
     } catch (cause) {
       const message = cause as ApiError
       window.alert(message.code ?? message.message)
@@ -86,12 +91,13 @@ export function App() {
     catch (cause) { setError(cause instanceof Error ? cause.message : '開始遊戲失敗') } finally { setBusy(false) }
   }
 
-  const leave = () => { setRoom(null); setScreen('home'); setToken(''); setGameId(''); setPlayerId(''); localStorage.removeItem('cafe-session'); localStorage.removeItem('cafe-game-id'); localStorage.removeItem('cafe-player-id') }
+  const leave = () => { setRoom(null); setScreen('home'); setToken(''); setGameId(''); setPlayerId(''); setPeekedDemand(null); localStorage.removeItem('cafe-session'); localStorage.removeItem('cafe-game-id'); localStorage.removeItem('cafe-player-id') }
 
   return <main className="app-shell">
     <header className="topbar"><span className="brand-mark">CS</span><span>Café Startups</span>{room && <span className="sync-pill">v{room.gameVersion} · 已同步</span>}</header>
     {screen === 'home' && <Home name={name} setName={setName} seed={seed} setSeed={setSeed} createRoom={createRoom} busy={busy} error={error} />}
     {screen === 'lobby' && room && <Lobby room={room} busy={busy} startGame={startGame} leave={leave} error={error} />}
-    {screen === 'game' && room && <><ReferenceBoard period={room.period} phase={room.phase} round={room.round} seed={room.seed} demandCards={room.demandCards} /><GameDashboard room={room} selectedCard={selectedCard} setSelectedCard={setSelectedCard} command={command} busy={busy} error={error} leave={leave} setupInitialCards={setupInitialCards} /><CashFlowTable room={room} /></>}
+    {screen === 'game' && room && <><ReferenceBoard period={room.period} demandCards={room.demandCards} peekAvailable={Boolean(room.me?.peekAvailable)} busy={busy} onPeek={(demandKind, position) => command('PEEK_DEMAND', { demandKind, position })} onSkipPeek={() => command('SKIP_PEEK')} /><GameDashboard room={room} selectedCard={selectedCard} setSelectedCard={setSelectedCard} command={command} busy={busy} error={error} leave={leave} setupInitialCards={setupInitialCards} /><CashFlowTable room={room} /></>}
+    <Dialog open={peekedDemand !== null} onClose={() => setPeekedDemand(null)} aria-labelledby="peek-demand-title"><DialogContent><Typography id="peek-demand-title" variant="h6" sx={{ mb: 2 }}>放大鏡查看的需求卡</Typography>{peekedDemand && <DemandCard card={{ id: peekedDemand.id, kind: 'demand', icons: peekedDemand.icons }} revealed quantity={peekedDemand.icons.length} />}</DialogContent><DialogActions><Button onClick={() => setPeekedDemand(null)}>蓋回原位</Button></DialogActions></Dialog>
   </main>
 }

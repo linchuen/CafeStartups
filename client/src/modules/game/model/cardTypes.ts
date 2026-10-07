@@ -11,6 +11,7 @@ export type CardFaceData = {
   minPlayers?: number
   cost: { cash: number; icons: string[] }
   icons: string[]
+  peekDemand?: boolean
   marketChange?: Record<string, number>
   customerCount?: Record<string, number>
   brandAwareness?: number

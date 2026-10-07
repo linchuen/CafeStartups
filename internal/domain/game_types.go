@@ -70,6 +70,7 @@ type Card struct {
 	Values            int            `json:"values,omitempty"`
 	Resources         int            `json:"resources,omitempty"`
 	Demand            map[string]int `json:"demand,omitempty"`
+	PeekDemand        bool           `json:"peekDemand,omitempty"`
 }
 
 type DemandCard struct {
@@ -92,6 +93,7 @@ type Player struct {
 	IconValues             map[string]int
 	Partner, StarterShop   Card
 	InitialCardsSelected   bool
+	PeekAvailable          bool
 	Hand, Tableau, Discard []Card
 
 	RetainedCards                []Card

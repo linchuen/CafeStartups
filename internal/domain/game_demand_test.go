@@ -14,16 +14,16 @@ func TestDemandCardsRevealByRoundAndScoreCustomerTypesSeparately(t *testing.T) {
 			}
 		}
 	}
-	g.Round = 1
+	g.Period = PeriodOne
 	g.revealDemandCards()
 	if !g.DemandCards["regular"][1].Revealed {
-		t.Fatal("expected the demand position to reveal after the round ends")
+		t.Fatal("expected the demand position to reveal during period-one learning")
 	}
 	g.DemandCards = map[string][]DemandCard{
 		"gourmet": {{Position: 0, Icons: []string{"coffee"}, Revealed: true}},
 		"regular": {{Position: 0, Icons: []string{"taste"}, Revealed: true}},
 	}
-	g.Players[0].Tableau = []Card{{Icons: []string{"coffee"}}}
+	g.Players[0].Tableau = []Card{{Kind: "product", Icons: []string{"coffee"}}}
 	g.updateSatisfactionScores()
 	if g.Players[0].GourmetSatisfaction != 1 || g.Players[0].RegularSatisfaction != 0 {
 		t.Fatalf("satisfaction gourmet=%d regular=%d, want 1 and 0", g.Players[0].GourmetSatisfaction, g.Players[0].RegularSatisfaction)
@@ -45,7 +45,7 @@ func TestDemandCardsUseProductAndValueIconsOnly(t *testing.T) {
 func TestRevenueUsesSatisfiedDemandValuePerCustomerType(t *testing.T) {
 	g := gameForTest(t)
 	p := g.Players[0]
-	p.Tableau = []Card{{Icons: []string{"coffee", "coffee", "taste"}, Demand: map[string]int{"gourmet": 1}}}
+	p.Tableau = []Card{{Kind: "product", Icons: []string{"coffee", "taste"}}, {Kind: "product", Icons: []string{"coffee"}}}
 	g.DemandCards = map[string][]DemandCard{
 		"gourmet": {{Position: 0, Icons: []string{"coffee"}, Revealed: true}, {Position: 1, Icons: []string{"coffee"}, Revealed: true}},
 		"regular": {{Position: 0, Icons: []string{"taste"}, Revealed: true}},
@@ -69,5 +69,27 @@ func TestChannelCustomerCountsAreIncludedInRevenueCustomers(t *testing.T) {
 	g.DistributeCustomers(nil)
 	if len(p.Customers) != 2 || p.Customers[0].Count != 2 || p.Customers[1].Count != 1 {
 		t.Fatalf("channel customers=%+v, want regular counts 2 and 1", p.Customers)
+	}
+}
+
+func TestDemandMatchingUsesPlayedProductAndValueCardsOncePerRow(t *testing.T) {
+	g := gameForTest(t)
+	p := g.Players[0]
+	g.DemandCards = map[string][]DemandCard{
+		"gourmet": {{Position: 0, Icons: []string{"coffee"}, Revealed: true}, {Position: 1, Icons: []string{"coffee"}, Revealed: true}},
+		"regular": {{Position: 0, Icons: []string{"coffee"}, Revealed: true}},
+	}
+	p.Partner = Card{Icons: []string{"coffee"}}
+	p.StarterShop = Card{Icons: []string{"coffee"}}
+	p.Tableau = []Card{{Kind: "resource", Icons: []string{"coffee"}}, {Kind: "product", Icons: []string{"coffee", "coffee"}}}
+	if got := g.satisfactionFor("gourmet", p); got != 1 {
+		t.Fatalf("gourmet matches=%d, want 1 played product card", got)
+	}
+	if got := g.satisfactionFor("regular", p); got != 1 {
+		t.Fatalf("regular matches=%d, want same product card available in separate row", got)
+	}
+	p.Tableau = append(p.Tableau, Card{Kind: "value", Icons: []string{"coffee"}})
+	if got := g.satisfactionFor("gourmet", p); got != 2 {
+		t.Fatalf("gourmet matches=%d, want 2 played product/value cards", got)
 	}
 }

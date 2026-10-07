@@ -72,15 +72,6 @@ func (g *Game) applyCardEffects(p *Player, c Card) {
 			p.Resources++
 		}
 	}
-	for demand, change := range c.MarketChange {
-		if demand == "difficult" {
-			continue
-		}
-		g.DemandBoard[demand] += change
-		if g.DemandBoard[demand] < 0 {
-			g.DemandBoard[demand] = 0
-		}
-	}
 }
 
 func basePrice(kind string) int {

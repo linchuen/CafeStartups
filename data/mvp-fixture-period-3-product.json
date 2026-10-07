@@ -6,6 +6,7 @@
   "cards": [
     {
       "id": "mvp-p3-007",
+      "peekDemand": true,
       "name": "經典拿鐵",
       "description": "以成熟的奶香咖啡與甜點組合，吸引饕客回訪。",
       "kind": "product",

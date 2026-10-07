@@ -54,6 +54,8 @@ type commandRequest struct {
 	CardID      string   `json:"cardId"`
 	KPIs        []string `json:"kpis"`
 	Count       int      `json:"count"`
+	DemandKind  string   `json:"demandKind"`
+	Position    int      `json:"position"`
 	CommandID   string   `json:"commandId"`
 }
 
@@ -175,6 +177,7 @@ func (s *gameStore) setupHandler(w http.ResponseWriter, r *http.Request) {
 		writeDomainError(w, err)
 		return
 	}
+	room.Version++
 	writeJSON(w, http.StatusOK, room.view(input.Token))
 }
 
@@ -203,6 +206,7 @@ func (s *gameStore) startHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	room.Status = "playing"
 	room.Version++
+	runBots(room)
 	writeJSON(w, http.StatusOK, room.view(token))
 }
 
@@ -247,8 +251,19 @@ func (s *gameStore) commandHandler(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusConflict, map[string]any{"code": "VERSION_CONFLICT", "gameVersion": room.Version, "state": room.view(input.Token)})
 		return
 	}
-	if err := applyCommand(room, room.PlayerID, input); err != nil {
-		writeDomainError(w, err)
+	var peeked *domain.DemandCard
+	var actionErr error
+	if input.Type == "PEEK_DEMAND" {
+		var card domain.DemandCard
+		card, actionErr = application.PeekDemand(room.Domain, room.PlayerID, input.DemandKind, input.Position)
+		if actionErr == nil {
+			peeked = &card
+		}
+	} else {
+		actionErr = applyCommand(room, room.PlayerID, input)
+	}
+	if actionErr != nil {
+		writeDomainError(w, actionErr)
 		return
 	}
 	room.Version++
@@ -267,6 +282,9 @@ func (s *gameStore) commandHandler(w http.ResponseWriter, r *http.Request) {
 		room.Status = "finished"
 	}
 	result := map[string]any{"gameVersion": room.Version, "state": room.view(input.Token)}
+	if peeked != nil {
+		result["peekedDemandCard"] = peeked
+	}
 	body, _ := json.Marshal(result)
 	room.Processed[key] = commandResult{Status: http.StatusOK, Body: body}
 	writeRawJSON(w, http.StatusOK, body)

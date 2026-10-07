@@ -59,6 +59,13 @@ func TestLocalGameLifecycleAndVersionConflict(t *testing.T) {
 	if started["period"].(float64) != 0 {
 		t.Fatalf("start should leave game in period zero: %+v", started)
 	}
+	setKPI := httptest.NewRecorder()
+	setKPIBody := `{"token":"` + created.Token + `","gameVersion":` + itoa(version) + `,"commandId":"initial-kpi","type":"SET_KPI","kpis":["products"]}`
+	handler.ServeHTTP(setKPI, httptest.NewRequest(http.MethodPost, "/api/games/"+created.ID+"/commands", strings.NewReader(setKPIBody)))
+	if setKPI.Code != http.StatusOK {
+		t.Fatalf("initial KPI status=%d body=%s", setKPI.Code, setKPI.Body.String())
+	}
+	version++
 	begin := httptest.NewRecorder()
 	beginBody := `{"token":"` + created.Token + `","gameVersion":` + itoa(version) + `,"commandId":"begin-experiment","type":"BEGIN_EXPERIMENT"}`
 	handler.ServeHTTP(begin, httptest.NewRequest(http.MethodPost, "/api/games/"+created.ID+"/commands", strings.NewReader(beginBody)))
@@ -138,12 +145,15 @@ func TestSoloStartAddsRandomBots(t *testing.T) {
 	if start.Code != http.StatusOK {
 		t.Fatalf("start status=%d body=%s", start.Code, start.Body.String())
 	}
+	if err := store.games[room.ID].Domain.SetKPIs(store.games[room.ID].PlayerID, "products"); err != nil {
+		t.Fatal(err)
+	}
 	if err := store.games[room.ID].Domain.BeginExperiment(); err != nil {
 		t.Fatal(err)
 	}
 	runBots(store.games[room.ID])
-	if got := store.games[room.ID].Domain.Players[0].SelectedKPIs; len(got) != 0 {
-		t.Fatalf("KPIs must not be selected before period one ends: %v", got)
+	if got := store.games[room.ID].Domain.Players[0].SelectedKPIs; len(got) != 1 {
+		t.Fatalf("first KPI must be selected before period one: %v", got)
 	}
 	if len(store.games[room.ID].Domain.Players) != 4 {
 		t.Fatalf("expected 4 players, got %d", len(store.games[room.ID].Domain.Players))
@@ -189,7 +199,14 @@ func TestSoloGameCompletesThroughHTTP(t *testing.T) {
 			payload["cardId"] = cardID
 		}
 		if commandType == "SET_KPI" {
-			payload["kpis"] = []string{"values", "resources"}
+			switch store.games[room.ID].Domain.Period {
+			case domain.PeriodZero:
+				payload["kpis"] = []string{"products"}
+			case domain.PeriodTwo:
+				payload["kpis"] = []string{"products", "resources"}
+			case domain.PeriodThree:
+				payload["kpis"] = []string{"products", "resources"}
+			}
 		}
 		body, err := json.Marshal(payload)
 		if err != nil {
@@ -202,6 +219,7 @@ func TestSoloGameCompletesThroughHTTP(t *testing.T) {
 		}
 	}
 
+	command("SET_KPI", "")
 	command("BEGIN_EXPERIMENT", "")
 
 	for period := 1; period <= 3; period++ {

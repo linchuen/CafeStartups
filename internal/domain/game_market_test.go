@@ -27,7 +27,7 @@ func TestPeriodsAdvanceThreeTimes(t *testing.T) {
 		t.Fatalf("period=%d phase=%s", g.Period, g.Phase)
 	}
 	for _, p := range g.Players {
-		if err := g.SetKPIs(p.ID, "brand_awareness", "products"); err != nil {
+		if err := g.SetKPIs(p.ID, "products", "brand_awareness"); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -62,9 +62,9 @@ func TestResolveLearningCompletesThreePeriods(t *testing.T) {
 			if g.Phase != PhaseHypothesis || int(g.Period) != period+1 {
 				t.Fatalf("after period %d: period=%d phase=%s", period, g.Period, g.Phase)
 			}
-			kpis := []string{"brand_awareness", "products"}
+			kpis := []string{"products", "brand_awareness"}
 			if period == 2 {
-				kpis = []string{"values", "resources"}
+				kpis = []string{"products", "resources"}
 			}
 			for _, p := range g.Players {
 				if err := g.SetKPIs(p.ID, kpis...); err != nil {
@@ -72,7 +72,7 @@ func TestResolveLearningCompletesThreePeriods(t *testing.T) {
 				}
 			}
 			if period == 2 {
-				if err := g.SetKPIs(g.Players[0].ID, "brand_awareness", "products"); err != ErrInvalidAction {
+				if err := g.SetKPIs(g.Players[0].ID, "products", "brand_awareness"); err != ErrInvalidAction {
 					t.Fatalf("expected only one KPI reselection after period two, got %v", err)
 				}
 			}
@@ -138,20 +138,20 @@ func TestDrawMarketUsesFinalHandsToBuildBag(t *testing.T) {
 	if err := g.PrepareMarketBag(); err != nil {
 		t.Fatal(err)
 	}
-	if total := g.MarketBag["gourmet"] + g.MarketBag["regular"] + g.MarketBag["difficult"]; total != 4 {
-		t.Fatalf("prepared bag=%d, want 4 including one difficult customer", total)
+	if total := g.MarketBag["gourmet"] + g.MarketBag["regular"] + g.MarketBag["difficult"]; total != 13 {
+		t.Fatalf("prepared bag=%d, want 13 including initial customers and one difficult customer", total)
 	}
 	if err := g.DrawMarket(); err != nil {
 		t.Fatal(err)
 	}
-	if total := g.MarketBag["gourmet"] + g.MarketBag["regular"] + g.MarketBag["difficult"]; total != 0 {
-		t.Fatalf("remaining bag=%d, want 0 after drawing all four customers", total)
+	if total := g.MarketBag["gourmet"] + g.MarketBag["regular"] + g.MarketBag["difficult"]; total != 6 {
+		t.Fatalf("remaining bag=%d, want 6 after drawing seven customers", total)
 	}
 	totalDrawn := 0
 	for _, draw := range g.MarketDraws {
 		totalDrawn += draw.Total
 	}
-	if totalDrawn != 4 {
-		t.Fatalf("drawn=%d, want 4 customers including the difficult customer", totalDrawn)
+	if totalDrawn != 7 {
+		t.Fatalf("drawn=%d, want 7 customers", totalDrawn)
 	}
 }

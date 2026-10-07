@@ -25,19 +25,25 @@ func (g *Game) PrepareMarketBag() error {
 	for index, p := range rankedPlayers {
 		g.MarketRankingPlayerIDs[index] = p.ID
 	}
-	g.MarketBag = map[string]int{"gourmet": 0, "regular": 0, "difficult": 0}
-	// Every market draw starts with one difficult customer in the bag.
-	g.MarketBag["difficult"] = 1
+	if g.MarketBag == nil {
+		g.MarketBag = map[string]int{"gourmet": 4, "regular": 6, "difficult": 0}
+	}
+	// The market bag persists between periods; each period adds one difficult customer.
+	g.MarketBag["difficult"]++
 	for _, p := range g.Players {
 		if len(p.Hand) == 0 {
 			continue
 		}
 		for kind, count := range p.Hand[0].MarketChange {
-			if _, ok := g.MarketBag[kind]; ok && count > 0 {
+			if _, ok := g.MarketBag[kind]; ok {
 				g.MarketBag[kind] += count
+				if g.MarketBag[kind] < 0 {
+					g.MarketBag[kind] = 0
+				}
 			}
 		}
 	}
+	g.DemandBoard = map[string]int{"gourmet": g.MarketBag["gourmet"], "regular": g.MarketBag["regular"], "difficult": g.MarketBag["difficult"]}
 	g.MarketBagReady = true
 	return nil
 }
@@ -80,6 +86,7 @@ func (g *Game) DrawMarket() error {
 		g.MarketDraws = append(g.MarketDraws, MarketDraw{Rank: i + 1, PlayerID: p.ID, CustomerCounts: countsByType, Total: total})
 	}
 	g.marketDrawn = true
+	g.DemandBoard = map[string]int{"gourmet": g.MarketBag["gourmet"], "regular": g.MarketBag["regular"], "difficult": g.MarketBag["difficult"]}
 	return nil
 }
 
@@ -90,9 +97,6 @@ func (g *Game) ResolveLearning() error {
 	}
 	if !g.marketDrawn || len(g.MarketRanking) != len(g.Players) {
 		return ErrInvalidAction
-	}
-	if err := g.SettleInterest(); err != nil {
-		return err
 	}
 	for _, p := range g.Players {
 		p.Customers = nil
@@ -121,11 +125,14 @@ func (g *Game) ResolveLearning() error {
 		g.appendCardCustomers(p)
 	}
 	g.SettleRevenue()
+	if err := g.SettleInterest(); err != nil {
+		return err
+	}
 	g.updateSatisfactionScores()
 	g.recordCashFlow()
 	g.recordCashFlowRound()
 	for _, p := range g.Players {
-		p.Score = p.Cash/CashScoreDivisor + p.metricScore()
+		p.Score = p.Cash/CashScoreDivisor - p.Loans*6 + p.metricScore()
 	}
 	g.rememberFinalHands()
 	if g.Period == PeriodThree {
@@ -138,7 +145,6 @@ func (g *Game) ResolveLearning() error {
 	g.MarketRanking = nil
 	g.MarketRankingPlayerIDs = nil
 	g.MarketDraws = nil
-	g.MarketBag = nil
 	g.MarketBagReady = false
 	g.marketDrawn = false
 	g.selected = map[string]Card{}

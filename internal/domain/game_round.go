@@ -30,6 +30,35 @@ func (g *Game) HasSelected(playerID string) bool {
 
 func (g *Game) HasActed(playerID string) bool { return g.acted[playerID] }
 
+func (g *Game) PeekDemand(playerID, kind string, position int) (DemandCard, error) {
+	p, err := g.player(playerID)
+	if err != nil {
+		return DemandCard{}, err
+	}
+	if g.Phase != PhaseExperiment || !p.PeekAvailable || (kind != "gourmet" && kind != "regular") {
+		return DemandCard{}, ErrInvalidAction
+	}
+	for _, card := range g.DemandCards[kind] {
+		if card.Position == position && !card.Revealed {
+			p.PeekAvailable = false
+			return card, nil
+		}
+	}
+	return DemandCard{}, ErrInvalidAction
+}
+
+func (g *Game) SkipPeek(playerID string) error {
+	p, err := g.player(playerID)
+	if err != nil {
+		return err
+	}
+	if g.Phase != PhaseExperiment || !p.PeekAvailable {
+		return ErrInvalidAction
+	}
+	p.PeekAvailable = false
+	return nil
+}
+
 func (g *Game) PassHandsIfReady() (bool, error) {
 	if g.Phase != PhaseExperiment {
 		return false, ErrInvalidPhase
@@ -38,7 +67,7 @@ func (g *Game) PassHandsIfReady() (bool, error) {
 		return false, nil
 	}
 	for _, p := range g.Players {
-		if !g.acted[p.ID] {
+		if !g.acted[p.ID] || p.PeekAvailable {
 			return false, nil
 		}
 	}
@@ -56,7 +85,7 @@ func (g *Game) PassHands() error {
 		return ErrInvalidAction
 	}
 	for _, p := range g.Players {
-		if !g.acted[p.ID] {
+		if !g.acted[p.ID] || p.PeekAvailable {
 			return ErrInvalidAction
 		}
 	}
@@ -75,10 +104,6 @@ func (g *Game) PassHands() error {
 	}
 	g.Round++
 	g.selected, g.acted = map[string]Card{}, map[string]bool{}
-	// Reveal the demand card for the round that just ended before the game
-	// advances to settlement, then immediately refresh satisfaction scores.
-	g.revealDemandCards()
-	g.updateSatisfactionScores()
 	g.recordCashFlowRound()
 	if g.Round == ExperimentRounds {
 		for _, p := range g.Players {
@@ -88,6 +113,8 @@ func (g *Game) PassHands() error {
 		}
 		g.Center = g.Players[0].Hand[0]
 		g.Phase = PhaseLearning
+		g.revealDemandCards()
+		g.updateSatisfactionScores()
 		if err := g.PrepareMarketBag(); err != nil {
 			return err
 		}
@@ -114,6 +141,16 @@ func (g *Game) PlaySelectedCard(playerID string) error {
 	g.applyCardEffects(p, c)
 	removeCard(&p.Hand, c.ID)
 	g.acted[playerID] = true
+	if c.PeekDemand {
+		for _, cards := range g.DemandCards {
+			for _, card := range cards {
+				if !card.Revealed {
+					p.PeekAvailable = true
+					return nil
+				}
+			}
+		}
+	}
 	return nil
 }
 

@@ -12,14 +12,8 @@ import (
 func RunBots(game *domain.Game, seed string, version *int64) {
 	if game.Phase == domain.PhaseHypothesis {
 		for _, player := range game.Players {
-			if player.IsBot && player.KPISelectionPeriod != game.Period {
-				kpis := validKPIs()
-				i := botChoice(seed, player.ID, *version, len(kpis))
-				j := botChoice(seed, player.ID+"-second", *version, len(kpis)-1)
-				if j >= i {
-					j++
-				}
-				if err := game.SetKPIs(player.ID, kpis[i], kpis[j]); err == nil {
+			if player.IsBot && (game.Period == domain.PeriodZero && len(player.SelectedKPIs) == 0 || game.Period != domain.PeriodZero && player.KPISelectionPeriod != game.Period) {
+				if err := setRandomBotKPIs(game, seed, *version, player); err == nil {
 					*version++
 				}
 			}
@@ -47,6 +41,10 @@ func RunBots(game *domain.Game, seed string, version *int64) {
 		if botChoice(seed, player.ID+"-action", *version, 2) == 0 {
 			if err := game.PlaySelectedCard(player.ID); err == nil {
 				*version++
+				if player.PeekAvailable {
+					_ = game.SkipPeek(player.ID)
+					*version++
+				}
 				continue
 			}
 		}
@@ -58,12 +56,22 @@ func RunBots(game *domain.Game, seed string, version *int64) {
 
 func setRandomBotKPIs(game *domain.Game, seed string, version int64, player *domain.Player) error {
 	kpis := validKPIs()
-	i := botChoice(seed, player.ID+"-kpi", version, len(kpis))
-	j := botChoice(seed, player.ID+"-kpi-second", version, len(kpis)-1)
-	if j >= i {
-		j++
+	switch game.Period {
+	case domain.PeriodZero:
+		return game.SetKPIs(player.ID, kpis[botChoice(seed, player.ID+"-kpi", version, len(kpis))])
+	case domain.PeriodTwo:
+		first := player.SelectedKPIs[0]
+		choices := make([]string, 0, len(kpis)-1)
+		for _, kpi := range kpis {
+			if kpi != first {
+				choices = append(choices, kpi)
+			}
+		}
+		return game.SetKPIs(player.ID, first, choices[botChoice(seed, player.ID+"-second", version, len(choices))])
+	case domain.PeriodThree:
+		return game.SetKPIs(player.ID, player.SelectedKPIs...)
 	}
-	return game.SetKPIs(player.ID, kpis[i], kpis[j])
+	return domain.ErrInvalidAction
 }
 
 func validKPIs() []string {

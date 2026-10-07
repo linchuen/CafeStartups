@@ -1,5 +1,7 @@
 package server
 
+import "cafestartups/internal/domain"
+
 func (room *gameRoom) view(token string) map[string]any {
 	players := make([]map[string]any, 0, len(room.Domain.Players))
 	playerNames := make(map[string]string, len(room.Domain.Players))
@@ -11,11 +13,21 @@ func (room *gameRoom) view(token string) map[string]any {
 	for _, draw := range room.Domain.MarketDraws {
 		marketDraws = append(marketDraws, map[string]any{"rank": draw.Rank, "playerId": draw.PlayerID, "playerName": playerNames[draw.PlayerID], "customerCounts": draw.CustomerCounts, "total": draw.Total})
 	}
-	result := map[string]any{"id": room.ID, "status": room.Status, "seed": room.Seed, "gameVersion": room.Version, "period": room.Domain.Period, "phase": room.Domain.Phase, "round": room.Domain.Round, "demandBoard": room.Domain.DemandBoard, "demandCards": room.Domain.DemandCards, "marketRanking": room.Domain.MarketRanking, "marketRankingPlayerIds": room.Domain.MarketRankingPlayerIDs, "marketDraws": marketDraws, "marketBag": room.Domain.MarketBag, "marketBagReady": room.Domain.MarketBagReady, "center": room.Domain.Center, "partnerOptions": room.Domain.PartnerOptions, "starterShopOptions": room.Domain.StarterShopOptions, "players": players}
+	publicDemandCards := map[string][]domain.DemandCard{}
+	for kind, cards := range room.Domain.DemandCards {
+		publicDemandCards[kind] = make([]domain.DemandCard, len(cards))
+		for index, card := range cards {
+			publicDemandCards[kind][index] = domain.DemandCard{Position: card.Position, Revealed: card.Revealed}
+			if card.Revealed {
+				publicDemandCards[kind][index] = card
+			}
+		}
+	}
+	result := map[string]any{"id": room.ID, "status": room.Status, "seed": room.Seed, "gameVersion": room.Version, "period": room.Domain.Period, "phase": room.Domain.Phase, "round": room.Domain.Round, "demandBoard": room.Domain.DemandBoard, "demandCards": publicDemandCards, "marketRanking": room.Domain.MarketRanking, "marketRankingPlayerIds": room.Domain.MarketRankingPlayerIDs, "marketDraws": marketDraws, "marketBag": room.Domain.MarketBag, "marketBagReady": room.Domain.MarketBagReady, "center": room.Domain.Center, "partnerOptions": room.Domain.PartnerOptions, "starterShopOptions": room.Domain.StarterShopOptions, "players": players}
 	if token == room.Token {
 		for _, p := range room.Domain.Players {
 			if p.ID == room.PlayerID {
-				result["me"] = map[string]any{"id": p.ID, "hand": p.Hand, "tableau": p.Tableau, "retainedCards": p.RetainedCards, "discardCount": len(p.Discard), "partner": p.Partner, "starterShop": p.StarterShop, "initialCardsSelected": p.InitialCardsSelected, "cash": p.Cash, "loans": p.Loans, "customers": p.Customers, "revenue": p.Revenue, "score": p.Score, "selectedKPIs": p.SelectedKPIs, "cashFlow": p.CashFlow, "cashFlowRounds": p.CashFlowRounds, "brandAwareness": p.BrandAwareness, "products": p.Products, "values": p.Values, "resources": p.Resources, "gourmetSatisfaction": p.GourmetSatisfaction, "regularSatisfaction": p.RegularSatisfaction, "iconValues": p.IconValues}
+				result["me"] = map[string]any{"id": p.ID, "hand": p.Hand, "tableau": p.Tableau, "retainedCards": p.RetainedCards, "discardCount": len(p.Discard), "partner": p.Partner, "starterShop": p.StarterShop, "initialCardsSelected": p.InitialCardsSelected, "peekAvailable": p.PeekAvailable, "cash": p.Cash, "loans": p.Loans, "customers": p.Customers, "revenue": p.Revenue, "score": p.Score, "selectedKPIs": p.SelectedKPIs, "kpiSelectionPeriod": p.KPISelectionPeriod, "cashFlow": p.CashFlow, "cashFlowRounds": p.CashFlowRounds, "brandAwareness": p.BrandAwareness, "products": p.Products, "values": p.Values, "resources": p.Resources, "gourmetSatisfaction": p.GourmetSatisfaction, "regularSatisfaction": p.RegularSatisfaction, "iconValues": p.IconValues}
 			}
 		}
 	}

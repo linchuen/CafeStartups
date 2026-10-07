@@ -12,13 +12,13 @@ func (g *Game) Finish() error {
 	if g.Phase != PhaseLearning {
 		return ErrInvalidPhase
 	}
+	g.SettleRevenue()
 	if err := g.SettleInterest(); err != nil {
 		return err
 	}
-	g.SettleRevenue()
 	g.updateSatisfactionScores()
 	for _, p := range g.Players {
-		p.Score = p.Cash/CashScoreDivisor + p.metricScore()
+		p.Score = p.Cash/CashScoreDivisor - p.Loans*6 + p.metricScore()
 	}
 	g.rememberFinalHands()
 	g.Phase = PhaseFinished
@@ -49,11 +49,11 @@ func (p *Player) metricScore() int {
 	for _, k := range p.SelectedKPIs {
 		switch k {
 		case "gourmet_satisfaction":
-			s += p.GourmetSatisfaction
+			s += p.GourmetSatisfaction * 5
 		case "regular_satisfaction":
-			s += p.RegularSatisfaction
+			s += p.RegularSatisfaction * 4
 		case "total_satisfaction":
-			s += p.GourmetSatisfaction + p.RegularSatisfaction
+			s += (p.GourmetSatisfaction + p.RegularSatisfaction) * 2
 		case "channel":
 			s += cards.channelCards * 4
 		case "awareness":
@@ -69,7 +69,10 @@ func (p *Player) metricScore() int {
 		case "cost":
 			s += cards.resourceCards * 3
 		case "surplus":
-			s += p.TotalRevenue / 30
+			cashAfterLoans := p.Cash - p.Loans*LoanAmount
+			if cashAfterLoans > 0 {
+				s += cashAfterLoans / 30
+			}
 		case "resources":
 			s += cards.resourceCards * 3
 		}
@@ -85,7 +88,6 @@ func (p *Player) scoreCardCounts() scoreCardCounts {
 	counts := scoreCardCounts{}
 	seen := map[string]bool{}
 	cards := append([]Card{p.Partner, p.StarterShop}, p.Tableau...)
-	cards = append(cards, p.RetainedCards...)
 	for _, card := range cards {
 		if card.ID != "" && seen[card.ID] {
 			continue
@@ -129,7 +131,7 @@ func (p *Player) satisfiedCustomerCount(kind string) int {
 
 func less(a, b *Player) bool {
 	aCards, bCards := a.scoreCardCounts(), b.scoreCardCounts()
-	for _, values := range [][2]int{{a.BrandAwareness, b.BrandAwareness}, {aCards.valueCards, bCards.valueCards}, {aCards.productCards, bCards.productCards}, {aCards.resourceCards, bCards.resourceCards}} {
+	for _, values := range [][2]int{{aCards.marketingStars, bCards.marketingStars}, {aCards.productCards, bCards.productCards}, {aCards.valueCards, bCards.valueCards}, {aCards.resourceCards, bCards.resourceCards}, {a.Cash, b.Cash}} {
 		if values[0] != values[1] {
 			return values[0] > values[1]
 		}

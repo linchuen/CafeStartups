@@ -22,6 +22,11 @@ func TestCatalogDealsPeriodCards(t *testing.T) {
 		t.Fatal(err)
 	}
 	g.SetCatalog(catalog)
+	for _, p := range g.Players {
+		if err := g.SetKPIs(p.ID, "products"); err != nil {
+			t.Fatal(err)
+		}
+	}
 	if err := g.BeginExperiment(); err != nil {
 		t.Fatal(err)
 	}

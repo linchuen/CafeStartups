@@ -50,7 +50,7 @@ export const arrangeDemandCards = (seed = 1) => ({
 export function DemandCard({ card, revealed, quantity = card.icons.length }: { card: DemandCardData; revealed: boolean; quantity?: number }) {
   const visibleIcons = Array.from({ length: quantity }, (_, index) => card.icons[index % card.icons.length])
   if (!revealed) return <div className="demand-card demand-card-back" aria-label="\u5c1a\u672a\u63ed\u793a\u9700\u6c42\u5361"><span>?</span></div>
-  return <div className="demand-card demand-card-face"><div className="demand-card-heading"><span>需求卡</span></div><div className="demand-card-icons">{visibleIcons.map((icon, index) => <span className={`demand-icon-${iconCategory(icon)}`} key={`${icon}-${index}`} title={iconOf(icon).label}><GameIcon name={icon} fontSize="inherit" /></span>)}</div><div className="demand-card-labels">{visibleIcons.map((icon, index) => <small key={`${icon}-${index}`}>{iconOf(icon).label}</small>)}</div></div>
+  return <div className="demand-card demand-card-face" aria-label={`已翻開需求卡：${visibleIcons.map((icon) => iconOf(icon).label).join('、')}`}><div className="demand-card-heading"><span>需求卡</span></div><div className="demand-card-icons">{visibleIcons.map((icon, index) => <span className={`demand-icon-${iconCategory(icon)}`} key={`${icon}-${index}`} title={iconOf(icon).label}><GameIcon name={icon} fontSize="inherit" /></span>)}</div><div className="demand-card-labels">{visibleIcons.map((icon, index) => <small key={`${icon}-${index}`}>{iconOf(icon).label}</small>)}</div></div>
 }
 
 export function DemandMarket({ period, round, reveal = false, embedded = false, seed = 1 }: { period: number; round: number; reveal?: boolean; embedded?: boolean; seed?: number }) {

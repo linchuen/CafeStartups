@@ -22,6 +22,8 @@ func ExecuteCommand(game *domain.Game, playerID string, command Command) error {
 		return game.SelectCard(playerID, command.Card)
 	case "PLAY_SELECTED_CARD":
 		return game.PlaySelectedCard(playerID)
+	case "SKIP_PEEK":
+		return game.SkipPeek(playerID)
 	case "DISCARD_SELECTED_CARD":
 		return game.DiscardSelectedCard(playerID)
 	case "PASS_HAND":
@@ -30,11 +32,6 @@ func ExecuteCommand(game *domain.Game, playerID string, command Command) error {
 		return game.TakeLoan(playerID)
 	case "REPAY_LOAN":
 		return game.RepayLoan(playerID, command.Count)
-	case "CONFIRM_INTEREST":
-		return game.SettleInterest()
-	case "CONFIRM_REVENUE":
-		game.SettleRevenue()
-		return nil
 	case "RESOLVE_LEARNING":
 		return game.ResolveLearning()
 	case "DRAW_MARKET":
@@ -44,4 +41,8 @@ func ExecuteCommand(game *domain.Game, playerID string, command Command) error {
 	default:
 		return domain.ErrInvalidAction
 	}
+}
+
+func PeekDemand(game *domain.Game, playerID, kind string, position int) (domain.DemandCard, error) {
+	return game.PeekDemand(playerID, kind, position)
 }

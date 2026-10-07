@@ -44,7 +44,7 @@ func TestDraftEndsWithOneCardAndPeriodDirection(t *testing.T) {
 	}
 }
 
-func TestRoundEndRevealsThatRoundsDemandCard(t *testing.T) {
+func TestRoundEndKeepsDemandCardHiddenUntilLearning(t *testing.T) {
 	g := gameForTest(t)
 	for _, p := range g.Players {
 		if err := g.SelectCard(p.ID, p.Hand[0].ID); err != nil {
@@ -57,8 +57,34 @@ func TestRoundEndRevealsThatRoundsDemandCard(t *testing.T) {
 	if err := g.PassHands(); err != nil {
 		t.Fatal(err)
 	}
-	if !g.DemandCards["gourmet"][1].Revealed || !g.DemandCards["regular"][1].Revealed {
-		t.Fatal("expected the first completed round's demand cards to be revealed")
+	if g.DemandCards["gourmet"][1].Revealed || g.DemandCards["regular"][1].Revealed {
+		t.Fatal("demand cards must remain hidden until learning")
+	}
+}
+
+func TestMagnifierPeekIsPrivateAndConsumedOnce(t *testing.T) {
+	g := gameForTest(t)
+	p := g.Players[0]
+	card := Card{ID: "peek-card", Kind: "product", PeekDemand: true}
+	p.Hand = append([]Card{card}, p.Hand...)
+	if err := g.SelectCard(p.ID, card.ID); err != nil {
+		t.Fatal(err)
+	}
+	if err := g.PlaySelectedCard(p.ID); err != nil {
+		t.Fatal(err)
+	}
+	if !p.PeekAvailable {
+		t.Fatal("played magnifier card should offer one peek")
+	}
+	peeked, err := g.PeekDemand(p.ID, "gourmet", 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if peeked.ID == "" || len(peeked.Icons) == 0 || g.DemandCards["gourmet"][1].Revealed {
+		t.Fatalf("peek must return a private card without revealing it: %+v", peeked)
+	}
+	if _, err := g.PeekDemand(p.ID, "regular", 1); err != ErrInvalidAction {
+		t.Fatalf("second peek should fail, got %v", err)
 	}
 }
 
@@ -78,7 +104,7 @@ func TestSelectCardCanReplaceBeforeAction(t *testing.T) {
 	}
 }
 
-func TestPlayingCardAppliesMetricAndMarketEffects(t *testing.T) {
+func TestPlayingCardAppliesMetricButKeepsMarketChangeForFinalHand(t *testing.T) {
 	g, _ := NewGame("effects", []string{"a", "b"})
 	p := g.Players[0]
 	g.Phase = PhaseExperiment
@@ -90,8 +116,8 @@ func TestPlayingCardAppliesMetricAndMarketEffects(t *testing.T) {
 	if err := g.PlaySelectedCard(p.ID); err != nil {
 		t.Fatal(err)
 	}
-	if p.BrandAwareness != 1 || g.DemandBoard["gourmet"] != 2 {
-		t.Fatalf("effects not applied: brand=%d demand=%d", p.BrandAwareness, g.DemandBoard["gourmet"])
+	if p.BrandAwareness != 1 || g.DemandBoard["gourmet"] != 0 {
+		t.Fatalf("played card must not alter market bag: brand=%d demand=%d", p.BrandAwareness, g.DemandBoard["gourmet"])
 	}
 }
 
@@ -167,16 +193,11 @@ func TestCostAndMissingIcons(t *testing.T) {
 	g.selected[p.ID] = c
 	p.Hand = []Card{c}
 	g.Phase = PhaseExperiment
-	if err := g.PlaySelectedCard(p.ID); err != ErrInsufficientCash {
-		t.Fatalf("expected cash error, got %v", err)
-	}
-	p.Cash = 100
-	g.selected[p.ID] = c
 	if err := g.PlaySelectedCard(p.ID); err != nil {
-		t.Fatal(err)
+		t.Fatalf("expected automatic cost loan, got %v", err)
 	}
-	if p.Cash != 30 {
-		t.Fatalf("cash=%d, want 30", p.Cash)
+	if p.Cash != 40 || p.Loans != 1 {
+		t.Fatalf("cash=%d loans=%d, want 40 and one loan", p.Cash, p.Loans)
 	}
 }
 

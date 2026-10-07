@@ -65,6 +65,7 @@ export type GameState = {
     partner?: Card
     starterShop?: Card
     initialCardsSelected?: boolean
+    peekAvailable?: boolean
     cash: number
     loans: number
     customers?: { kind: string; demand: string; unitPrice: number; count: number }[]

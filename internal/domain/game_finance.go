@@ -34,7 +34,7 @@ func (g *Game) SettleInterest() error {
 	for _, p := range g.Players {
 		interest := LoanInterest * p.Loans
 		loans, cash := p.Loans, p.Cash
-		for cash < interest && loans < MaxLoans {
+		for cash < interest {
 			loans++
 			cash += LoanAmount
 		}
@@ -124,9 +124,16 @@ func (g *Game) pay(p *Player, c Card) error {
 		}
 	}
 	cost := c.Cost.Cash + missing*20
+	loansNeeded := 0
 	if p.Cash < cost {
-		return ErrInsufficientCash
+		loansNeeded = (cost - p.Cash + LoanAmount - 1) / LoanAmount
 	}
+	if p.Loans+loansNeeded > MaxLoans {
+		return ErrLoanLimit
+	}
+	p.Loans += loansNeeded
+	p.Cash += loansNeeded * LoanAmount
+	p.cashFlowNewLoans += loansNeeded * LoanAmount
 	p.Cash -= cost
 	p.cashFlowExpenses += cost
 	return nil

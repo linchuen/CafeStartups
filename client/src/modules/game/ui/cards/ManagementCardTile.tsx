@@ -6,6 +6,7 @@ import { CardArtwork } from './CardArtwork'
 import { GameIcon } from './GameIcon'
 import { CustomerTypeTokens } from './CustomerTypeTokens'
 import { CardCost } from './CardCost'
+import { Search } from '@mui/icons-material'
 
 export function ManagementCardTile({ card, selected, onClick }: { card: PlayerCard; selected?: boolean; onClick?: () => void }) {
   const meta = dashboardCardColors.management[card.function ?? card.kind]
@@ -21,9 +22,9 @@ export function ManagementCardTile({ card, selected, onClick }: { card: PlayerCa
   return <MuiCard onClick={onClick} variant="outlined" sx={{ display: 'flex', height: '100%', minHeight: 290, flexDirection: 'column', overflow: 'hidden', cursor: onClick ? 'pointer' : 'default', bgcolor: meta.pale, borderColor: selected ? meta.color : `${meta.color}66`, borderWidth: selected ? 3 : 1 }}>
     <Box sx={{ minHeight: 39, px: 1.5, py: .9, boxSizing: 'border-box', bgcolor: meta.color, color: 'white', textAlign: 'center' }}><Typography variant="caption" fontWeight={900}>{card.name}</Typography></Box>
     <Box sx={{ display: 'flex', height: 88, flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: .2, px: 1.5, py: .85, boxSizing: 'border-box', bgcolor: `${meta.color}dd`, color: 'white' }}>
-      <Typography variant="caption" sx={{ opacity: .8 }}>卡片功能</Typography>
+      <Typography variant="caption" sx={{ opacity: .8 }}>卡片功能{card.peekDemand && ' · 可查看一張蓋牌需求'}</Typography>
       <Box sx={{ display: 'flex', minWidth: 0, maxWidth: '100%', alignItems: 'center', justifyContent: 'center', gap: .8, overflow: 'hidden' }}>
-        {card.kind === 'channel' ? visibleMarketEntries.map(([key, value]) => <CustomerTypeTokens key={key} type={key} count={value} size={18} />) : displayIcons.map((icon, index) => <GameIcon key={`${icon}-${index}`} name={icon} sx={{ fontSize: 24 }} />)}
+        {card.kind === 'channel' ? visibleMarketEntries.map(([key, value]) => <CustomerTypeTokens key={key} type={key} count={value} size={18} />) : displayIcons.map((icon, index) => <GameIcon key={`${icon}-${index}`} name={icon} sx={{ fontSize: 24 }} />)}{card.peekDemand && <Search titleAccess="放大鏡：查看一張蓋牌需求" sx={{ fontSize: 24 }} />}
       </Box>
     </Box>
     <Box sx={{ display: 'grid', height: 105, flex: '0 0 105px', placeItems: 'center', overflow: 'hidden' }}><CardArtwork card={card} /></Box>
